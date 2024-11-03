@@ -40,6 +40,11 @@ export const Events: CollectionConfig = {
       admin: {
         date: {
           pickerAppearance: 'dayAndTime',
+          displayFormat: 'EEEE dd.MM.yyyy HH:mm',
+          timeFormat: 'HH:mm',
+          overrides: {
+            locale: 'de-DE',
+          },
         },
       },
     },
