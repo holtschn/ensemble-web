@@ -24,7 +24,7 @@ async function getFooterData(): Promise<FooterComponentProps> {
         })
         .filter((item) => item !== undefined);
 
-      links.push({ href: '/internal', label: 'intern' });
+      links.push({ href: '/intern', label: 'intern' });
       return { links: links };
     }
   } catch (error) {
