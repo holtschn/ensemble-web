@@ -53,6 +53,7 @@ function toDateString(event: Event): string {
     year: 'numeric',
     month: 'numeric',
     day: 'numeric',
+    timeZone: 'Europe/Berlin',
   });
 }
 
@@ -61,6 +62,7 @@ function toTimeString(event: Event): string {
     hour: 'numeric',
     minute: 'numeric',
     hourCycle: 'h24',
+    timeZone: 'Europe/Berlin',
   });
 }
 

@@ -44,6 +44,7 @@ export const Events: CollectionConfig = {
           timeFormat: 'HH:mm',
           overrides: {
             locale: 'de-DE',
+            timeZone: 'Europe/Berlin',
           },
         },
       },
