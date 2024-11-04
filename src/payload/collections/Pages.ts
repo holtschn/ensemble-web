@@ -56,7 +56,7 @@ export const Pages: CollectionConfig = {
     },
   ],
   hooks: {
-    afterChange: [createRevalidatePathHook(pagePathProvider)],
+    afterChange: [createRevalidatePathHook([pagePathProvider])],
     beforeChange: [populatePublishedDate],
   },
   slug: 'pages',

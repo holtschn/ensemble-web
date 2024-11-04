@@ -29,6 +29,10 @@ const dataDepthAdapter = (data: Record<string, any>) => {
   return data;
 };
 
+export const homePagePathProvider = (data: Record<string, any>) => '/';
+
+export const internalHomePagePathProvider = (data: Record<string, any>) => '/intern';
+
 export const pagePathProvider = (data: Record<string, any>) => `/${dataDepthAdapter(data)?.slug}`;
 
 export const pageUrlProvider = (data: Record<string, any>) =>

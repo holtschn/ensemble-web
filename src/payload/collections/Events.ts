@@ -7,7 +7,13 @@ import { populatePublishedDate } from '@/payload/hooks/populatePublishedDate';
 import { publishedOr } from '@/payload/access/publishedOr';
 import { admins } from '@/payload/access/admins';
 import { loggedIn } from '@/payload/access/loggedIn';
-import { createPreviewUrlProvider, eventPathProvider, eventUrlProvider } from '@/payload/utilities/slugs';
+import {
+  createPreviewUrlProvider,
+  eventPathProvider,
+  eventUrlProvider,
+  homePagePathProvider,
+  internalHomePagePathProvider,
+} from '@/payload/utilities/slugs';
 import { richText } from '@/payload/fields/richtext';
 
 export const Events: CollectionConfig = {
@@ -73,7 +79,7 @@ export const Events: CollectionConfig = {
     richText('internalDescription', 'Interne Beschreibung der Veranstaltung (nicht öffentlich)'),
   ],
   hooks: {
-    afterChange: [createRevalidatePathHook(eventPathProvider)],
+    afterChange: [createRevalidatePathHook([eventPathProvider, homePagePathProvider, internalHomePagePathProvider])],
     beforeChange: [populatePublishedDate],
   },
   slug: 'events',

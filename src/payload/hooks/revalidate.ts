@@ -3,10 +3,12 @@ import type { CollectionAfterChangeHook, Payload } from 'payload';
 import { Page } from '@/payload-types';
 
 export const createRevalidatePathHook = (
-  pathProvider: (data: Record<string, any>) => string
+  pathProviders: ((data: Record<string, any>) => string)[]
 ): CollectionAfterChangeHook<any> => {
   const revalidatePage: CollectionAfterChangeHook<Page> = ({ doc, req }) => {
-    revalidate({ path: pathProvider(doc), payloadClient: req.payload });
+    for (const pathProvider of pathProviders) {
+      revalidate({ path: pathProvider(doc), payloadClient: req.payload });
+    }
     return doc;
   };
   return revalidatePage;
