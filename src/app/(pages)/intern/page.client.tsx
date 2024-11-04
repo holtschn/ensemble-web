@@ -28,7 +28,7 @@ export const PrivateHomePageClient: React.FC<PrivateHomePageClientProps> = ({ in
   const { setAnimateHeaderOnScroll } = useAnimation();
   useEffect(() => {
     setAnimateHeaderOnScroll(false);
-  }, []);
+  }, [setAnimateHeaderOnScroll]);
 
   return (
     status === 'loggedIn' && (

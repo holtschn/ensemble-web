@@ -22,7 +22,7 @@ export const PublicPageClient: React.FC<PublicPageClientProps> = ({ initialData 
   const { setAnimateHeaderOnScroll } = useAnimation();
   useEffect(() => {
     setAnimateHeaderOnScroll(false);
-  }, []);
+  }, [setAnimateHeaderOnScroll]);
 
   return (
     <div className="flex flex-col mt-16">

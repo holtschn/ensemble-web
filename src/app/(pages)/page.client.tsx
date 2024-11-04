@@ -23,7 +23,7 @@ export const PublicHomePageClient: React.FC<PublicHomePageClientProps> = ({ init
   const { setAnimateHeaderOnScroll } = useAnimation();
   useEffect(() => {
     setAnimateHeaderOnScroll(true);
-  }, []);
+  }, [setAnimateHeaderOnScroll]);
 
   return (
     <div>
