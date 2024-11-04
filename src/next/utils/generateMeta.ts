@@ -35,27 +35,38 @@ const oneOrOtherOrNull = (values: T[]): T | null => {
 };
 
 export const generateMeta = async (pageData?: Page): Promise<Metadata> => {
-  const settings = await getSettings();
+  try {
+    const settings = await getSettings();
 
-  const title = oneOrOtherOrNull([pageData?.meta?.title, settings?.meta?.title, DEFAULT_PAGE_TITLE]);
-  const description = oneOrOtherOrNull([
-    pageData?.meta?.description,
-    settings?.meta?.description,
-    DEFAULT_PAGE_DESCRIPTION,
-  ]);
+    const title = oneOrOtherOrNull([pageData?.meta?.title, settings?.meta?.title, DEFAULT_PAGE_TITLE]);
+    const description = oneOrOtherOrNull([
+      pageData?.meta?.description,
+      settings?.meta?.description,
+      DEFAULT_PAGE_DESCRIPTION,
+    ]);
+    const ogImages = oneOrOtherOrNull([imageFromData(pageData), imageFromData(settings), DEFAULT_OG_IMAGES]);
 
-  const ogImageFromPage = imageFromData(pageData);
-  const ogImageFromGlobal = imageFromData(settings);
-  const ogImages = oneOrOtherOrNull([ogImageFromPage, ogImageFromGlobal, DEFAULT_OG_IMAGES]);
-
-  return {
-    title: title,
-    description: description,
-    openGraph: {
+    return {
       title: title,
       description: description,
-      images: ogImages ? ogImages : undefined,
-      url: pageData?.slug ? `/${pageData?.slug}` : '/',
+      openGraph: {
+        title: title,
+        description: description,
+        images: ogImages ? ogImages : undefined,
+        url: pageData?.slug ? `/${pageData?.slug}` : '/',
+      },
+    };
+  } catch (error) {
+    console.log('Could not generate Metadata', error);
+  }
+  return {
+    title: DEFAULT_PAGE_TITLE,
+    description: DEFAULT_PAGE_DESCRIPTION,
+    openGraph: {
+      title: DEFAULT_PAGE_TITLE,
+      description: DEFAULT_PAGE_DESCRIPTION,
+      images: DEFAULT_OG_IMAGES,
+      url: '/',
     },
   };
 };

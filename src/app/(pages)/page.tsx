@@ -16,10 +16,10 @@ export default async function PublicHomePage() {
 }
 
 async function getHomePageData(): Promise<PublicEvent[]> {
-  const { isEnabled: isDraftMode } = await draftMode();
-  const settings = await getSettings();
-  const payload = await getPayloadHMR({ config });
   try {
+    const { isEnabled: isDraftMode } = await draftMode();
+    const settings = await getSettings();
+    const payload = await getPayloadHMR({ config });
     const data = await payload.find({
       collection: 'events',
       where: {
