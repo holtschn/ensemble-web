@@ -34,7 +34,7 @@ export const pagePathProvider = (data: Record<string, any>) => `/${dataDepthAdap
 export const pageUrlProvider = (data: Record<string, any>) =>
   `${process.env.NEXT_PUBLIC_SERVER_URL}${pagePathProvider(data)}`;
 
-export const eventPathProvider = (data: Record<string, any>) => `/internal/events/${dataDepthAdapter(data)?.slug}`;
+export const eventPathProvider = (data: Record<string, any>) => `/intern/events/${dataDepthAdapter(data)?.slug}`;
 
 export const eventUrlProvider = (data: Record<string, any>) =>
   `${process.env.NEXT_PUBLIC_SERVER_URL}${eventPathProvider(data)}`;
