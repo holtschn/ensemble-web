@@ -1,8 +1,9 @@
 import type { Metadata } from 'next';
 
-import type { Page, Settings } from '@/payload-types';
+import type { Settings } from '@/payload-types';
 
 import { getSettings } from './settings';
+import { PublicPage } from './pages';
 
 export const DEFAULT_PAGE_TITLE = 'R(h)einblech Quintett';
 export const DEFAULT_PAGE_DESCRIPTION =
@@ -13,7 +14,7 @@ export const DEFAULT_OG_IMAGES = [
   },
 ];
 
-const imageFromData = (data?: Page | Settings) => {
+const imageFromData = (data?: PublicPage | Settings) => {
   if (typeof data?.meta?.image === 'object' && data?.meta?.image !== null && 'url' in data?.meta?.image) {
     return [
       {
@@ -34,7 +35,7 @@ const oneOrOtherOrNull = (values: T[]): T | null => {
   return null;
 };
 
-export const generateMeta = async (pageData?: Page): Promise<Metadata> => {
+export const generateMeta = async (pageData?: PublicPage): Promise<Metadata> => {
   try {
     const settings = await getSettings();
 

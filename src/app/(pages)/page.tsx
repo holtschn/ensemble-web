@@ -2,38 +2,23 @@ import React from 'react';
 import { Metadata } from 'next';
 import { draftMode } from 'next/headers';
 
-import { getPayloadHMR } from '@payloadcms/next/utilities';
-
-import config from '@payload-config';
-import { PublicEvent, sanitizeEvents } from '@/next/utils/events';
+import { getSanitizedEventsShowOnHome, PublicEvent } from '@/next/utils/events';
 import { generateMeta } from '@/next/utils/generateMeta';
 import { PublicHomePageClient } from './page.client';
 import { getSettings } from '@/next/utils/settings';
 
 export default async function PublicHomePage() {
-  const data = await getHomePageData();
-  return <PublicHomePageClient initialData={data} />;
+  const data = await getPublicEventsForHome();
+  return <PublicHomePageClient events={data} />;
 }
 
-async function getHomePageData(): Promise<PublicEvent[]> {
+async function getPublicEventsForHome(): Promise<PublicEvent[]> {
   try {
     const { isEnabled: isDraftMode } = await draftMode();
     const settings = await getSettings();
-    const payload = await getPayloadHMR({ config });
-    const data = await payload.find({
-      collection: 'events',
-      where: {
-        showOnHome: { equals: true },
-      },
-      sort: '-eventDate',
-      limit: settings.numberEventsHome ?? 3,
-      draft: isDraftMode,
-    });
-    if (data?.docs && data.docs.length > 0) {
-      return sanitizeEvents(data.docs);
-    }
+    return await getSanitizedEventsShowOnHome(isDraftMode, settings.numberEventsHome ?? 3);
   } catch (error) {
-    console.log('could not get home page data', error);
+    console.log('could not get public events for home', error);
   }
   return [];
 }

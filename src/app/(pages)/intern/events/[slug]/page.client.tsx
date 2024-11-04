@@ -12,16 +12,15 @@ import { EnrichedEvent } from '@/next/utils/events';
 import { useAnimation } from '@/next/animation/context';
 
 type PrivateEventPageClientProps = {
-  initialData: EnrichedEvent;
+  event: EnrichedEvent;
 };
 
-export const PrivateEventPageClient: React.FC<PrivateEventPageClientProps> = ({ initialData }) => {
+export const PrivateEventPageClient: React.FC<PrivateEventPageClientProps> = (initialData) => {
   const { status } = useAuth();
   useRedirectIfLoggedOut();
 
-  const { data } = useLivePreview<EnrichedEvent>({
-    depth: 2,
-    initialData,
+  const { data: event } = useLivePreview<EnrichedEvent>({
+    initialData: initialData.event,
     serverURL: process.env.NEXT_PUBLIC_SERVER_URL!,
   });
 
@@ -34,16 +33,16 @@ export const PrivateEventPageClient: React.FC<PrivateEventPageClientProps> = ({ 
     status === 'loggedIn' && (
       <div className="flex flex-col mt-16">
         <div className="middle-column">
-          <h1>{`Event: ${data.title}`}</h1>
+          <h1>{`Event: ${event.title}`}</h1>
         </div>
         <div className="middle-column">
-          <EventPublicDisplay event={data} index={1} />
+          <EventPublicDisplay event={event} index={1} />
         </div>
         <div className="middle-column">
           <h2>Interne Informationen</h2>
         </div>
         <div className="middle-column">
-          <RichText content={data.internalDescription} />
+          <RichText content={event.internalDescription} />
         </div>
       </div>
     )

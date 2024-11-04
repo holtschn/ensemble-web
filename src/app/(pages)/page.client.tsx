@@ -3,23 +3,15 @@
 import React, { useEffect } from 'react';
 import Image from 'next/image';
 
-import { useLivePreview } from '@payloadcms/live-preview-react';
-
 import { PublicEvent } from '@/next/utils/events';
 import { EventPublicDisplay } from '@/next/components/event';
 import { useAnimation } from '@/next/animation/context';
 
 type PublicHomePageClientProps = {
-  initialData: PublicEvent[];
+  events: PublicEvent[];
 };
 
-export const PublicHomePageClient: React.FC<PublicHomePageClientProps> = ({ initialData }) => {
-  const { data } = useLivePreview<PublicEvent[]>({
-    depth: 2,
-    initialData,
-    serverURL: process.env.NEXT_PUBLIC_SERVER_URL!,
-  });
-
+export const PublicHomePageClient: React.FC<PublicHomePageClientProps> = ({ events }) => {
   const { setAnimateHeaderOnScroll } = useAnimation();
   useEffect(() => {
     setAnimateHeaderOnScroll(true);
@@ -54,9 +46,7 @@ export const PublicHomePageClient: React.FC<PublicHomePageClientProps> = ({ init
         <div className="middle-column">
           <h2 className="text-2xl font-bold my-8 text-center">Termine</h2>
           <div className="space-y-24">
-            {data.map((event, index) => (
-              <EventPublicDisplay key={index} event={event} index={index} />
-            ))}
+            {events?.map((event, index) => <EventPublicDisplay key={index} event={event} index={index} />)}
           </div>
         </div>
       </section>
