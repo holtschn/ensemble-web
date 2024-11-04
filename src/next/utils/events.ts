@@ -88,24 +88,20 @@ export function enrichEvents(events: Event[]): EnrichedEvent[] {
   });
 }
 
-export async function queryEvents(isDraftMode: boolean, tokenValue: string) {
+export async function queryEvents(isDraftMode: boolean, tokenValue?: string) {
   return await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/graphql`, {
     body: JSON.stringify({
-      query: QUERY_GQL_EVENTS(isDraftMode),
+      query: QUERY_GQL_EVENTS(isDraftMode && !!tokenValue),
     }),
     credentials: 'include',
     headers: {
       'Content-Type': 'application/json',
-      ...{ Authorization: `JWT ${tokenValue}` },
+      ...(tokenValue ? { Authorization: `JWT ${tokenValue}` } : {}),
     },
     cache: 'no-store',
     method: 'POST',
   })
     .then((res) => res.json())
-    .then((res) => {
-      console.log('events', res);
-      return res;
-    })
     .then((res) => res?.data?.Events.docs)
     .then((events) => enrichEvents(events))
     .catch((error) => {
@@ -115,7 +111,6 @@ export async function queryEvents(isDraftMode: boolean, tokenValue: string) {
 }
 
 export async function queryEvent(slug: string, isDraftMode: boolean, tokenValue: string) {
-  console.log(QUERY_GQL_EVENT(slug, isDraftMode));
   return await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/graphql`, {
     body: JSON.stringify({
       query: QUERY_GQL_EVENT(slug, isDraftMode),
@@ -129,10 +124,6 @@ export async function queryEvent(slug: string, isDraftMode: boolean, tokenValue:
     method: 'POST',
   })
     .then((res) => res.json())
-    .then((res) => {
-      console.log('events', res);
-      return res;
-    })
     .then((res) => res?.data?.Events.docs)
     .then((events) => enrichEvents(events))
     .then((events) => (events.length > 0 ? events[0] : null))
