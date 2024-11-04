@@ -5,6 +5,7 @@ import { HeaderComponent } from '@/next/components/header';
 import { FooterComponent } from '@/next/components/footer';
 
 import './globals.css';
+import { AnimationProvider } from '@/next/animation/context';
 
 export const metadata = generateMeta();
 
@@ -19,9 +20,11 @@ export default function PagesLayout({ children }: { children: React.ReactNode })
     <html lang="de">
       <body className={defaultFont.className}>
         <div className="min-h-screen flex flex-col">
-          <HeaderComponent />
-          <main className="grow">{children}</main>
-          <FooterComponent />
+          <AnimationProvider>
+            <HeaderComponent />
+            <main className="grow">{children}</main>
+            <FooterComponent />
+          </AnimationProvider>
         </div>
       </body>
     </html>

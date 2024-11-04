@@ -1,11 +1,12 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import { useLivePreview } from '@payloadcms/live-preview-react';
 
 import type { Page } from '@/payload-types';
 import { Blocks } from '@/next/components/blocks';
+import { useAnimation } from '@/next/animation/context';
 
 type PublicPageClientProps = {
   initialData: Page;
@@ -17,6 +18,11 @@ export const PublicPageClient: React.FC<PublicPageClientProps> = ({ initialData 
     initialData,
     serverURL: process.env.NEXT_PUBLIC_SERVER_URL!,
   });
+
+  const { setAnimateHeaderOnScroll } = useAnimation();
+  useEffect(() => {
+    setAnimateHeaderOnScroll(false);
+  }, []);
 
   return (
     <div className="flex flex-col mt-16">
