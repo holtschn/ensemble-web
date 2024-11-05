@@ -5,6 +5,8 @@ import { notFound } from 'next/navigation';
 import { PrivateEventPageClient } from './page.client';
 import { EnrichedEvent, getAllSanitizedEvents, queryEvent } from '@/next/utils/events';
 
+export const dynamic = 'force-dynamic';
+
 interface PrivateEventPageProps {
   params: Promise<{
     slug: string;
