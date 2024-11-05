@@ -1,3 +1,6 @@
+import { getPayloadHMR } from '@payloadcms/next/utilities';
+
+import config from '@payload-config';
 import { Event } from '@/payload-types';
 
 const GQL_EVENT_FIELDS = `
@@ -14,17 +17,7 @@ createdAt
 _status
 `;
 
-export const QUERY_GQL_EVENTS = (draft: boolean) => `
-query Events {
-  Events(limit: 1000, sort: "-eventDate", draft: ${draft}) {
-    docs {
-      ${GQL_EVENT_FIELDS}
-    }
-  }
-}
-`;
-
-export const QUERY_GQL_EVENT = (slug: string, draft: boolean) => `
+const QUERY_GQL_EVENT = (slug: string, draft: boolean) => `
 query Event {
     Events(where: { slug: { equals: "${slug}" }}, draft: ${draft}) {
       docs {
@@ -34,12 +27,9 @@ query Event {
   }
 `;
 
-export type PublicEvent = {
-  title: string;
+export type PublicEvent = Pick<Event, 'title' | 'location' | 'publicDescription' | 'slug'> & {
   eventDateString: string;
   eventTimeString: string;
-  location?: string | null;
-  publicDescription?: string | null;
 };
 
 export type EnrichedEvent = Event & {
@@ -66,48 +56,54 @@ function toTimeString(event: Event): string {
   });
 }
 
-export function sanitizeEvents(events: Event[]): PublicEvent[] {
-  return events.map((event) => {
-    // we move the date formatting here to the server to prevent hydration errors
-    const dateString = toDateString(event);
-    const timeString = toTimeString(event);
-    return {
-      title: event.title,
-      eventDateString: dateString,
-      eventTimeString: timeString,
-      location: event.location,
-      publicDescription: event.publicDescription,
-    };
-  });
+export function sanitizeEvent(event: Event): PublicEvent {
+  // we move the date formatting here to the server to prevent hydration errors
+  const dateString = toDateString(event);
+  const timeString = toTimeString(event);
+  return {
+    title: event.title,
+    eventDateString: dateString,
+    eventTimeString: timeString,
+    location: event.location,
+    publicDescription: event.publicDescription,
+    slug: event.slug,
+  };
 }
 
-export function enrichEvents(events: Event[]): EnrichedEvent[] {
-  return events.map((event) => {
-    const enrichment = { eventDateString: toDateString(event), eventTimeString: toTimeString(event) };
-    return { ...enrichment, ...event };
-  });
+export function enrichEvent(event: Event): EnrichedEvent {
+  const enrichment = { eventDateString: toDateString(event), eventTimeString: toTimeString(event) };
+  return { ...enrichment, ...event };
 }
 
-export async function queryEvents(isDraftMode: boolean, tokenValue?: string) {
-  return await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/graphql`, {
-    body: JSON.stringify({
-      query: QUERY_GQL_EVENTS(isDraftMode && !!tokenValue),
-    }),
-    credentials: 'include',
-    headers: {
-      'Content-Type': 'application/json',
-      ...(tokenValue ? { Authorization: `JWT ${tokenValue}` } : {}),
+export async function getSanitizedEventsShowOnHome(isDraftMode: boolean, limit: number = 1000): Promise<PublicEvent[]> {
+  const payload = await getPayloadHMR({ config });
+  const data = await payload.find({
+    collection: 'events',
+    where: {
+      showOnHome: { equals: true },
     },
-    cache: 'no-store',
-    method: 'POST',
-  })
-    .then((res) => res.json())
-    .then((res) => res?.data?.Events.docs)
-    .then((events) => enrichEvents(events))
-    .catch((error) => {
-      console.log('could not fetch events', error);
-      return [];
-    });
+    sort: '-eventDate',
+    limit: limit,
+    draft: isDraftMode,
+  });
+  if (data?.docs && data.docs.length > 0) {
+    return data.docs.map(sanitizeEvent);
+  }
+  return [];
+}
+
+export async function getAllSanitizedEvents(isDraftMode: boolean, limit: number = 1000): Promise<PublicEvent[]> {
+  const payload = await getPayloadHMR({ config });
+  const data = await payload.find({
+    collection: 'events',
+    sort: '-eventDate',
+    limit: limit,
+    draft: isDraftMode,
+  });
+  if (data?.docs && data.docs.length > 0) {
+    return data.docs.map(sanitizeEvent);
+  }
+  return [];
 }
 
 export async function queryEvent(slug: string, isDraftMode: boolean, tokenValue: string) {
@@ -125,7 +121,7 @@ export async function queryEvent(slug: string, isDraftMode: boolean, tokenValue:
   })
     .then((res) => res.json())
     .then((res) => res?.data?.Events.docs)
-    .then((events) => enrichEvents(events))
+    .then((events) => events.map(enrichEvent))
     .then((events) => (events.length > 0 ? events[0] : null))
     .catch((error) => {
       console.log(`could not fetch event with slug ${slug}`, error);

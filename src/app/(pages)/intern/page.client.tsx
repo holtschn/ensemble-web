@@ -3,27 +3,19 @@
 import React, { useEffect } from 'react';
 import Link from 'next/link';
 
-import { useLivePreview } from '@payloadcms/live-preview-react';
-
 import { useAuth } from '@/next/auth/context';
 import useRedirectIfLoggedOut from '@/next/auth/loggedInHook';
-import { EnrichedEvent } from '@/next/utils/events';
+import { PublicEvent } from '@/next/utils/events';
 import { eventUrlProvider } from '@/payload/utilities/slugs';
 import { useAnimation } from '@/next/animation/context';
 
 type PrivateHomePageClientProps = {
-  initialData: EnrichedEvent[];
+  events: PublicEvent[];
 };
 
-export const PrivateHomePageClient: React.FC<PrivateHomePageClientProps> = ({ initialData }) => {
+export const PrivateHomePageClient: React.FC<PrivateHomePageClientProps> = ({ events }) => {
   const { status } = useAuth();
   useRedirectIfLoggedOut();
-
-  const { data } = useLivePreview<EnrichedEvent[]>({
-    depth: 2,
-    initialData,
-    serverURL: process.env.NEXT_PUBLIC_SERVER_URL!,
-  });
 
   const { setAnimateHeaderOnScroll } = useAnimation();
   useEffect(() => {
@@ -49,7 +41,7 @@ export const PrivateHomePageClient: React.FC<PrivateHomePageClientProps> = ({ in
           <h2>Was bisher geschah</h2>
         </div>
         <div className="middle-column flex flex-col space-y-4">
-          {data.map((event, index) => {
+          {events.map((event, index) => {
             return (
               <div key={`event-display-${index}`} className="flex flex-row w-full justify-between space-x-10">
                 <div className="text-left">
