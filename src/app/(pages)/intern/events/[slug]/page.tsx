@@ -21,10 +21,14 @@ export default async function PrivateEventPage({ params }: PrivateEventPageProps
 }
 
 async function getEvent(slug: string): Promise<EnrichedEvent | null> {
-  const { isEnabled: isDraftMode } = await draftMode();
-  const token = (await cookies()).get(process.env.PAYLOAD_COOKIE_TOKEN_NAME!);
-  if (token && token.value) {
-    return await queryEvent(slug, isDraftMode, token.value);
+  try {
+    const { isEnabled: isDraftMode } = await draftMode();
+    const token = (await cookies()).get(process.env.PAYLOAD_COOKIE_TOKEN_NAME!);
+    if (token && token.value) {
+      return await queryEvent(slug, isDraftMode, token.value);
+    }
+  } catch (error) {
+    console.log(`could not get event for slug '${slug}'`, error);
   }
   return null;
 }

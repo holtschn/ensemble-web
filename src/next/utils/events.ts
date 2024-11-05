@@ -76,40 +76,32 @@ export function enrichEvent(event: Event): EnrichedEvent {
 }
 
 export async function getSanitizedEventsShowOnHome(isDraftMode: boolean, limit: number = 1000): Promise<PublicEvent[]> {
-  try {
-    const payload = await getPayloadHMR({ config });
-    const data = await payload.find({
-      collection: 'events',
-      where: {
-        showOnHome: { equals: true },
-      },
-      sort: '-eventDate',
-      limit: limit,
-      draft: isDraftMode,
-    });
-    if (data?.docs && data.docs.length > 0) {
-      return data.docs.map(sanitizeEvent);
-    }
-  } catch (error) {
-    console.log('could not get public events to show on home', error);
+  const payload = await getPayloadHMR({ config });
+  const data = await payload.find({
+    collection: 'events',
+    where: {
+      showOnHome: { equals: true },
+    },
+    sort: '-eventDate',
+    limit: limit,
+    draft: isDraftMode,
+  });
+  if (data?.docs && data.docs.length > 0) {
+    return data.docs.map(sanitizeEvent);
   }
   return [];
 }
 
 export async function getAllSanitizedEvents(isDraftMode: boolean, limit: number = 1000): Promise<PublicEvent[]> {
-  try {
-    const payload = await getPayloadHMR({ config });
-    const data = await payload.find({
-      collection: 'events',
-      sort: '-eventDate',
-      limit: limit,
-      draft: isDraftMode,
-    });
-    if (data?.docs && data.docs.length > 0) {
-      return data.docs.map(sanitizeEvent);
-    }
-  } catch (error) {
-    console.log('could not get all sanitized events', error);
+  const payload = await getPayloadHMR({ config });
+  const data = await payload.find({
+    collection: 'events',
+    sort: '-eventDate',
+    limit: limit,
+    draft: isDraftMode,
+  });
+  if (data?.docs && data.docs.length > 0) {
+    return data.docs.map(sanitizeEvent);
   }
   return [];
 }
