@@ -24,8 +24,9 @@ const dirname = path.dirname(filename);
 
 const mailTransport = createTransport({
   host: process.env.NODEMAILER_HOST,
-  port: 587,
-  secure: false,
+  port: 465,
+  secure: true,
+  requireTLS: true,
   auth: {
     user: process.env.NODEMAILER_USER,
     pass: process.env.NODEMAILER_PASS,
@@ -65,8 +66,8 @@ export default buildConfig({
   }),
   email: nodemailerAdapter({
     transport: mailTransport,
-    defaultFromAddress: 'admin@blechcontakt.de',
-    defaultFromName: 'BlechConTakt Admin',
+    defaultFromAddress: process.env.NODEMAILER_USER!,
+    defaultFromName: 'R(h)einblech Admin',
   }),
   plugins: [
     vercelBlobStorage({
