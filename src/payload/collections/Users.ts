@@ -10,6 +10,7 @@ export const Users: CollectionConfig = {
     create: admins,
     update: loggedIn,
     delete: admins,
+    unlock: admins,
   },
   admin: {
     defaultColumns: ['name', 'email'],
@@ -23,7 +24,7 @@ export const Users: CollectionConfig = {
       access: {
         read: loggedIn,
         create: admins,
-        update: admins,
+        update: loggedIn,
       },
       type: 'text',
       required: true,
