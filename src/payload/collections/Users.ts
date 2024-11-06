@@ -5,7 +5,7 @@ import { loggedIn } from '@/payload/access/loggedIn';
 
 export const Users: CollectionConfig = {
   access: {
-    admin: admins,
+    admin: loggedIn,
     read: loggedIn,
     create: admins,
     update: loggedIn,
