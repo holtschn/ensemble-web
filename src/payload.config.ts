@@ -22,15 +22,16 @@ import { Footer } from './payload/globals/Footer';
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
 
+const isTestMailTransport = process.env.NODEMAILER_HOST?.includes('ethereal.email');
 const mailTransport = createTransport({
-  host: process.env.NODEMAILER_HOST,
-  port: 465,
-  secure: true,
-  requireTLS: true,
-  auth: {
-    user: process.env.NODEMAILER_USER,
-    pass: process.env.NODEMAILER_PASS,
+  ...{
+    host: process.env.NODEMAILER_HOST,
+    auth: {
+      user: process.env.NODEMAILER_USER,
+      pass: process.env.NODEMAILER_PASS,
+    },
   },
+  ...(isTestMailTransport ? { port: 587, secure: false } : { port: 465, secure: true, requireTLS: true }),
 });
 
 export default buildConfig({
