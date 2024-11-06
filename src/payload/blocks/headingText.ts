@@ -24,6 +24,12 @@ export const HeadingText: Block = {
       required: true,
       type: 'text',
     },
+    {
+      name: 'alignLeft',
+      label: 'Links ausrichten',
+      type: 'checkbox',
+      defaultValue: false,
+    },
   ],
   slug: 'headingText',
   labels: { singular: 'Überschrift', plural: 'Überschriften' },

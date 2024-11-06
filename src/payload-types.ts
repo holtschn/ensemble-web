@@ -132,6 +132,7 @@ export interface Page {
     | {
         htmlTag?: ('h2' | 'h3') | null;
         text: string;
+        alignLeft?: boolean | null;
         id?: string | null;
         blockName?: string | null;
         blockType: 'headingText';
@@ -320,6 +321,7 @@ export interface PagesSelect<T extends boolean = true> {
           | {
               htmlTag?: T;
               text?: T;
+              alignLeft?: T;
               id?: T;
               blockName?: T;
             };
