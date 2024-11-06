@@ -4,6 +4,7 @@ import { generateMeta } from '@/next/utils/generateMeta';
 import { HeaderComponent } from '@/next/components/header';
 import { FooterComponent } from '@/next/components/footer';
 import { SpeedInsights } from '@vercel/speed-insights/next';
+import { Analytics } from '@vercel/analytics/react';
 
 import './globals.css';
 import { AnimationProvider } from '@/next/animation/context';
@@ -28,6 +29,7 @@ export default function PagesLayout({ children }: { children: React.ReactNode })
           </AnimationProvider>
         </div>
         <SpeedInsights />
+        <Analytics />
       </body>
     </html>
   );
