@@ -36,7 +36,7 @@ async function getFooterData(): Promise<FooterComponentProps> {
 export const FooterComponent: React.FC = async () => {
   const footerProps = await getFooterData();
   return (
-    <footer className="flex flex-row w-full my-8 mx-4 middle-column">
+    <footer className="flex flex-row w-full mt-16 mb-8 mx-4 middle-column">
       <div className="text-xs text-left">
         <p>&copy; {new Date().getFullYear()} R(h)einblech</p>
       </div>
