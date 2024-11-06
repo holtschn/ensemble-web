@@ -30,6 +30,7 @@ import { HorizontalRuleFeatureClient as HorizontalRuleFeatureClient_e70f5e05f09f
 import { InlineToolbarFeatureClient as InlineToolbarFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from '@payloadcms/richtext-lexical/client'
 import { default as default_16835e1833db49714539befc8819870a } from 'src/payload/components/icon'
 import { default as default_a9914e17e7020fd529543689d91a6e80 } from 'src/payload/components/logo'
+import { default as default_086002cc2ddc8d56e4d105cb29d668c8 } from 'src/payload/components/adminLinks'
 
 export const importMap = {
   "@payloadcms/plugin-seo/client#OverviewComponent": OverviewComponent_a8a977ebc872c5d5ea7ee689724c0860,
@@ -63,5 +64,6 @@ export const importMap = {
   "@payloadcms/richtext-lexical/client#HorizontalRuleFeatureClient": HorizontalRuleFeatureClient_e70f5e05f09f93e00b997edb1ef0c864,
   "@payloadcms/richtext-lexical/client#InlineToolbarFeatureClient": InlineToolbarFeatureClient_e70f5e05f09f93e00b997edb1ef0c864,
   "./payload/components/icon#default": default_16835e1833db49714539befc8819870a,
-  "./payload/components/logo#default": default_a9914e17e7020fd529543689d91a6e80
+  "./payload/components/logo#default": default_a9914e17e7020fd529543689d91a6e80,
+  "./payload/components/adminLinks#default": default_086002cc2ddc8d56e4d105cb29d668c8
 }

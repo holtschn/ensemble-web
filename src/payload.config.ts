@@ -44,6 +44,7 @@ export default buildConfig({
         Logo: './payload/components/logo',
         Icon: './payload/components/icon',
       },
+      beforeNavLinks: ['./payload/components/adminLinks'],
     },
     avatar: undefined,
   },
