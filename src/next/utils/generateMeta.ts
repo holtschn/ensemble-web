@@ -4,13 +4,14 @@ import type { Settings } from '@/payload-types';
 
 import { getSettings } from './settings';
 import { PublicPage } from './pages';
+import { SERVER_URL } from '@/next/utils/serverUrl';
 
 export const DEFAULT_PAGE_TITLE = 'R(h)einblech Quintett';
 export const DEFAULT_PAGE_DESCRIPTION =
   'Das R(h)einblech Quintett präsentiert sich und seine nächsten Konzerte der staunenden Weltöffentlichkeit.';
 export const DEFAULT_OG_IMAGES = [
   {
-    url: `${process.env.NEXT_PUBLIC_SERVER_URL}/og_image.jpg`,
+    url: `${SERVER_URL}/og_image.jpg`,
   },
 ];
 
@@ -18,7 +19,7 @@ const imageFromData = (data?: PublicPage | Settings) => {
   if (typeof data?.meta?.image === 'object' && data?.meta?.image !== null && 'url' in data?.meta?.image) {
     return [
       {
-        url: `${process.env.NEXT_PUBLIC_SERVER_URL}${data.meta.image.url}`,
+        url: `${SERVER_URL}${data.meta.image.url}`,
       },
     ];
   }

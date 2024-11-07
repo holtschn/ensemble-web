@@ -1,6 +1,7 @@
 import type { CollectionAfterChangeHook, Payload } from 'payload';
 
 import { Page } from '@/payload-types';
+import { SERVER_URL } from '@/next/utils/serverUrl';
 
 export const createRevalidatePathHook = (
   pathProviders: ((data: Record<string, any>) => string)[]
@@ -22,9 +23,7 @@ type RevalidateArgs = {
 export const revalidate = async (args: RevalidateArgs): Promise<void> => {
   const { path, payloadClient } = args;
   try {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_SERVER_URL}/api/revalidate?secret=${process.env.NEXT_REVALIDATION_KEY}&path=${path}`
-    );
+    const res = await fetch(`${SERVER_URL}/api/revalidate?secret=${process.env.NEXT_REVALIDATION_KEY}&path=${path}`);
     if (res.ok) {
       payloadClient.logger.info(`Revalidated path '${path}'`);
     } else {

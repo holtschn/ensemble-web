@@ -2,6 +2,7 @@ import { getPayloadHMR } from '@payloadcms/next/utilities';
 
 import config from '@payload-config';
 import { Event } from '@/payload-types';
+import { SERVER_URL } from '@/next/utils/serverUrl';
 
 const GQL_EVENT_FIELDS = `
 title
@@ -107,7 +108,7 @@ export async function getAllSanitizedEvents(isDraftMode: boolean, limit: number 
 }
 
 export async function queryEvent(slug: string, isDraftMode: boolean, tokenValue: string) {
-  return await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/graphql`, {
+  return await fetch(`${SERVER_URL}/api/graphql`, {
     body: JSON.stringify({
       query: QUERY_GQL_EVENT(slug, isDraftMode),
     }),

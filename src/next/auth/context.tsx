@@ -4,6 +4,8 @@ import React, { createContext, useCallback, useContext, useEffect, useState } fr
 
 import type { User } from '@/payload-types';
 
+import { SERVER_URL } from '@/next/utils/serverUrl';
+
 type Login = (args: { email: string; password: string }) => Promise<User>; // eslint-disable-line no-unused-vars
 type Logout = () => Promise<void>;
 type UseAuth = () => AuthContext;
@@ -23,7 +25,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const login = useCallback<Login>(async (args) => {
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/users/login`, {
+      const res = await fetch(`${SERVER_URL}/api/users/login`, {
         body: JSON.stringify({
           email: args.email,
           password: args.password,
@@ -50,7 +52,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const logout = useCallback<Logout>(async () => {
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/users/logout`, {
+      const res = await fetch(`${SERVER_URL}/api/users/logout`, {
         credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
@@ -72,7 +74,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     const fetchMe = async () => {
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/users/me`, {
+        const res = await fetch(`${SERVER_URL}/api/users/me`, {
           credentials: 'include',
           headers: {
             'Content-Type': 'application/json',

@@ -10,6 +10,7 @@ import useRedirectIfLoggedOut from '@/next/auth/loggedInHook';
 import { EventPublicDisplay } from '@/next/components/event';
 import { EnrichedEvent } from '@/next/utils/events';
 import { useAnimation } from '@/next/animation/context';
+import { SERVER_URL } from '@/next/utils/serverUrl';
 
 type PrivateEventPageClientProps = {
   event: EnrichedEvent;
@@ -21,7 +22,7 @@ export const PrivateEventPageClient: React.FC<PrivateEventPageClientProps> = (in
 
   const { data: event } = useLivePreview<EnrichedEvent>({
     initialData: initialData.event,
-    serverURL: process.env.NEXT_PUBLIC_SERVER_URL!,
+    serverURL: SERVER_URL!,
   });
 
   const { setAnimateHeaderOnScroll } = useAnimation();
