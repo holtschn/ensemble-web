@@ -11,6 +11,34 @@ export const Settings: GlobalConfig = {
   },
   fields: [
     {
+      name: 'fontFamily',
+      label: 'Basisschriftart',
+      defaultValue: 'lexend',
+      options: [
+        {
+          label: 'Lexend',
+          value: 'lexend',
+        },
+        {
+          label: 'Lekton',
+          value: 'lekton',
+        },
+      ],
+      type: 'select',
+    },
+    {
+      name: 'homepageHero',
+      label: 'Großes Bild auf der Homepage',
+      type: 'upload',
+      relationTo: 'media',
+    },
+    {
+      name: 'homepageLogo',
+      label: 'Logo über dem Bild auf der Homepage',
+      type: 'upload',
+      relationTo: 'media',
+    },
+    {
       name: 'numberEventsHome',
       label: 'Anzahl Events auf der Homepage',
       type: 'number',

@@ -406,6 +406,9 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
  */
 export interface Settings {
   id: number;
+  fontFamily?: ('lexend' | 'lekton') | null;
+  homepageHero?: (number | null) | Media;
+  homepageLogo?: (number | null) | Media;
   numberEventsHome?: number | null;
   meta?: {
     title?: string | null;
@@ -421,6 +424,7 @@ export interface Settings {
  */
 export interface Header {
   id: number;
+  headerLogo?: (number | null) | Media;
   navItems?:
     | {
         pages?: (number | null) | Page;
@@ -450,6 +454,9 @@ export interface Footer {
  * via the `definition` "settings_select".
  */
 export interface SettingsSelect<T extends boolean = true> {
+  fontFamily?: T;
+  homepageHero?: T;
+  homepageLogo?: T;
   numberEventsHome?: T;
   meta?:
     | T
@@ -469,6 +476,7 @@ export interface SettingsSelect<T extends boolean = true> {
  * via the `definition` "header_select".
  */
 export interface HeaderSelect<T extends boolean = true> {
+  headerLogo?: T;
   navItems?:
     | T
     | {
