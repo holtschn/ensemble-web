@@ -1,10 +1,10 @@
 import { Lexend } from 'next/font/google';
+import { SpeedInsights } from '@vercel/speed-insights/next';
+import { Analytics } from '@vercel/analytics/react';
 
 import { generateMeta } from '@/next/utils/generateMeta';
 import { HeaderComponent } from '@/next/components/header';
 import { FooterComponent } from '@/next/components/footer';
-import { SpeedInsights } from '@vercel/speed-insights/next';
-import { Analytics } from '@vercel/analytics/react';
 
 import './globals.css';
 import { AnimationProvider } from '@/next/animation/context';
