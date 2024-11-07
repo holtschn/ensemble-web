@@ -7,11 +7,15 @@ import { PublicEvent } from '@/next/utils/events';
 import { EventPublicDisplay } from '@/next/components/event';
 import { useAnimation } from '@/next/animation/context';
 
+import { Media } from '@/payload-types';
+
 type PublicHomePageClientProps = {
   events: PublicEvent[];
+  homepageHero?: Media;
+  homepageLogo?: Media;
 };
 
-export const PublicHomePageClient: React.FC<PublicHomePageClientProps> = ({ events }) => {
+export const PublicHomePageClient: React.FC<PublicHomePageClientProps> = ({ events, homepageHero, homepageLogo }) => {
   const { setAnimateHeaderOnScroll } = useAnimation();
   useEffect(() => {
     setAnimateHeaderOnScroll(true);
@@ -21,8 +25,8 @@ export const PublicHomePageClient: React.FC<PublicHomePageClientProps> = ({ even
     <div>
       <section className="relative w-screen h-dvh">
         <Image
-          src="/homepage_hero.webp"
-          alt="R(h)einblech in Deidesheim"
+          src={homepageHero?.url ?? ''}
+          alt={homepageHero?.alt ?? ''}
           fill={true}
           style={{ objectPosition: '50% 35%', objectFit: 'cover' }}
           priority
@@ -33,8 +37,8 @@ export const PublicHomePageClient: React.FC<PublicHomePageClientProps> = ({ even
         <div className="absolute inset-0 flex items-end justify-center pb-20 w-full">
           <div className="relative w-3/4 h-1/6 md:w-1/2 animate-moveup">
             <Image
-              src="/logo/letters_white.webp"
-              alt="R(h)einblech Piktogramme"
+              src={homepageLogo?.url ?? ''}
+              alt={homepageLogo?.alt ?? ''}
               fill
               style={{ objectFit: 'scale-down' }}
             />
