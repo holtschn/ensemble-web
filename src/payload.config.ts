@@ -69,7 +69,7 @@ export default buildConfig({
   email: nodemailerAdapter({
     transport: mailTransport,
     defaultFromAddress: process.env.NODEMAILER_USER!,
-    defaultFromName: 'R(h)einblech Admin',
+    defaultFromName: process.env.NODEMAILER_SENDER!,
   }),
   plugins: [
     vercelBlobStorage({
