@@ -3,13 +3,15 @@
 import Image from 'next/image';
 import Link from 'next/link';
 
-import { useAnimation } from '../animation/context';
+import { useAnimation } from '@/next/animation/context';
+import { Media } from '@/payload-types';
 
 export type HeaderComponentClientProps = {
+  logo?: Media;
   links: { href: string; label: string }[];
 };
 
-export const HeaderComponentClient: React.FC<HeaderComponentClientProps> = ({ links }) => {
+export const HeaderComponentClient: React.FC<HeaderComponentClientProps> = ({ links, logo }) => {
   const { animateHeaderOnScroll } = useAnimation();
   return (
     <header
@@ -17,7 +19,7 @@ export const HeaderComponentClient: React.FC<HeaderComponentClientProps> = ({ li
     >
       <nav className="flex justify-between items-center py-2 mx-4 middle-column">
         <Link href="/">
-          <Image src="/logo/pictos_black.webp" alt="R(h)einblech Piktogramm" height={30} width={90} />
+          <Image src={logo?.url ?? ''} alt={logo?.alt ?? ''} height={30} width={90} />
         </Link>
         {links && links.length > 0 && (
           <ul className="flex space-x-4">
