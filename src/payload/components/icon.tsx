@@ -3,7 +3,7 @@ import Image from 'next/image';
 const IconComponent: React.FC = () => {
   return (
     <div style={{ width: 28 }}>
-      <Image src="/logo/trumpet_black.webp" alt="R(h)einblech Logo" width={18} height={18} />
+      <Image src={`/${process.env.ASSET_SUBDIRECTORY}/payload_cms_icon.webp`} alt="Icon" width={18} height={18} />
     </div>
   );
 };
