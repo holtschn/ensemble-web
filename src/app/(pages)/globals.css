@@ -73,7 +73,7 @@ body {
     scale: 1;
   }
   100% {
-    translate: 0 -300%;
-    scale: 0.1;
+    translate: 0 -200%;
+    scale: 0.4;
   }
 }

@@ -11,20 +11,25 @@ export const HeaderComponent: React.FC = async () => {
 async function getHeaderData(): Promise<HeaderComponentClientProps> {
   const payload = await getPayloadHMR({ config });
   try {
-    const data = await payload.findGlobal({ slug: 'header' });
+    const headerData = await payload.findGlobal({ slug: 'header' });
 
-    let links = [];
-    if (data && data.navItems && data.navItems.length > 0) {
-      links = data.navItems
+    let links: { href: string; label: string }[] = [];
+    if (headerData && headerData.navItems && headerData.navItems.length > 0) {
+      links = headerData.navItems
         .map((navItem) => {
           if (navItem.pages && typeof navItem.pages === 'object') {
             return { href: `/${navItem.pages.slug}`, label: navItem.pages.navigationLabel };
           }
         })
-        .filter((item) => item !== undefined);
-
-      return { links: links };
+        .filter((item) => item !== undefined && item !== null);
     }
+
+    let logo = undefined;
+    if (headerData && headerData.headerLogo && typeof headerData.headerLogo === 'object') {
+      logo = headerData.headerLogo;
+    }
+
+    return { links, logo };
   } catch (error) {
     console.log('could not get header data', error);
   }

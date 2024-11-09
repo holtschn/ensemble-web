@@ -11,12 +11,18 @@ export const Header: GlobalConfig = {
   },
   fields: [
     {
+      name: 'headerLogo',
+      label: 'Logo im Header aller Seiten',
+      type: 'upload',
+      relationTo: 'media',
+    },
+    {
       name: 'navItems',
       label: 'Einträge in der Hauptnavigation',
       fields: [
         {
           name: 'pages',
-          label: 'Verlinkte Seite',
+          label: 'Im Header verlinkte Seiten',
           relationTo: 'pages',
           type: 'relationship',
         },

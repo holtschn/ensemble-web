@@ -4,21 +4,13 @@ import type { Settings } from '@/payload-types';
 
 import { getSettings } from './settings';
 import { PublicPage } from './pages';
-
-export const DEFAULT_PAGE_TITLE = 'R(h)einblech Quintett';
-export const DEFAULT_PAGE_DESCRIPTION =
-  'Das R(h)einblech Quintett präsentiert sich und seine nächsten Konzerte der staunenden Weltöffentlichkeit.';
-export const DEFAULT_OG_IMAGES = [
-  {
-    url: `${process.env.NEXT_PUBLIC_SERVER_URL}/og_image.jpg`,
-  },
-];
+import { SERVER_URL } from '@/next/utils/serverUrl';
 
 const imageFromData = (data?: PublicPage | Settings) => {
   if (typeof data?.meta?.image === 'object' && data?.meta?.image !== null && 'url' in data?.meta?.image) {
     return [
       {
-        url: `${process.env.NEXT_PUBLIC_SERVER_URL}${data.meta.image.url}`,
+        url: `${SERVER_URL}${data.meta.image.url}`,
       },
     ];
   }
@@ -39,13 +31,9 @@ export const generateMeta = async (pageData?: PublicPage): Promise<Metadata> => 
   try {
     const settings = await getSettings();
 
-    const title = oneOrOtherOrNull([pageData?.meta?.title, settings?.meta?.title, DEFAULT_PAGE_TITLE]);
-    const description = oneOrOtherOrNull([
-      pageData?.meta?.description,
-      settings?.meta?.description,
-      DEFAULT_PAGE_DESCRIPTION,
-    ]);
-    const ogImages = oneOrOtherOrNull([imageFromData(pageData), imageFromData(settings), DEFAULT_OG_IMAGES]);
+    const title = oneOrOtherOrNull([pageData?.meta?.title, settings?.meta?.title]);
+    const description = oneOrOtherOrNull([pageData?.meta?.description, settings?.meta?.description]);
+    const ogImages = oneOrOtherOrNull([imageFromData(pageData), imageFromData(settings)]);
 
     return {
       title: title,
@@ -61,12 +49,12 @@ export const generateMeta = async (pageData?: PublicPage): Promise<Metadata> => 
     console.log('Could not generate Metadata', error);
   }
   return {
-    title: DEFAULT_PAGE_TITLE,
-    description: DEFAULT_PAGE_DESCRIPTION,
+    title: '',
+    description: '',
     openGraph: {
-      title: DEFAULT_PAGE_TITLE,
-      description: DEFAULT_PAGE_DESCRIPTION,
-      images: DEFAULT_OG_IMAGES,
+      title: '',
+      description: '',
+      images: [],
       url: '/',
     },
   };

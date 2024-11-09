@@ -8,6 +8,7 @@ import useRedirectIfLoggedOut from '@/next/auth/loggedInHook';
 import { PublicEvent } from '@/next/utils/events';
 import { eventUrlProvider } from '@/payload/utilities/slugs';
 import { useAnimation } from '@/next/animation/context';
+import { SERVER_URL } from '@/next/utils/serverUrl';
 
 type PrivateHomePageClientProps = {
   events: PublicEvent[];
@@ -33,8 +34,8 @@ export const PrivateHomePageClient: React.FC<PrivateHomePageClientProps> = ({ ev
             <Link href={process.env.NEXT_PUBLIC_NOTENDATENBANK_LINK!} target="_blank">
               Notendatenbank
             </Link>
-            <Link href={`${process.env.NEXT_PUBLIC_SERVER_URL!}/admin/collections/events`}>Events verwalten</Link>
-            <Link href={`${process.env.NEXT_PUBLIC_SERVER_URL!}/admin/collections/users`}>Nutzer verwalten</Link>
+            <Link href={`${SERVER_URL!}/admin/collections/events`}>Events verwalten</Link>
+            <Link href={`${SERVER_URL!}/admin/collections/users`}>Nutzer verwalten</Link>
           </div>
         </div>
         <div className="middle-column">

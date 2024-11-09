@@ -2,6 +2,8 @@ import { draftMode } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { NextRequest } from 'next/server';
 
+import { SERVER_URL } from '@/next/utils/serverUrl';
+
 export async function GET(request: NextRequest): Promise<Response> {
   const searchParams = request.nextUrl?.searchParams;
 
@@ -22,7 +24,7 @@ export async function GET(request: NextRequest): Promise<Response> {
   if (!token) {
     new Response('You are not allowed to preview this page', { status: 403 });
   }
-  const userReq = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/users/me`, {
+  const userReq = await fetch(`${SERVER_URL}/api/users/me`, {
     headers: {
       Authorization: `JWT ${token}`,
     },

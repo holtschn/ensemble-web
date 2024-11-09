@@ -11,6 +11,11 @@ export const Footer: GlobalConfig = {
   },
   fields: [
     {
+      name: 'copyrightOwner',
+      label: 'Anzeigetext für das Copyright',
+      type: 'text',
+    },
+    {
       name: 'navItems',
       label: 'Links im Footer',
       fields: [

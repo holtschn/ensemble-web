@@ -14,6 +14,5 @@ export async function getSettings(): Promise<Settings> {
   return {
     id: -1,
     numberEventsHome: 2,
-    meta: undefined,
   };
 }

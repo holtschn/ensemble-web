@@ -7,6 +7,7 @@ import { useLivePreview } from '@payloadcms/live-preview-react';
 import { PublicPage } from '@/next/utils/pages';
 import { Blocks } from '@/next/components/blocks';
 import { useAnimation } from '@/next/animation/context';
+import { SERVER_URL } from '@/next/utils/serverUrl';
 
 type PublicPageClientProps = {
   page: PublicPage;
@@ -15,7 +16,7 @@ type PublicPageClientProps = {
 export const PublicPageClient: React.FC<PublicPageClientProps> = (initialData) => {
   const { data: page } = useLivePreview<PublicPage>({
     initialData: initialData.page,
-    serverURL: process.env.NEXT_PUBLIC_SERVER_URL!,
+    serverURL: SERVER_URL!,
   });
 
   const { setAnimateHeaderOnScroll } = useAnimation();

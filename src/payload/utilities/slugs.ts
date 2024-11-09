@@ -1,4 +1,5 @@
 import type { FieldHook } from 'payload';
+import { SERVER_URL } from '@/next/utils/serverUrl';
 
 const format = (val: string): string =>
   val
@@ -35,14 +36,12 @@ export const internalHomePagePathProvider = (data: Record<string, any>) => '/int
 
 export const pagePathProvider = (data: Record<string, any>) => `/${dataDepthAdapter(data)?.slug}`;
 
-export const pageUrlProvider = (data: Record<string, any>) =>
-  `${process.env.NEXT_PUBLIC_SERVER_URL}${pagePathProvider(data)}`;
+export const pageUrlProvider = (data: Record<string, any>) => `${SERVER_URL}${pagePathProvider(data)}`;
 
 export const eventPathProvider = (data: Record<string, any>) => `/intern/events/${dataDepthAdapter(data)?.slug}`;
 
-export const eventUrlProvider = (data: Record<string, any>) =>
-  `${process.env.NEXT_PUBLIC_SERVER_URL}${eventPathProvider(data)}`;
+export const eventUrlProvider = (data: Record<string, any>) => `${SERVER_URL}${eventPathProvider(data)}`;
 
 export const createPreviewUrlProvider =
   (urlProvider: (data: Record<string, any>) => string) => (data: Record<string, any>) =>
-    `${process.env.NEXT_PUBLIC_SERVER_URL}/api/preview?url=${encodeURIComponent(urlProvider(data))}&secret=${process.env.NEXT_DRAFT_SECRET}`;
+    `${SERVER_URL}/api/preview?url=${encodeURIComponent(urlProvider(data))}&secret=${process.env.NEXT_DRAFT_SECRET}`;
