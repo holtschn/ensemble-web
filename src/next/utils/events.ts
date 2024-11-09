@@ -115,6 +115,7 @@ export async function queryEvent(slug: string, isDraftMode: boolean, tokenValue:
     credentials: 'include',
     headers: {
       'Content-Type': 'application/json',
+      'x-vercel-protection-bypass': process.env.VERCEL_AUTOMATION_BYPASS_SECRET ?? '',
       ...{ Authorization: `JWT ${tokenValue}` },
     },
     cache: 'no-store',
