@@ -35,7 +35,7 @@ export const PublicHomePageClient: React.FC<PublicHomePageClientProps> = ({ even
 
       <section className="bg-transparent">
         <div className="absolute inset-0 flex items-end justify-center pb-20 w-full">
-          <div className="relative w-3/4 h-1/6 md:w-1/2 animate-moveup">
+          <div className="relative w-5/6 h-1/6 md:w-2/3 animate-moveup">
             <Image
               src={homepageLogo?.url ?? ''}
               alt={homepageLogo?.alt ?? ''}
