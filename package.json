@@ -1,7 +1,7 @@
 {
-  "name": "rheinblech-web",
+  "name": "ensemble-web",
   "version": "0.0.0",
-  "description": "Brass Quintett Rheinblech's Website with React, Next.js and Payload)",
+  "description": "Website for a Brass Ensemble with React, Next.js and Payload)",
   "license": "MIT",
   "type": "module",
   "scripts": {
