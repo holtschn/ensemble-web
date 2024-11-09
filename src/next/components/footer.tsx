@@ -6,6 +6,7 @@ import config from '@payload-config';
 import { getPayloadHMR } from '@payloadcms/next/utilities';
 
 type FooterComponentProps = {
+  copyrightOwner?: string;
   links: { href: string; label: string }[];
 };
 
@@ -14,7 +15,7 @@ async function getFooterData(): Promise<FooterComponentProps> {
   try {
     const data = await payload.findGlobal({ slug: 'footer' });
 
-    let links = [];
+    let links: { href: string; label: string }[] = [];
     if (data && data.navItems && data.navItems.length > 0) {
       links = data.navItems
         .map((navItem) => {
@@ -23,10 +24,10 @@ async function getFooterData(): Promise<FooterComponentProps> {
           }
         })
         .filter((item) => item !== undefined);
-
-      links.push({ href: '/intern', label: 'intern' });
-      return { links: links };
     }
+    links.push({ href: '/intern', label: 'intern' });
+
+    return { links: links, copyrightOwner: data.copyrightOwner ?? '' };
   } catch (error) {
     console.log('could not get footer data', error);
   }
@@ -38,7 +39,9 @@ export const FooterComponent: React.FC = async () => {
   return (
     <footer className="flex flex-row w-full mt-16 mb-8 mx-4 middle-column">
       <div className="text-xs text-left">
-        <p>&copy; {new Date().getFullYear()} R(h)einblech</p>
+        <p>
+          &copy; {new Date().getFullYear()} {footerProps.copyrightOwner ?? ''}
+        </p>
       </div>
       <div className="grow" />
       {footerProps.links && footerProps.links.length > 0 && (
