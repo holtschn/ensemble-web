@@ -440,6 +440,7 @@ export interface Header {
  */
 export interface Footer {
   id: number;
+  copyrightOwner?: string | null;
   navItems?:
     | {
         pages?: (number | null) | Page;
@@ -492,6 +493,7 @@ export interface HeaderSelect<T extends boolean = true> {
  * via the `definition` "footer_select".
  */
 export interface FooterSelect<T extends boolean = true> {
+  copyrightOwner?: T;
   navItems?:
     | T
     | {
