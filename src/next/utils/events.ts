@@ -107,6 +107,9 @@ export async function getAllSanitizedEvents(isDraftMode: boolean, limit: number 
 }
 
 export async function queryEvent(slug: string, isDraftMode: boolean, tokenValue: string) {
+  console.log(`querying event with slug ${slug} on ${process.env.NEXT_PUBLIC_SERVER_URL}`);
+  console.log(`querying with token ${tokenValue} in draft mode ${isDraftMode}`);
+  console.log(`query ${QUERY_GQL_EVENT(slug, isDraftMode)}`);
   return await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/graphql`, {
     body: JSON.stringify({
       query: QUERY_GQL_EVENT(slug, isDraftMode),
