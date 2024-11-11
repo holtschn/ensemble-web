@@ -109,7 +109,7 @@ export async function getSanitizedEventsShowOnHome(isDraftMode: boolean, limit: 
     where: {
       showOnHome: { equals: true },
     },
-    sort: '-eventDate',
+    sort: '-concertDate',
     limit: limit,
     draft: isDraftMode,
   });
@@ -123,7 +123,7 @@ export async function getAllSanitizedEvents(isDraftMode: boolean, limit: number 
   const payload = await getPayloadHMR({ config });
   const data = await payload.find({
     collection: 'events',
-    sort: '-eventDate',
+    sort: '-concertDate',
     limit: limit,
     draft: isDraftMode,
   });
@@ -137,7 +137,7 @@ export async function getAllEnrichedEvents(isDraftMode: boolean, limit: number =
   const payload = await getPayloadHMR({ config });
   const data = await payload.find({
     collection: 'events',
-    sort: '-eventDate',
+    sort: '-concertDate',
     limit: limit,
     draft: isDraftMode,
   });
