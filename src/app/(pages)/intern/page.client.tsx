@@ -5,13 +5,13 @@ import Link from 'next/link';
 
 import { useAuth } from '@/next/auth/context';
 import useRedirectIfLoggedOut from '@/next/auth/loggedInHook';
-import { PublicEvent } from '@/next/utils/events';
+import { EnrichedEvent } from '@/next/utils/events';
 import { eventUrlProvider } from '@/payload/utilities/slugs';
 import { useAnimation } from '@/next/animation/context';
 import { SERVER_URL } from '@/next/utils/serverUrl';
 
 type PrivateHomePageClientProps = {
-  events: PublicEvent[];
+  events: EnrichedEvent[];
 };
 
 export const PrivateHomePageClient: React.FC<PrivateHomePageClientProps> = ({ events }) => {
@@ -30,7 +30,7 @@ export const PrivateHomePageClient: React.FC<PrivateHomePageClientProps> = ({ ev
           <h1>Interner Bereich</h1>
         </div>
         <div className="middle-column">
-          <div className="middle-column flex flex-col space-y-4">
+          <div className="flex flex-col space-y-4">
             <Link href={process.env.NEXT_PUBLIC_NOTENDATENBANK_LINK!} target="_blank">
               Notendatenbank
             </Link>
@@ -46,14 +46,16 @@ export const PrivateHomePageClient: React.FC<PrivateHomePageClientProps> = ({ ev
             return (
               <div key={`event-display-${index}`} className="flex flex-row w-full justify-between space-x-10">
                 <div className="text-left">
-                  <p className="">{event.eventDateString}</p>
+                  <p className="">
+                    {event.eventStartDateString} – <br /> {event.eventEndDateString}
+                  </p>
                 </div>
                 <div className="text-right">
                   <p>
                     <Link href={eventUrlProvider(event)} className="font-bold">
                       {event.title}
                     </Link>
-                    , {event.location}
+                    , <br /> {event.concertLocation}
                   </p>
                 </div>
               </div>
