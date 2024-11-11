@@ -165,12 +165,8 @@ export interface Page {
 export interface Event {
   id: number;
   title: string;
-  eventDate: string;
-  location?: string | null;
-  showOnHome?: boolean | null;
-  slug: string;
-  publishedDate?: string | null;
-  publicDescription?: string | null;
+  eventStart?: string | null;
+  eventEnd?: string | null;
   internalDescription?: {
     root: {
       type: string;
@@ -186,6 +182,13 @@ export interface Event {
     };
     [k: string]: unknown;
   } | null;
+  concertTitle?: string | null;
+  concertDate?: string | null;
+  concertLocation?: string | null;
+  concertDescription?: string | null;
+  showOnHome?: boolean | null;
+  slug: string;
+  publishedDate?: string | null;
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
@@ -357,13 +360,16 @@ export interface PagesSelect<T extends boolean = true> {
  */
 export interface EventsSelect<T extends boolean = true> {
   title?: T;
-  eventDate?: T;
-  location?: T;
+  eventStart?: T;
+  eventEnd?: T;
+  internalDescription?: T;
+  concertTitle?: T;
+  concertDate?: T;
+  concertLocation?: T;
+  concertDescription?: T;
   showOnHome?: T;
   slug?: T;
   publishedDate?: T;
-  publicDescription?: T;
-  internalDescription?: T;
   updatedAt?: T;
   createdAt?: T;
   _status?: T;

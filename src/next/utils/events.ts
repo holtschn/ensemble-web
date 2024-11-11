@@ -8,11 +8,14 @@ const GQL_EVENT_FIELDS = `
 title
 slug
 publishedDate
-eventDate
-location
-showOnHome
-publicDescription
+eventStart
+eventEnd
 internalDescription
+concertTitle
+concertDate
+concertLocation
+concertDescription
+showOnHome
 updatedAt
 createdAt
 _status
@@ -28,51 +31,74 @@ query Event {
   }
 `;
 
-export type PublicEvent = Pick<Event, 'title' | 'location' | 'publicDescription' | 'slug'> & {
-  eventDateString: string;
-  eventTimeString: string;
+export type PublicEvent = Pick<Event, 'concertTitle' | 'concertLocation' | 'concertDescription' | 'slug'> & {
+  concertDateString: string;
+  concertTimeString: string;
 };
 
 export type EnrichedEvent = Event & {
-  eventDateString: string;
-  eventTimeString: string;
+  concertDateString: string;
+  concertTimeString: string;
+  eventStartDateString: string;
+  eventEndDateString: string;
 };
 
-function toDateString(event: Event): string {
-  return new Date(event.eventDate).toLocaleDateString('de-DE', {
-    weekday: 'long',
-    year: 'numeric',
-    month: 'numeric',
-    day: 'numeric',
-    timeZone: 'Europe/Berlin',
-  });
+function toLongDateString(dbString?: string | null): string {
+  return dbString
+    ? new Date(dbString).toLocaleDateString('de-DE', {
+        weekday: 'long',
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        timeZone: 'Europe/Berlin',
+      })
+    : '';
 }
 
-function toTimeString(event: Event): string {
-  return new Date(event.eventDate).toLocaleTimeString('de-DE', {
-    hour: 'numeric',
-    minute: 'numeric',
-    hourCycle: 'h24',
-    timeZone: 'Europe/Berlin',
-  });
+function toShortDateString(dbString?: string | null): string {
+  return dbString
+    ? new Date(dbString).toLocaleDateString('de-DE', {
+        weekday: 'short',
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        timeZone: 'Europe/Berlin',
+      })
+    : '';
+}
+
+function toTimeString(dbString?: string | null): string {
+  return dbString
+    ? new Date(dbString).toLocaleTimeString('de-DE', {
+        hour: '2-digit',
+        minute: '2-digit',
+        hourCycle: 'h24',
+        timeZone: 'Europe/Berlin',
+      })
+    : '';
 }
 
 export function sanitizeEvent(event: Event): PublicEvent {
   // we move the date formatting here to the server to prevent hydration errors
-  const dateString = toDateString(event);
-  const timeString = toTimeString(event);
+  const concertDateString = toLongDateString(event.concertDate);
+  const concertTimeString = toTimeString(event.concertDate);
   return {
-    title: event.title,
-    eventDateString: dateString,
-    eventTimeString: timeString,
-    location: event.location,
-    publicDescription: event.publicDescription,
+    concertTitle: event.concertTitle,
+    concertDateString: concertDateString,
+    concertTimeString: concertTimeString,
+    concertLocation: event.concertLocation,
+    concertDescription: event.concertDescription,
     slug: event.slug,
   };
 }
 
 export function enrichEvent(event: Event): EnrichedEvent {
-  const enrichment = { eventDateString: toDateString(event), eventTimeString: toTimeString(event) };
+  const enrichment = {
+    concertDateString: toLongDateString(event.concertDate),
+    concertTimeString: toTimeString(event.concertDate),
+    eventStartDateString: toShortDateString(event.eventStart),
+    eventEndDateString: toShortDateString(event.eventEnd),
+  };
   return { ...enrichment, ...event };
 }
 
@@ -103,6 +129,20 @@ export async function getAllSanitizedEvents(isDraftMode: boolean, limit: number 
   });
   if (data?.docs && data.docs.length > 0) {
     return data.docs.map(sanitizeEvent);
+  }
+  return [];
+}
+
+export async function getAllEnrichedEvents(isDraftMode: boolean, limit: number = 1000): Promise<EnrichedEvent[]> {
+  const payload = await getPayloadHMR({ config });
+  const data = await payload.find({
+    collection: 'events',
+    sort: '-eventDate',
+    limit: limit,
+    draft: isDraftMode,
+  });
+  if (data?.docs && data.docs.length > 0) {
+    return data.docs.map(enrichEvent);
   }
   return [];
 }

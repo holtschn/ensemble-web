@@ -1,10 +1,10 @@
 type EventPublicDisplayProps = {
   event: {
-    title: string;
-    eventDateString: string;
-    eventTimeString: string;
-    location?: string | null;
-    publicDescription?: string | null;
+    concertTitle?: string | null;
+    concertDateString: string;
+    concertTimeString: string;
+    concertLocation?: string | null;
+    concertDescription?: string | null;
   };
   index: number;
 };
@@ -14,15 +14,15 @@ export const EventPublicDisplay: React.FC<EventPublicDisplayProps> = ({ event, i
     <div key={`event-public-display-${index}`} className="flex flex-col w-full">
       <div className="flex justify-between space-x-10 items-start mb-4">
         <div className="text-left">
-          <p className="text-lg font-bold">{event.title}</p>
-          <p>{event.location}</p>
+          <p className="text-lg font-bold">{event.concertTitle}</p>
+          <p>{event.concertLocation}</p>
         </div>
         <div className="text-right">
-          <p className="font-semibold">{event.eventDateString}</p>
-          <p className="font-semibold">{event.eventTimeString} Uhr</p>
+          <p className="font-semibold">{event.concertDateString}</p>
+          <p className="font-semibold">{event.concertTimeString} Uhr</p>
         </div>
       </div>
-      <p className="text-gray-700">{event.publicDescription}</p>
+      <p className="text-gray-700">{event.concertDescription}</p>
     </div>
   );
 };

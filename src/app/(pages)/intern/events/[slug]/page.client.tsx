@@ -37,10 +37,23 @@ export const PrivateEventPageClient: React.FC<PrivateEventPageClientProps> = (in
           <h1>{`Event: ${event.title}`}</h1>
         </div>
         <div className="middle-column">
+          <h2>Ankündigung auf öffentlichen Seiten (z.B. Homepage)</h2>
+        </div>
+        <div className="middle-column">
           <EventPublicDisplay event={event} index={1} />
         </div>
         <div className="middle-column">
           <h2>Interne Informationen</h2>
+        </div>
+        <div className="middle-column flex justify-between space-x-10 items-start mb-4">
+          <div className="text-left">
+            <p>Anreise:</p>
+            <p className="text-lg font-semibold">{event.eventStartDateString}</p>
+          </div>
+          <div className="text-right">
+            <p>Abreise:</p>
+            <p className="text-lg font-semibold">{event.eventEndDateString}</p>
+          </div>
         </div>
         <div className="middle-column">
           <RichText content={event.internalDescription} />
