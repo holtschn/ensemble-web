@@ -43,41 +43,6 @@ export type EnrichedEvent = Event & {
   eventEndDateString: string;
 };
 
-function toLongDateString(dbString?: string | null): string {
-  return dbString
-    ? new Date(dbString).toLocaleDateString('de-DE', {
-        weekday: 'long',
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit',
-        timeZone: 'Europe/Berlin',
-      })
-    : '';
-}
-
-function toShortDateString(dbString?: string | null): string {
-  return dbString
-    ? new Date(dbString).toLocaleDateString('de-DE', {
-        weekday: 'short',
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit',
-        timeZone: 'Europe/Berlin',
-      })
-    : '';
-}
-
-function toTimeString(dbString?: string | null): string {
-  return dbString
-    ? new Date(dbString).toLocaleTimeString('de-DE', {
-        hour: '2-digit',
-        minute: '2-digit',
-        hourCycle: 'h24',
-        timeZone: 'Europe/Berlin',
-      })
-    : '';
-}
-
 export function sanitizeEvent(event: Event): PublicEvent {
   // we move the date formatting here to the server to prevent hydration errors
   const concertDateString = toLongDateString(event.concertDate);
