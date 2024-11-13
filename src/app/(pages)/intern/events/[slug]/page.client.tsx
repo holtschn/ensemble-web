@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React from 'react';
 
 import { useLivePreview } from '@payloadcms/live-preview-react';
 
@@ -9,7 +9,6 @@ import { useAuth } from '@/next/auth/context';
 import useRedirectIfLoggedOut from '@/next/auth/loggedInHook';
 import { EventPublicDisplay } from '@/next/components/event';
 import { EnrichedEvent } from '@/next/utils/events';
-import { useAnimation } from '@/next/animation/context';
 import { SERVER_URL } from '@/next/utils/serverUrl';
 
 type PrivateEventPageClientProps = {
@@ -24,11 +23,6 @@ export const PrivateEventPageClient: React.FC<PrivateEventPageClientProps> = (in
     initialData: initialData.event,
     serverURL: SERVER_URL!,
   });
-
-  const { setAnimateHeaderOnScroll } = useAnimation();
-  useEffect(() => {
-    setAnimateHeaderOnScroll(false);
-  }, [setAnimateHeaderOnScroll]);
 
   return (
     status === 'loggedIn' && (

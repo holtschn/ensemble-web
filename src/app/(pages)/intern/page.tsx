@@ -3,10 +3,15 @@ import { draftMode } from 'next/headers';
 
 import { EnrichedEvent, getAllEnrichedEvents } from '@/next/utils/events';
 import { PrivateHomePageClient } from './page.client';
+import { AnimateHeaderWrapper } from '@/next/animation/wrapper';
 
 export default async function PrivateHomePage() {
   const events = await getEventsList();
-  return <PrivateHomePageClient events={events} />;
+  return (
+    <AnimateHeaderWrapper animateHeader={false}>
+      <PrivateHomePageClient events={events} />
+    </AnimateHeaderWrapper>
+  );
 }
 
 async function getEventsList(): Promise<EnrichedEvent[]> {
