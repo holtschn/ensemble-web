@@ -6,12 +6,14 @@ import { ParagraphTextBlock } from './paragraphText';
 import { HeadingTextBlock } from './headingText';
 import { ImageTextBlock } from './imageText';
 import { PlayerProfileBlock } from './playerProfile';
+import { PlayersListBlock } from './playersList';
 
 const blockComponents = {
   paragraphText: ParagraphTextBlock,
   imageText: ImageTextBlock,
   headingText: HeadingTextBlock,
   playerProfile: PlayerProfileBlock,
+  playersList: PlayersListBlock,
 };
 
 type BlocksProps = {
