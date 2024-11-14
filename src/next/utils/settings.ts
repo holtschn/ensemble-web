@@ -1,3 +1,5 @@
+import 'server-only';
+
 import type { Settings } from '@/payload-types';
 
 import config from '@payload-config';

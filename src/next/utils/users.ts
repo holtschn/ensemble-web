@@ -1,8 +1,10 @@
+import 'server-only';
+
 import { getPayloadHMR } from '@payloadcms/next/utilities';
 
 import config from '@payload-config';
 import { User } from '@/payload-types';
-import { instrumentsToSortNumber, toInstrumentsString } from '@/next/utils/strings';
+import { toInstrumentsString } from '@/next/utils/strings';
 
 export type PublicUser = Pick<User, 'name' | 'instruments'> & {
   instrumentsString: string;

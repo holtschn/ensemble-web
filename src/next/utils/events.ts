@@ -1,11 +1,13 @@
+import 'server-only';
+
 import { getPayloadHMR } from '@payloadcms/next/utilities';
 
 import config from '@payload-config';
 import { Event } from '@/payload-types';
 import { SERVER_URL } from '@/next/utils/serverUrl';
+import { toLongDateString, toShortDateString, toTimeString } from '@/next/utils/strings';
 
-const GQL_EVENT_FIELDS = `
-title
+const GQL_EVENT_FIELDS = `title
 slug
 publishedDate
 eventStart
