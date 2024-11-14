@@ -1,11 +1,8 @@
-'use client';
-
-import React, { useEffect } from 'react';
+import React from 'react';
 import Image from 'next/image';
 
 import { PublicEvent } from '@/next/utils/events';
 import { EventPublicDisplay } from '@/next/components/event';
-import { useAnimation } from '@/next/animation/context';
 
 import { Media } from '@/payload-types';
 
@@ -16,11 +13,6 @@ type PublicHomePageClientProps = {
 };
 
 export const PublicHomePageClient: React.FC<PublicHomePageClientProps> = ({ events, homepageHero, homepageLogo }) => {
-  const { setAnimateHeaderOnScroll } = useAnimation();
-  useEffect(() => {
-    setAnimateHeaderOnScroll(true);
-  }, [setAnimateHeaderOnScroll]);
-
   return (
     <div>
       <section className="relative w-screen h-dvh">

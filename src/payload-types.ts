@@ -75,7 +75,11 @@ export interface UserAuthOperations {
 export interface User {
   id: number;
   name: string;
-  instrument?: ('trp' | 'hrn' | 'trb' | 'eup' | 'tub' | 'org' | 'pcs')[] | null;
+  phone?: string | null;
+  street?: string | null;
+  location?: string | null;
+  instruments?: ('trp' | 'flg' | 'hrn' | 'trb' | 'eup' | 'tub' | 'org' | 'pcs' | 'dir')[] | null;
+  image?: (number | null) | Media;
   roles?: ('admin' | 'user')[] | null;
   updatedAt: string;
   createdAt: string;
@@ -144,6 +148,13 @@ export interface Page {
         id?: string | null;
         blockName?: string | null;
         blockType: 'playerProfile';
+      }
+    | {
+        heading: string;
+        players: (number | User)[];
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'playersList';
       }
   )[];
   navigationLabel: string;
@@ -264,7 +275,11 @@ export interface PayloadMigration {
  */
 export interface UsersSelect<T extends boolean = true> {
   name?: T;
-  instrument?: T;
+  phone?: T;
+  street?: T;
+  location?: T;
+  instruments?: T;
+  image?: T;
   roles?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -334,6 +349,14 @@ export interface PagesSelect<T extends boolean = true> {
               name?: T;
               instruments?: T;
               image?: T;
+              id?: T;
+              blockName?: T;
+            };
+        playersList?:
+          | T
+          | {
+              heading?: T;
+              players?: T;
               id?: T;
               blockName?: T;
             };

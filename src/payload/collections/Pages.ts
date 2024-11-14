@@ -12,6 +12,7 @@ import { ImageText } from '@/payload/blocks/imageText';
 import { ParagraphText } from '@/payload/blocks/paragraphText';
 import { HeadingText } from '@/payload/blocks/headingText';
 import { PlayerProfile } from '@/payload/blocks/playerProfile';
+import { PlayersList } from '@/payload/blocks/playersList';
 
 export const Pages: CollectionConfig = {
   access: {
@@ -38,7 +39,7 @@ export const Pages: CollectionConfig = {
     {
       name: 'content',
       label: 'Inhalt der Seite',
-      blocks: [ParagraphText, ImageText, HeadingText, PlayerProfile],
+      blocks: [ParagraphText, ImageText, HeadingText, PlayerProfile, PlayersList],
       required: true,
       type: 'blocks',
     },

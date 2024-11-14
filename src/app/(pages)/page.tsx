@@ -7,10 +7,15 @@ import { generateMeta } from '@/next/utils/generateMeta';
 import { getSettings } from '@/next/utils/settings';
 
 import { PublicHomePageClient } from './page.client';
+import { AnimateHeaderWrapper } from '@/next/animation/wrapper';
 
 export default async function PublicHomePage() {
   const { events, homepageHero, homepageLogo } = await getPublicEventsForHome();
-  return <PublicHomePageClient events={events} homepageHero={homepageHero} homepageLogo={homepageLogo} />;
+  return (
+    <AnimateHeaderWrapper animateHeader={true}>
+      <PublicHomePageClient events={events} homepageHero={homepageHero} homepageLogo={homepageLogo} />
+    </AnimateHeaderWrapper>
+  );
 }
 
 async function getPublicEventsForHome() {

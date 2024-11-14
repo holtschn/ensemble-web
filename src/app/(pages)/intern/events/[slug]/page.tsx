@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 
 import { PrivateEventPageClient } from './page.client';
 import { EnrichedEvent, getAllSanitizedEvents, queryEvent } from '@/next/utils/events';
+import { AnimateHeaderWrapper } from '@/next/animation/wrapper';
 
 export const dynamic = 'force-dynamic';
 
@@ -19,7 +20,11 @@ export default async function PrivateEventPage({ params }: PrivateEventPageProps
   if (!event) {
     return notFound();
   }
-  return <PrivateEventPageClient event={event} />;
+  return (
+    <AnimateHeaderWrapper animateHeader={false}>
+      <PrivateEventPageClient event={event} />
+    </AnimateHeaderWrapper>
+  );
 }
 
 async function getEvent(slug: string): Promise<EnrichedEvent | null> {

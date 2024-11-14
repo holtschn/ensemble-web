@@ -2,11 +2,12 @@ import type { CollectionConfig } from 'payload';
 
 import { admins } from '@/payload/access/admins';
 import { loggedIn } from '@/payload/access/loggedIn';
+import { publishedOr } from '@/payload/access/publishedOr';
 
 export const Users: CollectionConfig = {
   access: {
     admin: loggedIn,
-    read: loggedIn,
+    read: publishedOr(loggedIn),
     create: admins,
     update: loggedIn,
     delete: admins,
@@ -21,35 +22,64 @@ export const Users: CollectionConfig = {
     {
       name: 'name',
       label: 'Vor- und Nachname',
+      type: 'text',
+      required: true,
+      access: {
+        read: publishedOr(loggedIn),
+        create: admins,
+        update: loggedIn,
+      },
+    },
+    {
+      name: 'phone',
+      label: 'Telefonnummer',
+      type: 'text',
       access: {
         read: loggedIn,
         create: admins,
         update: loggedIn,
       },
-      type: 'text',
-      required: true,
     },
     {
-      name: 'instrument',
-      label: 'Instrumente',
+      name: 'street',
+      label: 'Straße und Hausnummer',
+      type: 'text',
       access: {
         read: loggedIn,
-        create: loggedIn,
+        create: admins,
         update: loggedIn,
       },
+    },
+    {
+      name: 'location',
+      label: 'Postleitzahl und Ort',
+      type: 'text',
+      access: {
+        read: loggedIn,
+        create: admins,
+        update: loggedIn,
+      },
+    },
+    {
+      name: 'instruments',
+      label: 'Instrumente',
       type: 'select',
       hasMany: true,
       options: [
         {
-          label: 'Trumpet',
+          label: 'Trompete',
           value: 'trp',
+        },
+        {
+          label: 'Flügelhorn',
+          value: 'flg',
         },
         {
           label: 'Horn',
           value: 'hrn',
         },
         {
-          label: 'Trombone',
+          label: 'Posaune',
           value: 'trb',
         },
         {
@@ -61,14 +91,34 @@ export const Users: CollectionConfig = {
           value: 'tub',
         },
         {
-          label: 'Organ',
+          label: 'Orgel',
           value: 'org',
         },
         {
-          label: 'Percussion',
+          label: 'Schlagwerk',
           value: 'pcs',
         },
+        {
+          label: 'Dirigat',
+          value: 'dir',
+        },
       ],
+      access: {
+        read: publishedOr(loggedIn),
+        create: admins,
+        update: loggedIn,
+      },
+    },
+    {
+      name: 'image',
+      label: 'Bild',
+      type: 'upload',
+      relationTo: 'media',
+      access: {
+        read: publishedOr(loggedIn),
+        create: admins,
+        update: loggedIn,
+      },
     },
     {
       name: 'roles',

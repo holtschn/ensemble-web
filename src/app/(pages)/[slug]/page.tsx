@@ -6,6 +6,7 @@ import { notFound } from 'next/navigation';
 import { generateMeta } from '@/next/utils/generateMeta';
 import { PublicPageClient } from './page.client';
 import { getAllPublicPages, getPublicPage } from '@/next/utils/pages';
+import { AnimateHeaderWrapper } from '@/next/animation/wrapper';
 
 interface PublicPageProps {
   params: Promise<{
@@ -20,7 +21,11 @@ export default async function PublicPage({ params }: PublicPageProps) {
   if (!data) {
     return notFound();
   }
-  return <PublicPageClient page={data} />;
+  return (
+    <AnimateHeaderWrapper animateHeader={false}>
+      <PublicPageClient page={data} />;
+    </AnimateHeaderWrapper>
+  );
 }
 
 export async function generateStaticParams() {

@@ -1,3 +1,5 @@
+import 'server-only';
+
 import type { Metadata } from 'next';
 
 import type { Settings } from '@/payload-types';
