@@ -10,7 +10,7 @@ export const AnimateHeaderWrapper: React.FC<{ children: React.ReactNode; animate
   const { setAnimateHeaderOnScroll } = useAnimation();
   useEffect(() => {
     setAnimateHeaderOnScroll(animateHeader);
-  }, [setAnimateHeaderOnScroll]);
+  }, [setAnimateHeaderOnScroll, animateHeader]);
 
   return <div>{children}</div>;
 };

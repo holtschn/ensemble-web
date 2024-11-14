@@ -13,7 +13,7 @@ type PublicPageClientProps = {
 };
 
 export const PublicPageClient: React.FC<PublicPageClientProps> = (initialData) => {
-  const { data: page } = useLivePreview<PublicPage>({
+  const { data } = useLivePreview<PublicPage>({
     initialData: initialData.page,
     serverURL: SERVER_URL!,
   });
@@ -21,9 +21,9 @@ export const PublicPageClient: React.FC<PublicPageClientProps> = (initialData) =
   return (
     <div className="flex flex-col mt-16">
       <div className="middle-column">
-        <h1>{`${page.title}`}</h1>
+        <h1>{`${data.title}`}</h1>
       </div>
-      <Blocks blocks={page.content} />
+      <Blocks blocks={data.content} />
     </div>
   );
 };
