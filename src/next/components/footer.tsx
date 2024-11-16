@@ -1,9 +1,5 @@
-import Image from 'next/image';
 import Link from 'next/link';
-
-import config from '@payload-config';
-
-import { getPayloadHMR } from '@payloadcms/next/utilities';
+import { getPayloadHMR } from '@/next/utils/payload';
 
 type FooterComponentProps = {
   copyrightOwner?: string;
@@ -11,7 +7,7 @@ type FooterComponentProps = {
 };
 
 async function getFooterData(): Promise<FooterComponentProps> {
-  const payload = await getPayloadHMR({ config });
+  const payload = await getPayloadHMR();
   try {
     const data = await payload.findGlobal({ slug: 'footer' });
 

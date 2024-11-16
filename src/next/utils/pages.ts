@@ -1,8 +1,7 @@
 import 'server-only';
 
-import { getPayloadHMR } from '@payloadcms/next/utilities';
+import { getPayloadHMR } from '@/next/utils/payload';
 
-import config from '@payload-config';
 import { Page } from '@/payload-types';
 
 export type PublicPage = Pick<Page, 'title' | 'content' | 'slug' | 'meta'>;
@@ -17,7 +16,7 @@ export function sanitizePage(page: Page): PublicPage {
 }
 
 export async function getPublicPage(slug: string, isDraftMode: boolean): Promise<PublicPage | null> {
-  const payload = await getPayloadHMR({ config });
+  const payload = await getPayloadHMR();
   const data = await payload.find({
     collection: 'pages',
     where: {
@@ -32,7 +31,7 @@ export async function getPublicPage(slug: string, isDraftMode: boolean): Promise
 }
 
 export async function getAllPublicPages(isDraftMode: boolean, limit: number = 1000): Promise<PublicPage[]> {
-  const payload = await getPayloadHMR({ config });
+  const payload = await getPayloadHMR();
   return payload
     .find({
       collection: 'pages',

@@ -1,12 +1,10 @@
 import 'server-only';
 
+import { getPayloadHMR } from '@/next/utils/payload';
 import type { Settings } from '@/payload-types';
 
-import config from '@payload-config';
-import { getPayloadHMR } from '@payloadcms/next/utilities';
-
 export async function getSettings(): Promise<Settings> {
-  const payload = await getPayloadHMR({ config });
+  const payload = await getPayloadHMR();
   try {
     const data = await payload.findGlobal({ slug: 'settings' });
     return data;
