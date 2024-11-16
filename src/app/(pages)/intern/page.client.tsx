@@ -30,6 +30,7 @@ export const PrivateHomePageClient: React.FC<PrivateHomePageClientProps> = ({ ev
             </Link>
             <Link href={`${SERVER_URL!}/admin/collections/events`}>Events verwalten</Link>
             <Link href={`${SERVER_URL!}/admin/collections/users`}>Nutzer verwalten</Link>
+            <Link href="/intern/players">Adressliste</Link>
           </div>
         </div>
         <div className="middle-column">
