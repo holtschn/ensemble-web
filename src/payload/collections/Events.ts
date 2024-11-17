@@ -63,6 +63,7 @@ export const Events: CollectionConfig = {
               name: 'eventEnd',
               label: 'Ende des Events',
               type: 'date',
+              required: true,
               admin: {
                 date: {
                   pickerAppearance: 'default',

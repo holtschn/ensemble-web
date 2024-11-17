@@ -103,7 +103,7 @@ export async function getAllEnrichedEvents(isDraftMode: boolean, limit: number =
   const payload = await getPayloadHMR();
   const data = await payload.find({
     collection: 'events',
-    sort: '-concertDate',
+    sort: '-endDate',
     limit: limit,
     draft: isDraftMode,
   });
