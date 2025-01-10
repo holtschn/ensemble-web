@@ -15,6 +15,7 @@ import Link from 'next/link';
 import React, { JSX, Fragment, CSSProperties } from 'react';
 
 import escapeHTML from 'escape-html';
+import { SerializedTableCellNode, SerializedTableNode } from '@lexical/table';
 
 // Text node formatting
 // from https://github.com/facebook/lexical/blob/c2ceee223f46543d12c574e62155e619f9a18a5d/packages/lexical/src/LexicalConstants.ts
@@ -87,6 +88,15 @@ export function serializeLexical({ nodes }: Props): JSX.Element {
           }
           case 'link': {
             return handleLinkNode(_node as SerializedLinkNode, index, serializedChildren);
+          }
+          case 'table': {
+            return handleTableNode(_node as SerializedTableNode, index, serializedChildren);
+          }
+          case 'tablerow': {
+            return <tr key={index}>{serializedChildren}</tr>;
+          }
+          case 'tablecell': {
+            return handleTableCellNode(_node as SerializedTableCellNode, index, serializedChildren);
           }
           default: {
             console.log('Unhandled node:', _node?.type);
@@ -236,5 +246,22 @@ const handleLinkNode = (node: SerializedLinkNode, index: number, serializedChild
     <span key={index} style={handleNodeFormat(node.format, node.indent)}>
       Internal link coming soon
     </span>
+  );
+};
+
+const handleTableNode = (node: SerializedTableNode, index: number, serializedChildren: JSX.Element | null) => {
+  return (
+    <table key={index}>
+      <colgroup>{node.colWidths?.map((colWidth, index) => <col key={index} width={colWidth} />)}</colgroup>
+      <tbody>{serializedChildren}</tbody>
+    </table>
+  );
+};
+
+const handleTableCellNode = (node: SerializedTableCellNode, index: number, serializedChildren: JSX.Element | null) => {
+  return (
+    <td key={index} className={`px-2 border border-gray-200 border-solid ${node.headerState > 0 ? 'bg-gray-100' : ''}`}>
+      {serializedChildren}
+    </td>
   );
 };
