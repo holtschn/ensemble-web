@@ -177,7 +177,7 @@ export interface Event {
   id: number;
   title: string;
   eventStart?: string | null;
-  eventEnd?: string | null;
+  eventEnd: string;
   internalDescription?: {
     root: {
       type: string;

@@ -31,6 +31,7 @@ export const Events: CollectionConfig = {
     preview: createPreviewUrlProvider(eventUrlProvider),
     useAsTitle: 'title',
   },
+  defaultSort: '-eventEnd',
   fields: [
     {
       tabs: [
