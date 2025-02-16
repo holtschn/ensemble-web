@@ -45,7 +45,8 @@
     "nodemailer": "^6.10.0",
     "react": "19.0.0",
     "react-dom": "19.0.0",
-    "payload": "^3.23.0"
+    "payload": "^3.23.0",
+    "sharp": "^0.33.5"
   },
   "devDependencies": {
     "@types/escape-html": "^1.0.4",
