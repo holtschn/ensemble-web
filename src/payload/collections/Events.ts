@@ -54,7 +54,6 @@ export const Events: CollectionConfig = {
                   displayFormat: 'EEEE dd.MM.yyyy',
                   overrides: {
                     locale: 'de-DE',
-                    timeZone: 'Europe/Berlin',
                   },
                 },
               },
@@ -69,7 +68,6 @@ export const Events: CollectionConfig = {
                   displayFormat: 'EEEE dd.MM.yyyy',
                   overrides: {
                     locale: 'de-DE',
-                    timeZone: 'Europe/Berlin',
                   },
                 },
               },
@@ -98,7 +96,6 @@ export const Events: CollectionConfig = {
                   timeFormat: 'HH:mm',
                   overrides: {
                     locale: 'de-DE',
-                    timeZone: 'Europe/Berlin',
                   },
                 },
               },

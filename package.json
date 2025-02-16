@@ -43,9 +43,9 @@
     "@vercel/analytics": "^1.5.0",
     "next": "^15.1.7",
     "nodemailer": "^6.10.0",
-    "payload": "beta",
     "react": "19.0.0",
-    "react-dom": "19.0.0"
+    "react-dom": "19.0.0",
+    "payload": "^3.23.0"
   },
   "devDependencies": {
     "@types/escape-html": "^1.0.4",

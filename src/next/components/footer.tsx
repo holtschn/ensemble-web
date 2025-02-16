@@ -1,9 +1,7 @@
-import Image from 'next/image';
 import Link from 'next/link';
 
 import config from '@payload-config';
-
-import { getPayloadHMR } from '@payloadcms/next/utilities';
+import { getPayload } from 'payload';
 
 type FooterComponentProps = {
   copyrightOwner?: string;
@@ -11,7 +9,7 @@ type FooterComponentProps = {
 };
 
 async function getFooterData(): Promise<FooterComponentProps> {
-  const payload = await getPayloadHMR({ config });
+  const payload = await getPayload({ config });
   try {
     const data = await payload.findGlobal({ slug: 'footer' });
 
@@ -37,22 +35,24 @@ async function getFooterData(): Promise<FooterComponentProps> {
 export const FooterComponent: React.FC = async () => {
   const footerProps = await getFooterData();
   return (
-    <footer className="flex flex-row w-full mt-16 mb-8 mx-4 middle-column">
-      <div className="text-xs text-left">
-        <p>
-          &copy; {new Date().getFullYear()} {footerProps.copyrightOwner ?? ''}
-        </p>
+    <footer className="middle-column">
+      <div className="flex flex-row w-full mt-16 mb-8">
+        <div className="text-xs text-left">
+          <p>
+            &copy; {new Date().getFullYear()} {footerProps.copyrightOwner ?? ''}
+          </p>
+        </div>
+        <div className="grow" />
+        {footerProps.links && footerProps.links.length > 0 && (
+          <ul className="flex space-x-4 text-xs">
+            {footerProps.links.map((link, index) => (
+              <li key={index}>
+                <Link href={link.href}>{link.label}</Link>
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
-      <div className="grow" />
-      {footerProps.links && footerProps.links.length > 0 && (
-        <ul className="flex space-x-4 text-xs">
-          {footerProps.links.map((link, index) => (
-            <li key={index}>
-              <Link href={link.href}>{link.label}</Link>
-            </li>
-          ))}
-        </ul>
-      )}
     </footer>
   );
 };
