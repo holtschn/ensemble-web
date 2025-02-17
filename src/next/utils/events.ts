@@ -1,7 +1,8 @@
 import 'server-only';
 
-import { getPayloadHMR } from '@/next/utils/payload';
+import { getPayload } from 'payload';
 
+import config from '@payload-config';
 import { Event } from '@/payload-types';
 import { SERVER_URL } from '@/next/utils/serverUrl';
 import { toLongDateString, toShortDateString, toTimeString } from '@/next/utils/strings';
@@ -69,7 +70,8 @@ export function enrichEvent(event: Event): EnrichedEvent {
 }
 
 export async function getSanitizedEventsShowOnHome(isDraftMode: boolean, limit: number = 1000): Promise<PublicEvent[]> {
-  const payload = await getPayloadHMR();
+  const payload = await getPayload({ config });
+
   const data = await payload.find({
     collection: 'events',
     where: {
@@ -86,7 +88,8 @@ export async function getSanitizedEventsShowOnHome(isDraftMode: boolean, limit: 
 }
 
 export async function getAllSanitizedEvents(isDraftMode: boolean, limit: number = 1000): Promise<PublicEvent[]> {
-  const payload = await getPayloadHMR();
+  const payload = await getPayload({ config });
+
   const data = await payload.find({
     collection: 'events',
     sort: '-concertDate',
@@ -100,7 +103,8 @@ export async function getAllSanitizedEvents(isDraftMode: boolean, limit: number 
 }
 
 export async function getAllEnrichedEvents(isDraftMode: boolean, limit: number = 1000): Promise<EnrichedEvent[]> {
-  const payload = await getPayloadHMR();
+  const payload = await getPayload({ config });
+
   const data = await payload.find({
     collection: 'events',
     sort: '-eventEnd',

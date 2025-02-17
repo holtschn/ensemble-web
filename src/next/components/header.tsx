@@ -1,5 +1,6 @@
-import { getPayloadHMR } from '@/next/utils/payload';
+import { getPayload } from 'payload';
 
+import config from '@payload-config';
 import { HeaderComponentClient, HeaderComponentClientProps } from './header.client';
 
 export const HeaderComponent: React.FC = async () => {
@@ -8,7 +9,8 @@ export const HeaderComponent: React.FC = async () => {
 };
 
 async function getHeaderData(): Promise<HeaderComponentClientProps> {
-  const payload = await getPayloadHMR();
+  const payload = await getPayload({ config });
+
   try {
     const headerData = await payload.findGlobal({ slug: 'header' });
 

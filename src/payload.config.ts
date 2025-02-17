@@ -48,7 +48,6 @@ export default buildConfig({
       },
       beforeNavLinks: ['./payload/components/adminLinks'],
     },
-    avatar: undefined,
   },
   globals: [Settings, Header, Footer],
   collections: [Users, Media, Pages, Events],

@@ -1,7 +1,8 @@
 import 'server-only';
 
-import { getPayloadHMR } from '@/next/utils/payload';
+import { getPayload } from 'payload';
 
+import config from '@payload-config';
 import { User } from '@/payload-types';
 import { toInstrumentsString } from '@/next/utils/strings';
 
@@ -50,7 +51,8 @@ export function enrichUser(user: User): EnrichedUser {
 }
 
 export async function getAllEnrichedUsers(isDraftMode: boolean, limit: number = 1000): Promise<EnrichedUser[]> {
-  const payload = await getPayloadHMR();
+  const payload = await getPayload({ config });
+
   const data = await payload.find({
     collection: 'users',
     sort: 'name',
