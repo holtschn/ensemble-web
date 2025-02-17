@@ -12,7 +12,7 @@ export const PlayerProfileBlock: React.FC<PlayerProfileBlockProps> = ({ name, in
     <section className="middle-column">
       <div className="flex flex-row w-full space-x-6">
         {hasImage && (
-          <div className="w-1/3 flex-shrink-0 pt-1">
+          <div className="w-1/3 shrink-0 pt-1">
             <div className="relative aspect-square">
               <Image src={image.url!} alt={image.alt!} fill className="object-cover" />
             </div>
