@@ -1,0 +1,57 @@
+/**
+ * TypeScript type definitions for Notendatenbank (NDB) data structures
+ */
+
+import { GENRE_CHOICES, DIFFICULTY_CHOICES } from '../api/constants';
+
+// Basic choice types
+export type GenreChoice = (typeof GENRE_CHOICES)[number];
+export type DifficultyChoice = (typeof DIFFICULTY_CHOICES)[number];
+
+// File-related types
+export interface ScoreFileItem {
+  key: string;
+  filename: string;
+  scoreId: string;
+}
+
+// Core score data structure
+export interface ScoreItem {
+  id: number;
+  title: string;
+  composer: string;
+  arranger: string | null;
+  genre: string | null;
+  publisher: string | null;
+  difficulty: string | null;
+  instrumentation: string;
+  withOrgan: boolean;
+  withPercussion: boolean;
+  comment: string | null;
+  moderation: string | null;
+  parts: ScoreFileItem | null;
+  fullScore: ScoreFileItem | null;
+  audioMidi: ScoreFileItem | null;
+  audioMp3: ScoreFileItem | null;
+}
+
+// Extended score item with upload keys for create/update operations
+export interface ScoreItemWithUploads extends ScoreItem {
+  partsUploadS3Key: string | null;
+  fullScoreUploadS3Key: string | null;
+  audioMidiUploadS3Key: string | null;
+  audioMp3UploadS3Key: string | null;
+}
+
+// Sample/demo data structures
+export interface ScoreSampleItem {
+  url: string;
+  title: string;
+  image: string;
+}
+
+export interface ScoreSampleCollection {
+  scoreId: number;
+  spotify: ScoreSampleItem[];
+  youtube: ScoreSampleItem[];
+}
