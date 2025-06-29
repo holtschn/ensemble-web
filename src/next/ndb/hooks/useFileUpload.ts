@@ -3,10 +3,9 @@
  */
 
 import { useState, useCallback } from 'react';
-import { uploadFile as apiUploadFile, downloadFile as apiDownloadFile } from '../api/upload';
-import { ScoreFileItem } from '../types';
-import { ApiError } from '../api/client';
-import { ERROR_MESSAGES } from '../api/constants';
+import { uploadFile as apiUploadFile, downloadFile as apiDownloadFile } from '@/next/ndb/api/actions';
+import { ScoreFileItem } from '@/next/ndb/types';
+import { ERROR_MESSAGES } from '@/next/ndb/constants';
 
 interface UseFileUploadState {
   isLoading: boolean;
@@ -38,9 +37,7 @@ export const useFileUpload = (): UseFileUploadState => {
       setIsLoading(false);
       return fileKey;
     } catch (e) {
-      if (e instanceof ApiError) {
-        setError(e.message);
-      } else if (e instanceof Error) {
+      if (e instanceof Error) {
         setError(e.message);
       } else {
         setError(ERROR_MESSAGES.UPLOAD_ERROR);
@@ -78,9 +75,7 @@ export const useFileUpload = (): UseFileUploadState => {
 
       setIsLoading(false);
     } catch (e) {
-      if (e instanceof ApiError) {
-        setError(e.message);
-      } else if (e instanceof Error) {
+      if (e instanceof Error) {
         setError(e.message);
       } else {
         setError(ERROR_MESSAGES.DOWNLOAD_ERROR);

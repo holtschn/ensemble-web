@@ -2,20 +2,6 @@
  * Configuration constants for Notendatenbank (NDB) integration
  */
 
-// API Configuration
-export const NDB_API_BASE_URL = process.env.NDB_API_URL || '';
-export const NDB_USERNAME = process.env.NDB_USERNAME || '';
-export const NDB_PASSWORD = process.env.NDB_PASSWORD || '';
-
-// Authentication Headers
-export const createAuthHeaders = () => {
-  const credentials = btoa(`${NDB_USERNAME}:${NDB_PASSWORD}`);
-  return {
-    'Content-Type': 'application/json',
-    'Authorization': `Basic ${credentials}`,
-  };
-};
-
 // Music Constants
 export const GENRE_CHOICES = [
   '',
@@ -28,17 +14,10 @@ export const GENRE_CHOICES = [
   'Pop',
   'Renaissance',
   'Romantik',
-  'Volksmusik'
+  'Volksmusik',
 ] as const;
 
-export const DIFFICULTY_CHOICES = [
-  '',
-  'sehr leicht',
-  'leicht',
-  'mittel',
-  'schwer',
-  'sehr schwer'
-] as const;
+export const DIFFICULTY_CHOICES = ['', 'sehr leicht', 'leicht', 'mittel', 'schwer', 'sehr schwer'] as const;
 
 // Default Instrumentation (Brass quintet: 4 trumpets, 2 horns, 4 trombones, 0 euphoniums, 1 tuba)
 export const DEFAULT_INSTRUMENTATION = '42401';
@@ -47,13 +26,15 @@ export const DEFAULT_INSTRUMENTATION = '42401';
 export const SUPPORTED_AUDIO_FORMATS = ['mp3', 'midi'] as const;
 export const SUPPORTED_SCORE_FORMATS = ['pdf'] as const;
 
+// The base URL (proxy within this project) for the NDB API
+export const API_BASE = '/api/ndb/';
+
 // API Endpoints
 export const API_ENDPOINTS = {
   SCORES: 'scores',
   SCORE: 'score',
   DOWNLOAD: 'download',
   UPLOAD: 'upload',
-  UPLOAD_ANALYSIS: 'upload',
   SCORE_SAMPLES: 'scoreinfo/samples',
   PLAYERS: 'players',
 } as const;
@@ -106,7 +87,7 @@ export const QUICK_FILTERS = {
   QUINTET: { field: 'instNumTotal', operator: '=', value: 5, label: 'Quintett' },
 } as const;
 
-export type GenreChoice = typeof GENRE_CHOICES[number];
-export type DifficultyChoice = typeof DIFFICULTY_CHOICES[number];
-export type AudioFormat = typeof SUPPORTED_AUDIO_FORMATS[number];
-export type ScoreFormat = typeof SUPPORTED_SCORE_FORMATS[number];
+export type GenreChoice = (typeof GENRE_CHOICES)[number];
+export type DifficultyChoice = (typeof DIFFICULTY_CHOICES)[number];
+export type AudioFormat = (typeof SUPPORTED_AUDIO_FORMATS)[number];
+export type ScoreFormat = (typeof SUPPORTED_SCORE_FORMATS)[number];

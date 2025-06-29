@@ -3,10 +3,9 @@
  */
 
 import { useState, useEffect, useCallback } from 'react';
-import { fetchAllScores, fetchScoreAnalysis } from '../api/scores';
-import { ScoreItem, ScoreItemWithUploads } from '../types';
-import { ApiError } from '../api/client';
-import { ERROR_MESSAGES } from '../api/constants';
+import { fetchAllScores, fetchScoreAnalysis } from '@/next/ndb/api/actions';
+import { ScoreItem, ScoreItemWithUploads } from '@/next/ndb/types';
+import { ERROR_MESSAGES } from '@/next/ndb/constants';
 
 interface UseScoresState {
   scores: ScoreItem[];
@@ -41,11 +40,7 @@ export const useScores = (): UseScoresState => {
       const data = await fetchAllScores();
       setScores(data);
     } catch (e) {
-      if (e instanceof ApiError) {
-        setError(e.message);
-      } else {
-        setError(ERROR_MESSAGES.LOAD_ERROR);
-      }
+      setError(ERROR_MESSAGES.LOAD_ERROR);
       setScores([]); // Clear scores on error
     } finally {
       setIsLoading(false);
@@ -127,11 +122,7 @@ export const useScoreAnalysis = (s3FileKey: string | null): UseScoreAnalysisStat
         const data = await fetchScoreAnalysis(s3FileKey);
         setAnalysisResult(data);
       } catch (e) {
-        if (e instanceof ApiError) {
-          setError(e.message);
-        } else {
-          setError(ERROR_MESSAGES.LOAD_ERROR);
-        }
+        setError(ERROR_MESSAGES.LOAD_ERROR);
         setAnalysisResult(null);
       } finally {
         setIsLoading(false);

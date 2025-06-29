@@ -1,55 +1,48 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { ndbApi, ApiError } from '@/next/ndb/api/client';
+import { apiClient } from '@/next/ndb/api/proxy';
 
 /**
  * Generic handler for all NDB API requests.
- * This acts as a server-side proxy to the actual NDB backend, leveraging Next.js server-side capabilities for fetch caching and security.
+ * This acts as a server-side proxy to the actual NDB backend, leveraging Next.js server-side
+ * capabilities for fetch caching and security.
  *
  * @param request - The incoming Next.js request object.
  * @param context - The context object containing route parameters.
  * @returns A Next.js response object.
  */
-async function handler(request: NextRequest, context: { params: { endpoint: string[] } }) {
+async function handler(request: NextRequest, context: { params: Promise<{ endpoint: string[] }> }) {
   // Reconstruct the endpoint path from the dynamic route segments.
   // e.g., /api/intern/ndb/api/scores/1 -> ['scores', '1'] -> 'scores/1'
-  const { endpoint } = context.params;
+  const { endpoint } = await context.params;
   const endpointPath = endpoint.join('/');
 
   try {
-    let responseData;
-
-    // Handle different HTTP methods by calling the corresponding server-side API client method.
     switch (request.method) {
       case 'GET':
-        responseData = await ndbApi.get(endpointPath);
-        break;
+        const getResponse = await apiClient(endpointPath, { method: 'GET' });
+        return NextResponse.json(getResponse);
 
       case 'POST':
         const postBody = await request.json();
-        responseData = await ndbApi.post(endpointPath, postBody);
-        break;
+        const postRepsonse = await apiClient(endpointPath, {
+          method: 'POST',
+          body: JSON.stringify(postBody),
+        });
+        return NextResponse.json(postRepsonse);
 
       case 'PUT':
         const putBody = await request.json();
-        responseData = await ndbApi.put(endpointPath, putBody);
-        break;
+        const putResponse = await apiClient(endpointPath, {
+          method: 'PUT',
+          body: JSON.stringify(putBody),
+        });
+        return NextResponse.json(putResponse);
 
-      // Respond with an error for unsupported methods.
       default:
         return NextResponse.json({ error: `Method ${request.method} Not Allowed` }, { status: 405 });
     }
-
-    // Return the successful response from the NDB backend.
-    return NextResponse.json(responseData);
   } catch (error) {
     console.error(`[NDB API Proxy Error] Endpoint: ${endpointPath}`, error);
-
-    // Handle custom API errors thrown by the client.
-    if (error instanceof ApiError) {
-      return NextResponse.json({ error: error.message, code: error.code }, { status: error.status || 500 });
-    }
-
-    // Handle unexpected errors.
     return NextResponse.json({ error: 'An unexpected internal server error occurred.' }, { status: 500 });
   }
 }
