@@ -3,10 +3,9 @@
  */
 
 import { useState, useEffect, useCallback } from 'react';
-import { fetchScoreSamples as apiFetchScoreSamples } from '../api/scores';
-import { ScoreSampleCollection } from '../types';
-import { ApiError } from '../api/client';
-import { ERROR_MESSAGES } from '../api/constants';
+import { fetchScoreSamples as apiFetchScoreSamples } from '@/next/ndb/api/actions';
+import { ScoreSampleCollection } from '@/next/ndb/types';
+import { ERROR_MESSAGES } from '@/next/ndb/constants';
 
 interface UseScoreSamplesState {
   allSamples: ScoreSampleCollection[];
@@ -34,11 +33,7 @@ export const useScoreSamples = (): UseScoreSamplesState => {
       const data = await apiFetchScoreSamples();
       setAllSamples(data);
     } catch (e) {
-      if (e instanceof ApiError) {
-        setError(e.message);
-      } else {
-        setError(ERROR_MESSAGES.LOAD_ERROR);
-      }
+      setError(ERROR_MESSAGES.LOAD_ERROR);
       setAllSamples([]); // Clear samples on error
     } finally {
       setIsLoading(false);

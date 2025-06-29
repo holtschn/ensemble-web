@@ -2,7 +2,7 @@
  * TypeScript type definitions for Notendatenbank (NDB) data structures
  */
 
-import { GENRE_CHOICES, DIFFICULTY_CHOICES } from '../api/constants';
+import { GENRE_CHOICES, DIFFICULTY_CHOICES } from './constants';
 
 // Basic choice types
 export type GenreChoice = (typeof GENRE_CHOICES)[number];
@@ -54,4 +54,19 @@ export interface ScoreSampleCollection {
   scoreId: number;
   spotify: ScoreSampleItem[];
   youtube: ScoreSampleItem[];
+}
+
+/**
+ * Custom error class for API-related errors.
+ * This allows for structured error handling with status codes.
+ */
+export class ApiError extends Error {
+  constructor(
+    public message: string,
+    public status?: number,
+    public code?: string
+  ) {
+    super(message);
+    this.name = 'ApiError';
+  }
 }
