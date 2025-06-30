@@ -1,5 +1,8 @@
+import { revalidateTag } from 'next/cache';
 import { NextRequest, NextResponse } from 'next/server';
 import { apiClient } from '@/next/ndb/api/proxy';
+
+const globalTag = 'caching-tag';
 
 /**
  * Generic handler for all NDB API requests.
@@ -19,7 +22,11 @@ async function handler(request: NextRequest, context: { params: Promise<{ endpoi
   try {
     switch (request.method) {
       case 'GET':
-        const getResponse = await apiClient(endpointPath, { method: 'GET' });
+        const getResponse = await apiClient(endpointPath, {
+          method: 'GET',
+          cache: 'force-cache',
+          next: { tags: [globalTag] },
+        });
         return NextResponse.json(getResponse);
 
       case 'POST':
@@ -28,6 +35,7 @@ async function handler(request: NextRequest, context: { params: Promise<{ endpoi
           method: 'POST',
           body: JSON.stringify(postBody),
         });
+        revalidateTag(globalTag);
         return NextResponse.json(postRepsonse);
 
       case 'PUT':
@@ -36,6 +44,7 @@ async function handler(request: NextRequest, context: { params: Promise<{ endpoi
           method: 'PUT',
           body: JSON.stringify(putBody),
         });
+        revalidateTag(globalTag);
         return NextResponse.json(putResponse);
 
       default:
