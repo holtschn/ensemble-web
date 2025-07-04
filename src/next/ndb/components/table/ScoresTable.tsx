@@ -46,13 +46,13 @@ const ScoresTable: React.FC<ScoresTableProps> = ({
     },
     {
       key: 'withOrgan',
-      header: 'mit Orgel',
+      header: 'Orgel',
       render: (value) => (value ? '✓' : '-'),
       className: 'text-center hidden xl:table-cell',
     },
     {
       key: 'withPercussion',
-      header: 'mit Schlagzeug',
+      header: 'Schlagzeug',
       render: (value) => (value ? '✓' : '-'),
       className: 'text-center hidden xl:table-cell',
     },
@@ -61,40 +61,34 @@ const ScoresTable: React.FC<ScoresTableProps> = ({
       header: 'Aktionen',
       render: (_, row) => (
         <div className="flex space-x-2 justify-end">
-          {row.parts && onDownloadParts && (
-            <Button
-              size="sm"
-              variant="outline"
-              onClick={(e) => {
-                e.stopPropagation();
-                onDownloadParts(row);
-              }}
-            >
-              Stimmen
-            </Button>
-          )}
-          {row.fullScore && onDownloadFullScore && (
-            <Button
-              size="sm"
-              variant="outline"
-              onClick={(e) => {
-                e.stopPropagation();
-                onDownloadFullScore(row);
-              }}
-            >
-              Partitur
-            </Button>
-          )}
-          <Button
-            size="sm"
-            variant="ghost"
-            onClick={(e) => {
-              e.stopPropagation();
-              onScoreClick?.(row);
-            }}
-          >
-            Details
-          </Button>
+          <div className="w-24 text-center">
+            {row.parts && onDownloadParts && (
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onDownloadParts(row);
+                }}
+              >
+                Stimmen
+              </Button>
+            )}
+          </div>
+          <div className="w-24 text-center">
+            {row.fullScore && onDownloadFullScore && (
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onDownloadFullScore(row);
+                }}
+              >
+                Partitur
+              </Button>
+            )}
+          </div>
         </div>
       ),
       className: 'text-right',
@@ -102,51 +96,44 @@ const ScoresTable: React.FC<ScoresTableProps> = ({
   ];
 
   const MobileCard = ({ score }: { score: ScoreItem }) => (
-    <div className="border-b px-4 py-4 cursor-pointer" onClick={() => onScoreClick?.(score)}>
+    <div className="border-b px-2 py-2 cursor-pointer" onClick={() => onScoreClick?.(score)}>
       <div className="flex justify-between items-start">
         <div>
-          <div className="font-medium text-lg">{score.title}</div>
+          <div className="font-medium text-sm">{score.title}</div>
           <div className="text-sm text-gray-600">{score.composer}</div>
         </div>
-        <div className="text-right text-sm font-mono pl-2 flex-shrink-0">
-          {toInstrumentation(score.instrumentation).renderValue()}
+        <div>
+          <div className="flex space-x-2 my-1 justify-end">
+            <div className="w-24 text-center">
+              {score.parts && onDownloadParts && (
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onDownloadParts(score);
+                  }}
+                >
+                  Stimmen
+                </Button>
+              )}
+            </div>
+            <div className="w-24 text-center">
+              {score.fullScore && onDownloadFullScore && (
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onDownloadFullScore(score);
+                  }}
+                >
+                  Partitur
+                </Button>
+              )}
+            </div>
+          </div>
         </div>
-      </div>
-      <div className="flex space-x-2 mt-4 justify-end">
-        {score.parts && onDownloadParts && (
-          <Button
-            size="sm"
-            variant="outline"
-            onClick={(e) => {
-              e.stopPropagation();
-              onDownloadParts(score);
-            }}
-          >
-            Stimmen
-          </Button>
-        )}
-        {score.fullScore && onDownloadFullScore && (
-          <Button
-            size="sm"
-            variant="outline"
-            onClick={(e) => {
-              e.stopPropagation();
-              onDownloadFullScore(score);
-            }}
-          >
-            Partitur
-          </Button>
-        )}
-        <Button
-          size="sm"
-          variant="ghost"
-          onClick={(e) => {
-            e.stopPropagation();
-            onScoreClick?.(score);
-          }}
-        >
-          Details
-        </Button>
       </div>
     </div>
   );
