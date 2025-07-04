@@ -26,7 +26,7 @@ const Table = <T,>({
   isLoading = false,
   emptyMessage = 'No data available',
   className = '',
-  onRowClick
+  onRowClick,
 }: TableProps<T>) => {
   const getValue = (row: T, key: keyof T | string): any => {
     if (typeof key === 'string' && key.includes('.')) {
@@ -46,24 +46,20 @@ const Table = <T,>({
   }
 
   if (data.length === 0) {
-    return (
-      <div className="text-center p-8 text-gray-500 dark:text-gray-400">
-        {emptyMessage}
-      </div>
-    );
+    return <div className="text-center p-8 text-gray-500 dark:text-gray-400">{emptyMessage}</div>;
   }
 
   return (
-    <div className={`overflow-x-auto ${className}`}>
-      <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+    <div className={`overflow-x-auto flex justify-center ${className}`}>
+      <table className="max-w-7xl w-full divide-y divide-gray-200 dark:divide-gray-700">
         <thead className="bg-gray-50 dark:bg-gray-800">
           <tr>
             {columns.map((column, index) => (
               <th
                 key={index}
                 className={`
-                  px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider
-                  ${column.headerClassName || ''}
+                  px-2 py-1 text-left text-xs text-gray-400 dark:text-gray-400 uppercase tracking-wider
+                  ${column.className || ''} ${column.headerClassName || ''}
                 `.trim()}
               >
                 {column.header}
@@ -87,7 +83,7 @@ const Table = <T,>({
                   <td
                     key={colIndex}
                     className={`
-                      px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100
+                      px-2 py-1 text-sm text-gray-900 dark:text-gray-100
                       ${column.className || ''}
                     `.trim()}
                   >
