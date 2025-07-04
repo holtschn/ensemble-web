@@ -1,12 +1,14 @@
 'use client';
 
 import React, { useState, useCallback } from 'react';
+import { useRouter } from 'next/navigation';
 import { useScores } from '@/next/ndb/hooks/useScores';
 import { ScoreItem } from '@/next/ndb/types';
 import ScoresTable from '@/next/ndb/components/table/ScoresTable';
 import ScoresTableToolbar from '@/next/ndb/components/table/ScoresTableToolbar';
 
 export const ScoresPageClient: React.FC = () => {
+  const router = useRouter();
   const { scores, isLoading, error } = useScores();
   const [filteredScores, setFilteredScores] = useState<ScoreItem[]>([]);
 
@@ -15,11 +17,12 @@ export const ScoresPageClient: React.FC = () => {
     setFilteredScores(scores);
   }, [scores]);
 
-  const handleScoreClick = useCallback((score: ScoreItem) => {
-    console.log('Score clicked:', score);
-    // TODO: Navigate to score details page
-    // router.push(`/ndb/scores/${score.id}`);
-  }, []);
+  const handleScoreClick = useCallback(
+    (score: ScoreItem) => {
+      router.push(`/intern/ndb/${score.id}`);
+    },
+    [router]
+  );
 
   const handleDownloadParts = useCallback((score: ScoreItem) => {
     if (score.parts) {

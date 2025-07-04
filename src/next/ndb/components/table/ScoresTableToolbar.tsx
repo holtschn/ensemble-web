@@ -124,9 +124,10 @@ const ScoresTableToolbar: React.FC<ScoresTableToolbarProps> = ({
   };
 
   return (
-    <div className={`bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 p-4 ${className}`}>
-      <div className="flex flex-wrap items-center gap-0">
-        <div className="flex-1 min-w-64">
+    <div className={`w-full bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 p-4 ${className}`}>
+      <div className="flex flex-col gap-0">
+        {/* Row 1: Search Input */}
+        <div className="w-full">
           <TextField
             placeholder="Suche nach Titel, Komponist, Arrangeur..."
             value={filters.search}
@@ -134,8 +135,8 @@ const ScoresTableToolbar: React.FC<ScoresTableToolbarProps> = ({
           />
         </div>
 
-        {/* Filter Buttons */}
-        <div className="flex flex-row gap-2">
+        {/* Row 2: Filter Buttons */}
+        <div className="flex flex-row flex-wrap items-center justify-start gap-2">
           <FilterButton isActive={activeFilters.has('minHorns')} onClick={() => toggleFilter('minHorns', 2)}>
             mind. 2 Hörner
           </FilterButton>
