@@ -36,70 +36,31 @@ const ScoresTable: React.FC<ScoresTableProps> = ({
       key: 'arranger',
       header: 'Arrangeur',
       render: (value) => value || '-',
-    },
-    {
-      key: 'genre',
-      header: 'Genre',
-      render: (value) => value || '-',
-    },
-    {
-      key: 'publisher',
-      header: 'Verlag',
-      render: (value) => value || '-',
-    },
-    {
-      key: 'difficulty',
-      header: 'Schwierigkeit',
-      render: (value) => value || '-',
-      className: 'text-center',
+      className: 'hidden lg:table-cell',
     },
     {
       key: 'instrumentation',
       header: 'Besetzung',
       render: (value) => toInstrumentation(value).renderValue(),
-      className: 'text-center font-mono',
-    },
-    {
-      key: 'numTotal',
-      header: '# Spieler',
-      render: (_, row) => toInstrumentation(row.instrumentation).numTotal(),
-      className: 'text-center',
-    },
-    {
-      key: 'numTrumpets',
-      header: '# Trompeten',
-      render: (_, row) => toInstrumentation(row.instrumentation).numTrumpets(),
-      className: 'text-center',
-    },
-    {
-      key: 'numHorns',
-      header: '# Hörner',
-      render: (_, row) => toInstrumentation(row.instrumentation).numHorns(),
-      className: 'text-center',
-    },
-    {
-      key: 'numTrombones',
-      header: '# Posaunen',
-      render: (_, row) => toInstrumentation(row.instrumentation).numTrombones(),
       className: 'text-center',
     },
     {
       key: 'withOrgan',
       header: 'mit Orgel',
       render: (value) => (value ? '✓' : '-'),
-      className: 'text-center',
+      className: 'text-center hidden xl:table-cell',
     },
     {
       key: 'withPercussion',
       header: 'mit Schlagzeug',
       render: (value) => (value ? '✓' : '-'),
-      className: 'text-center',
+      className: 'text-center hidden xl:table-cell',
     },
     {
       key: 'actions',
       header: 'Aktionen',
       render: (_, row) => (
-        <div className="flex space-x-2">
+        <div className="flex space-x-2 justify-end">
           {row.parts && onDownloadParts && (
             <Button
               size="sm"
@@ -140,16 +101,85 @@ const ScoresTable: React.FC<ScoresTableProps> = ({
     },
   ];
 
+  const MobileCard = ({ score }: { score: ScoreItem }) => (
+    <div className="border-b px-4 py-4 cursor-pointer" onClick={() => onScoreClick?.(score)}>
+      <div className="flex justify-between items-start">
+        <div>
+          <div className="font-medium text-lg">{score.title}</div>
+          <div className="text-sm text-gray-600">{score.composer}</div>
+        </div>
+        <div className="text-right text-sm font-mono pl-2 flex-shrink-0">
+          {toInstrumentation(score.instrumentation).renderValue()}
+        </div>
+      </div>
+      <div className="flex space-x-2 mt-4 justify-end">
+        {score.parts && onDownloadParts && (
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={(e) => {
+              e.stopPropagation();
+              onDownloadParts(score);
+            }}
+          >
+            Stimmen
+          </Button>
+        )}
+        {score.fullScore && onDownloadFullScore && (
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={(e) => {
+              e.stopPropagation();
+              onDownloadFullScore(score);
+            }}
+          >
+            Partitur
+          </Button>
+        )}
+        <Button
+          size="sm"
+          variant="ghost"
+          onClick={(e) => {
+            e.stopPropagation();
+            onScoreClick?.(score);
+          }}
+        >
+          Details
+        </Button>
+      </div>
+    </div>
+  );
+
   return (
-    <Table
-      data={scores}
-      columns={columns}
-      keyExtractor={(score) => score.id.toString()}
-      isLoading={isLoading}
-      emptyMessage="Keine Noten gefunden"
-      className={className}
-      onRowClick={onScoreClick}
-    />
+    <div className={className}>
+      {/* Mobile view */}
+      <div className="md:hidden">
+        {isLoading ? (
+          <div className="text-center p-8">Lade Noten...</div>
+        ) : scores.length > 0 ? (
+          <div className="divide-y border-t">
+            {scores.map((score) => (
+              <MobileCard key={score.id} score={score} />
+            ))}
+          </div>
+        ) : (
+          <div className="text-center p-8">Keine Noten gefunden</div>
+        )}
+      </div>
+
+      {/* Desktop and Tablet view */}
+      <div className="hidden md:block">
+        <Table
+          data={scores}
+          columns={columns}
+          keyExtractor={(score) => score.id.toString()}
+          isLoading={isLoading}
+          emptyMessage="Keine Noten gefunden"
+          onRowClick={onScoreClick}
+        />
+      </div>
+    </div>
   );
 };
 
