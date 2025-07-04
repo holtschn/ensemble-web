@@ -54,21 +54,8 @@ export const ScoresPageClient: React.FC = () => {
         <h1>Notendatenbank</h1>
       </div>
 
-      <div className="middle-column">
-        <ScoresTableToolbar scores={scores} onFilteredScoresChange={setFilteredScores} />
-
-        <div>
-          <p>
-            {isLoading ? (
-              'Lade Noten...'
-            ) : (
-              <>
-                {filteredScores.length} von {scores.length} Noten{' '}
-                {filteredScores.length !== scores.length && 'angezeigt'}
-              </>
-            )}
-          </p>
-        </div>
+      <div className="middle-column flex flex-row">
+        <ScoresTableToolbar scores={scores} onFilteredScoresChange={setFilteredScores} isLoading={isLoading} />
       </div>
 
       <ScoresTable
