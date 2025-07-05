@@ -1,5 +1,5 @@
 import Button from '@/next/ndb/components/Button';
-import Image from 'next/image';
+import Icon from '@/next/ndb/components/Icon';
 import React from 'react';
 
 type FilterButtonProps = {
@@ -12,9 +12,9 @@ export const FilterButton: React.FC<FilterButtonProps> = ({ isActive, onClick, c
   return (
     <Button size="sm" className="text-xs" variant={isActive ? 'primary' : 'outline'} onClick={onClick}>
       {isActive ? (
-        <Image src="/filter-active.svg" alt="Filter Active Icon" width={8} height={8} className="mr-2 h-3 w-3" />
+        <Icon name="filter-active" alt="Filter Active Icon" className="mr-2 h-3 w-3" />
       ) : (
-        <Image src="/filter-inactive.svg" alt="Filter Inactive Icon" width={8} height={8} className="mr-2 h-3 w-3" />
+        <Icon name="filter-inactive" alt="Filter Inactive Icon" className="mr-2 h-3 w-3" />
       )}
       {children}
     </Button>
