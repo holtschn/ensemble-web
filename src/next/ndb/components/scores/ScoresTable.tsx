@@ -83,6 +83,7 @@ const ScoresTable: React.FC<ScoresTableProps> = ({
       {/* Desktop and Tablet view */}
       <div className="hidden md:block">
         <Table
+          className="mx-4"
           data={scores}
           columns={columns}
           keyExtractor={(score) => score.id.toString()}
