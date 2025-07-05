@@ -1,4 +1,4 @@
-import Button from '@/next/ndb/components/form/Button';
+import Button from '@/next/ndb/components/Button';
 import Image from 'next/image';
 import React from 'react';
 
