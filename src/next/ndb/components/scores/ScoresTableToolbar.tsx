@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { ScoreItem } from '@/next/ndb/types';
-import Image from 'next/image';
+import Icon from '@/next/ndb/components/Icon';
 import { toInstrumentation } from '@/next/ndb/utils/instrumentation';
 import TextField from '@/next/ndb/components/TextField';
 import Button from '@/next/ndb/components/Button';
@@ -151,7 +151,7 @@ const ScoresTableToolbar: React.FC<ScoresTableToolbarProps> = ({ scores, onFilte
           {/* Reset Filters Button */}
           {activeFilters.size > 0 && (
             <Button className="text-xs" size="sm" variant="ghost" onClick={resetFilters}>
-              <Image src="/cross.svg" alt="Cross Icon" width={8} height={8} className="mr-2 h-3 w-3" /> zurücksetzen
+              <Icon name="/cross" alt="Cross Icon" className="mr-1 h-3 w-3" /> zurücksetzen
             </Button>
           )}
         </div>
