@@ -23,8 +23,7 @@ const Table = <T,>({
   data,
   columns,
   keyExtractor,
-  isLoading = false,
-  emptyMessage = 'No data available',
+  emptyMessage = 'Tabelle ist leer',
   className = '',
   onRowClick,
 }: TableProps<T>) => {
@@ -35,15 +34,6 @@ const Table = <T,>({
     }
     return row[key as keyof T];
   };
-
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center p-8">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-        <span className="ml-2 text-gray-600 dark:text-gray-400">Loading...</span>
-      </div>
-    );
-  }
 
   if (data.length === 0) {
     return <div className="text-center p-8 text-gray-500 dark:text-gray-400">{emptyMessage}</div>;

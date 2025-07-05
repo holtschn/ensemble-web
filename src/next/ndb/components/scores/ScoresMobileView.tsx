@@ -12,15 +12,10 @@ interface ScoresMobileViewProps {
 
 const ScoresMobileView: React.FC<ScoresMobileViewProps> = ({
   scores,
-  isLoading = false,
   onScoreClick,
   onDownloadParts,
   onDownloadFullScore,
 }) => {
-  if (isLoading) {
-    return <div className="text-center p-8">Lade Noten...</div>;
-  }
-
   if (scores.length === 0) {
     return <div className="text-center p-8">Keine Noten gefunden</div>;
   }
