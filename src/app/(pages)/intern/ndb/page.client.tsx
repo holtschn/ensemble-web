@@ -4,8 +4,8 @@ import React, { useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { useScores } from '@/next/ndb/hooks/useScores';
 import { ScoreItem } from '@/next/ndb/types';
-import ScoresTable from '@/next/ndb/components/table/ScoresTable';
-import ScoresTableToolbar from '@/next/ndb/components/table/ScoresTableToolbar';
+import ScoresTable from '@/next/ndb/components/scores/ScoresTable';
+import ScoresTableToolbar from '@/next/ndb/components/scores/ScoresTableToolbar';
 
 export const ScoresPageClient: React.FC = () => {
   const router = useRouter();
@@ -56,11 +56,9 @@ export const ScoresPageClient: React.FC = () => {
       <div className="middle-column">
         <h1>Notendatenbank</h1>
       </div>
-
       <div className="middle-column flex flex-row">
         <ScoresTableToolbar scores={scores} onFilteredScoresChange={setFilteredScores} isLoading={isLoading} />
       </div>
-
       <ScoresTable
         scores={filteredScores}
         isLoading={isLoading}

@@ -2,10 +2,11 @@
 
 import React, { useState } from 'react';
 import { ScoreItem } from '@/next/ndb/types';
+import Image from 'next/image';
 import { toInstrumentation } from '@/next/ndb/utils/instrumentation';
-import TextField from '@/next/ndb/components/form/TextField';
-import Button from '@/next/ndb/components/form/Button';
-import { FilterButton } from '@/next/ndb/components/table/FilterButton';
+import TextField from '@/next/ndb/components/TextField';
+import Button from '@/next/ndb/components/Button';
+import { FilterButton } from '@/next/ndb/components/scores/ScoresFilterButton';
 
 interface FilterState {
   search: string;
@@ -140,18 +141,15 @@ const ScoresTableToolbar: React.FC<ScoresTableToolbarProps> = ({
           <FilterButton isActive={activeFilters.has('minHorns')} onClick={() => toggleFilter('minHorns', 2)}>
             mind. 2 Hörner
           </FilterButton>
-
           <FilterButton
             isActive={activeFilters.has('withPercussion')}
             onClick={() => toggleFilter('withPercussion', true)}
           >
             mit Schlagzeug
           </FilterButton>
-
           <FilterButton isActive={activeFilters.has('hasFullScore')} onClick={() => toggleFilter('hasFullScore', true)}>
             hat Partitur
           </FilterButton>
-
           <FilterButton isActive={activeFilters.has('quintetsOnly')} onClick={() => toggleFilter('quintetsOnly', true)}>
             Quintett
           </FilterButton>
@@ -159,10 +157,7 @@ const ScoresTableToolbar: React.FC<ScoresTableToolbarProps> = ({
           {/* Reset Filters Button */}
           {activeFilters.size > 0 && (
             <Button className="text-xs" size="sm" variant="ghost" onClick={resetFilters}>
-              <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-              zurücksetzen
+              <Image src="/cross.svg" alt="Cross Icon" width={8} height={8} className="mr-2 h-3 w-3" /> zurücksetzen
             </Button>
           )}
         </div>
