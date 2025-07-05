@@ -40,6 +40,15 @@ export const ScoresPageClient: React.FC = () => {
     }
   }, []);
 
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center p-8">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+        <span className="ml-2 text-gray-600 dark:text-gray-400">Loading...</span>
+      </div>
+    );
+  }
+
   if (error) {
     return (
       <div className="flex flex-col mt-16">
@@ -57,11 +66,10 @@ export const ScoresPageClient: React.FC = () => {
         <h1>Notendatenbank</h1>
       </div>
       <div className="middle-column flex flex-row">
-        <ScoresTableToolbar scores={scores} onFilteredScoresChange={setFilteredScores} isLoading={isLoading} />
+        <ScoresTableToolbar scores={scores} onFilteredScoresChange={setFilteredScores} />
       </div>
       <ScoresTable
         scores={filteredScores}
-        isLoading={isLoading}
         onScoreClick={handleScoreClick}
         onDownloadParts={handleDownloadParts}
         onDownloadFullScore={handleDownloadFullScore}

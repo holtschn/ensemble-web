@@ -19,16 +19,10 @@ interface FilterState {
 interface ScoresTableToolbarProps {
   scores: ScoreItem[];
   onFilteredScoresChange: (filteredScores: ScoreItem[]) => void;
-  isLoading: boolean;
   className?: string;
 }
 
-const ScoresTableToolbar: React.FC<ScoresTableToolbarProps> = ({
-  scores,
-  onFilteredScoresChange,
-  isLoading,
-  className = '',
-}) => {
+const ScoresTableToolbar: React.FC<ScoresTableToolbarProps> = ({ scores, onFilteredScoresChange, className = '' }) => {
   const [filters, setFilters] = useState<FilterState>({
     search: '',
     minHorns: null,

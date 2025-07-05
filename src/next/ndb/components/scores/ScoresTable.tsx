@@ -7,7 +7,6 @@ import ScoresMobileView from './ScoresMobileView';
 
 interface ScoresTableProps {
   scores: ScoreItem[];
-  isLoading?: boolean;
   onScoreClick?: (score: ScoreItem) => void;
   onDownloadParts?: (score: ScoreItem) => void;
   onDownloadFullScore?: (score: ScoreItem) => void;
@@ -16,7 +15,6 @@ interface ScoresTableProps {
 
 const ScoresTable: React.FC<ScoresTableProps> = ({
   scores,
-  isLoading = false,
   onScoreClick,
   onDownloadParts,
   onDownloadFullScore,
@@ -73,7 +71,6 @@ const ScoresTable: React.FC<ScoresTableProps> = ({
       <div className="md:hidden">
         <ScoresMobileView
           scores={scores}
-          isLoading={isLoading}
           onScoreClick={onScoreClick}
           onDownloadParts={onDownloadParts}
           onDownloadFullScore={onDownloadFullScore}
@@ -87,7 +84,6 @@ const ScoresTable: React.FC<ScoresTableProps> = ({
           data={scores}
           columns={columns}
           keyExtractor={(score) => score.id.toString()}
-          isLoading={isLoading}
           emptyMessage="Keine Noten gefunden"
           onRowClick={onScoreClick}
         />
