@@ -1,18 +1,23 @@
 'use client';
 
 import React from 'react';
+
 import Link from 'next/link';
+
+import useRedirectIfLoggedOut from '@/next/auth/loggedInHook';
+
 import Icon from '@/next/ndb/components/Icon';
 import Button from '@/next/ndb/components/Button';
-import useRedirectIfLoggedOut from '@/next/auth/loggedInHook';
 import { toInstrumentation, Instrumentation } from '@/next/ndb/utils/instrumentation';
 import { ScoreFileItem, ScoreItem, ScoreSampleCollection, ScoreSampleItem as Sample } from '@/next/ndb/types';
 import { useScores } from '@/next/ndb/hooks/useScores';
 import { useScoreSamples } from '@/next/ndb/hooks/useScoreSamples';
 
-const BackToList = () => {
+import LoadingSpinner from '@/next/ndb/components/LoadingSpinner';
+
+const BackToScoresList = () => {
   return (
-    <Link href="/intern/ndb" className="flex items-center text-xs text-gray-500 dark:text-gray-400 uppercase tracking">
+    <Link href="/intern/ndb" className="flex items-center ndb-profex-label">
       <Icon name="arrow-left" alt="Back to list" className="mr-2 h-3 w-3" />
       <div className="mt-0.5">Zurück zur Übersicht</div>
     </Link>
@@ -34,19 +39,14 @@ const ScoreDetailsPage: React.FC<ScoreDetailsPageProps> = ({ scoreId }) => {
   const samples = React.useMemo(() => (scoreId ? getSamplesByScoreId(scoreId) : null), [scoreId, getSamplesByScoreId]);
 
   if (isScoreLoading) {
-    return (
-      <div className="flex items-center justify-center p-8">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500"></div>
-        <span className="ml-4 text-gray-600 dark:text-gray-400">Loading...</span>
-      </div>
-    );
+    return <LoadingSpinner />;
   }
 
   if (!score) {
     return (
       <div className="middle-column p-8 text-center">
         <h1>Eintrag nicht gefunden</h1>
-        <BackToList />
+        <BackToScoresList />
       </div>
     );
   }
@@ -57,7 +57,7 @@ const ScoreDetailsPage: React.FC<ScoreDetailsPageProps> = ({ scoreId }) => {
     <div className="flex flex-col mt-8">
       <div className="middle-column mb-8">
         <h1>{score.title}</h1>
-        <BackToList />
+        <BackToScoresList />
       </div>
       <div className="middle-column">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -112,7 +112,7 @@ const DetailItem: React.FC<{ label: string; children: React.ReactNode; fullWidth
   if (fullWidth) {
     return (
       <div className="md:col-span-full pt-4">
-        <dt className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider">{label}</dt>
+        <dt className="ndb-profex-label">{label}</dt>
         <dd>{children}</dd>
       </div>
     );
@@ -120,7 +120,7 @@ const DetailItem: React.FC<{ label: string; children: React.ReactNode; fullWidth
 
   return (
     <>
-      <dt className="mt-1 text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider">{label}</dt>
+      <dt className="mt-1 ndb-profex-label">{label}</dt>
       <dd className="mb-4">{children}</dd>
     </>
   );
@@ -146,7 +146,7 @@ const InstrumentationDisplay: React.FC<{ instrumentation: Instrumentation; score
           .map((inst) => (
             <div key={inst.label} className="flex items-baseline gap-1">
               <span>{inst.count}</span>
-              <span className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider">{inst.label}</span>
+              <span className="ndb-profex-label">{inst.label}</span>
             </div>
           ))}
       </div>
@@ -157,7 +157,7 @@ const InstrumentationDisplay: React.FC<{ instrumentation: Instrumentation; score
           ) : (
             <Icon name="cross" alt="Nein" className="h-4 w-4" />
           )}
-          <span className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider">Percussion</span>
+          <span className="ndb-profex-label">Percussion</span>
         </div>
         <div className="flex items-center gap-1.5">
           {score.withOrgan ? (
@@ -165,7 +165,7 @@ const InstrumentationDisplay: React.FC<{ instrumentation: Instrumentation; score
           ) : (
             <Icon name="cross" alt="Nein" className="h-4 w-4" />
           )}
-          <span className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider">Orgel</span>
+          <span className="ndb-profex-label">Orgel</span>
         </div>
       </div>
     </div>
@@ -193,7 +193,7 @@ const FilesCard: React.FC<{ score: ScoreItem }> = ({ score }) => {
 
   return (
     <div>
-      <h3 className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider">Downloads</h3>
+      <h3 className="ndb-profex-label">Downloads</h3>
       {availableFiles.length > 0 ? (
         <div className="flex flex-col gap-y-2">
           {files.map(({ file, label }) => (

@@ -1,12 +1,16 @@
 'use client';
 
 import React, { useState, useCallback } from 'react';
+
 import { useRouter } from 'next/navigation';
+import useRedirectIfLoggedOut from '@/next/auth/loggedInHook';
+
 import { useScores } from '@/next/ndb/hooks/useScores';
 import { ScoreItem } from '@/next/ndb/types';
+
 import ScoresTable from '@/next/ndb/components/scores/ScoresTable';
 import ScoresTableToolbar from '@/next/ndb/components/scores/ScoresTableToolbar';
-import useRedirectIfLoggedOut from '@/next/auth/loggedInHook';
+import LoadingSpinner from '@/next/ndb/components/LoadingSpinner';
 
 export const ScoresPageClient: React.FC = () => {
   useRedirectIfLoggedOut();
@@ -44,12 +48,7 @@ export const ScoresPageClient: React.FC = () => {
   }, []);
 
   if (isLoading) {
-    return (
-      <div className="flex items-center justify-center p-8">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-        <span className="ml-2 text-gray-600 dark:text-gray-400">Loading...</span>
-      </div>
-    );
+    return <LoadingSpinner />;
   }
 
   if (error) {
@@ -57,7 +56,6 @@ export const ScoresPageClient: React.FC = () => {
       <div className="flex flex-col mt-16">
         <div className="middle-column">
           <h2>Fehler beim Laden der Noten</h2>
-          <p>{error}</p>
         </div>
       </div>
     );
