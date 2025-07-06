@@ -2,13 +2,13 @@ import React from 'react';
 import { ScoreItem } from '@/next/ndb/types';
 import Button from '@/next/ndb/components/Button';
 
-interface ActionButtonsProps {
+interface ScoresDownloadButtonsProps {
   score: ScoreItem;
   onDownloadParts?: (score: ScoreItem) => void;
   onDownloadFullScore?: (score: ScoreItem) => void;
 }
 
-const ActionButtons: React.FC<ActionButtonsProps> = ({
+const ScoresDownloadButtons: React.FC<ScoresDownloadButtonsProps> = ({
   score,
   onDownloadParts,
   onDownloadFullScore,
@@ -47,4 +47,4 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({
   );
 };
 
-export default ActionButtons;
+export default ScoresDownloadButtons;

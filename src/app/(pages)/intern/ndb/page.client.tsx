@@ -16,7 +16,7 @@ export const ScoresPageClient: React.FC = () => {
   useRedirectIfLoggedOut();
 
   const router = useRouter();
-  const { scores, isLoading, error } = useScores();
+  const { scores, isLoading } = useScores();
   const [filteredScores, setFilteredScores] = useState<ScoreItem[]>([]);
 
   // Update filtered scores when main scores data changes
@@ -51,18 +51,16 @@ export const ScoresPageClient: React.FC = () => {
     return <LoadingSpinner />;
   }
 
-  if (error) {
+  if (!scores || scores.length < 1) {
     return (
-      <div className="flex flex-col mt-16">
-        <div className="middle-column">
-          <h2>Fehler beim Laden der Noten</h2>
-        </div>
+      <div className="middle-column mt-8">
+        <h1>Keine Noten gefunden</h1>
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col mt-16">
+    <div className="flex flex-col mt-8">
       <div className="middle-column">
         <h1>Notendatenbank</h1>
       </div>

@@ -1,12 +1,11 @@
-'use client';
-
 import React, { useState } from 'react';
+
 import { ScoreItem } from '@/next/ndb/types';
-import Icon from '@/next/ndb/components/Icon';
 import { toInstrumentation } from '@/next/ndb/utils/instrumentation';
-import TextField from '@/next/ndb/components/TextField';
+
 import Button from '@/next/ndb/components/Button';
-import { FilterButton } from '@/next/ndb/components/scores/ScoresFilterButton';
+import Icon from '@/next/ndb/components/Icon';
+import TextField from '@/next/ndb/components/TextField';
 
 interface FilterState {
   search: string;
@@ -15,6 +14,25 @@ interface FilterState {
   hasFullScore: boolean | null;
   quintetsOnly: boolean;
 }
+
+type ScoresFilterButtonProps = {
+  isActive: boolean;
+  onClick: () => void;
+  children: React.ReactNode;
+};
+
+const ScoresFilterButton: React.FC<ScoresFilterButtonProps> = ({ isActive, onClick, children }) => {
+  return (
+    <Button size="sm" className="text-xs" variant={isActive ? 'primary' : 'outline'} onClick={onClick}>
+      {isActive ? (
+        <Icon name="filter-active" alt="Filter Active Icon" className="mr-2 h-3 w-3" />
+      ) : (
+        <Icon name="filter-inactive" alt="Filter Inactive Icon" className="mr-2 h-3 w-3" />
+      )}
+      {children}
+    </Button>
+  );
+};
 
 interface ScoresTableToolbarProps {
   scores: ScoreItem[];
@@ -132,21 +150,27 @@ const ScoresTableToolbar: React.FC<ScoresTableToolbarProps> = ({ scores, onFilte
 
         {/* Row 2: Filter Buttons */}
         <div className="flex flex-row flex-wrap items-center justify-start gap-2">
-          <FilterButton isActive={activeFilters.has('minHorns')} onClick={() => toggleFilter('minHorns', 2)}>
+          <ScoresFilterButton isActive={activeFilters.has('minHorns')} onClick={() => toggleFilter('minHorns', 2)}>
             mind. 2 Hörner
-          </FilterButton>
-          <FilterButton
+          </ScoresFilterButton>
+          <ScoresFilterButton
             isActive={activeFilters.has('withPercussion')}
             onClick={() => toggleFilter('withPercussion', true)}
           >
             mit Schlagzeug
-          </FilterButton>
-          <FilterButton isActive={activeFilters.has('hasFullScore')} onClick={() => toggleFilter('hasFullScore', true)}>
+          </ScoresFilterButton>
+          <ScoresFilterButton
+            isActive={activeFilters.has('hasFullScore')}
+            onClick={() => toggleFilter('hasFullScore', true)}
+          >
             hat Partitur
-          </FilterButton>
-          <FilterButton isActive={activeFilters.has('quintetsOnly')} onClick={() => toggleFilter('quintetsOnly', true)}>
+          </ScoresFilterButton>
+          <ScoresFilterButton
+            isActive={activeFilters.has('quintetsOnly')}
+            onClick={() => toggleFilter('quintetsOnly', true)}
+          >
             Quintett
-          </FilterButton>
+          </ScoresFilterButton>
 
           {/* Reset Filters Button */}
           {activeFilters.size > 0 && (

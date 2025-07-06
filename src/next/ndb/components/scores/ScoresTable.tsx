@@ -1,9 +1,12 @@
 import React from 'react';
+
 import { ScoreItem } from '@/next/ndb/types';
 import { toInstrumentation } from '@/next/ndb/utils/instrumentation';
+
 import Table, { TableColumn } from '@/next/ndb/components/Table';
-import ActionButtons from './ActionButtons';
-import ScoresMobileView from './ScoresMobileView';
+
+import ScoresDownloadButtons from '@/next/ndb/components/scores/ScoresDownloadButtons';
+import ScoresMobileView from '@/next/ndb/components/scores/ScoresMobileView';
 
 interface ScoresTableProps {
   scores: ScoreItem[];
@@ -59,7 +62,11 @@ const ScoresTable: React.FC<ScoresTableProps> = ({
       key: 'actions',
       header: 'Aktionen',
       render: (_, row) => (
-        <ActionButtons score={row} onDownloadParts={onDownloadParts} onDownloadFullScore={onDownloadFullScore} />
+        <ScoresDownloadButtons
+          score={row}
+          onDownloadParts={onDownloadParts}
+          onDownloadFullScore={onDownloadFullScore}
+        />
       ),
       className: 'text-right',
     },
