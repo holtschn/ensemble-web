@@ -7,7 +7,7 @@ import { uploadFile as apiUploadFile, downloadFile as apiDownloadFile } from '@/
 import { ScoreFileItem } from '@/next/ndb/types';
 import { ERROR_MESSAGES } from '@/next/ndb/constants';
 
-interface UseFileUploadState {
+interface UseFileUpDownLoadState {
   isLoading: boolean;
   error: string | null;
   uploadFile: (file: File) => Promise<string | null>; // Returns S3 fileKey on success
@@ -17,9 +17,9 @@ interface UseFileUploadState {
 /**
  * Custom hook to manage file uploads to S3 and file downloads.
  *
- * @returns {UseFileUploadState} An object containing upload/download functions, loading state, and error state.
+ * @returns {UseFileUpDownLoadState} An object containing upload/download functions, loading state, and error state.
  */
-export const useFileUpload = (): UseFileUploadState => {
+export const useFileUpDownLoad = (): UseFileUpDownLoadState => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 

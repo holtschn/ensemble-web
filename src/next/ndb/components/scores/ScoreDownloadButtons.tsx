@@ -2,27 +2,7 @@ import React from 'react';
 
 import { ScoreFileItem, ScoreItem } from '@/next/ndb/types';
 
-import Icon from '@/next/ndb/components/Icon';
-import Button from '@/next/ndb/components/Button';
-
-const FileDownloadButton: React.FC<{ file: ScoreFileItem | null; label: string }> = ({ file, label }) => {
-  const isDisabled = !file;
-
-  const handleClick = () => {
-    // In a real app, you would get a signed URL from the backend
-    if (file) {
-      console.log(`Downloading ${file.filename}`);
-      // window.open(file.url, '_blank');
-    }
-  };
-
-  return (
-    <Button variant="outline" className="w-full" disabled={isDisabled} onClick={handleClick}>
-      <Icon name="download" alt="Download" className="mr-2 h-3 w-3" />
-      {label}
-    </Button>
-  );
-};
+import ScoreDownloadButton from '@/next/ndb/components/ScoreDownloadButton';
 
 const FilesCard: React.FC<{ score: ScoreItem }> = ({ score }) => {
   const files = [
@@ -40,7 +20,7 @@ const FilesCard: React.FC<{ score: ScoreItem }> = ({ score }) => {
       {availableFiles.length > 0 ? (
         <div className="flex flex-col gap-y-2">
           {files.map(({ file, label }) => (
-            <FileDownloadButton key={label} file={file} label={label} />
+            <ScoreDownloadButton key={label} file={file} label={label} className="w-full" />
           ))}
         </div>
       ) : (
