@@ -4,6 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import Icon from '@/next/ndb/components/Icon';
 import Button from '@/next/ndb/components/Button';
+import useRedirectIfLoggedOut from '@/next/auth/loggedInHook';
 import { toInstrumentation, Instrumentation } from '@/next/ndb/utils/instrumentation';
 import { ScoreFileItem, ScoreItem, ScoreSampleCollection, ScoreSampleItem as Sample } from '@/next/ndb/types';
 import { useScores } from '@/next/ndb/hooks/useScores';
@@ -23,7 +24,8 @@ interface ScoreDetailsPageProps {
 }
 
 const ScoreDetailsPage: React.FC<ScoreDetailsPageProps> = ({ scoreId }) => {
-  // Fetching single score
+  useRedirectIfLoggedOut();
+
   const { getScoreById, isLoading: isScoreLoading } = useScores();
   const score = React.useMemo(() => (scoreId ? getScoreById(scoreId) : null), [scoreId, getScoreById]);
 

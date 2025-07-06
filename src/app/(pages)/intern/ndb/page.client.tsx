@@ -6,8 +6,11 @@ import { useScores } from '@/next/ndb/hooks/useScores';
 import { ScoreItem } from '@/next/ndb/types';
 import ScoresTable from '@/next/ndb/components/scores/ScoresTable';
 import ScoresTableToolbar from '@/next/ndb/components/scores/ScoresTableToolbar';
+import useRedirectIfLoggedOut from '@/next/auth/loggedInHook';
 
 export const ScoresPageClient: React.FC = () => {
+  useRedirectIfLoggedOut();
+
   const router = useRouter();
   const { scores, isLoading, error } = useScores();
   const [filteredScores, setFilteredScores] = useState<ScoreItem[]>([]);
