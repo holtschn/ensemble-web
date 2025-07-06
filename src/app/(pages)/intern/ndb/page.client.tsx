@@ -31,22 +31,6 @@ export const ScoresPageClient: React.FC = () => {
     [router]
   );
 
-  const handleDownloadParts = useCallback((score: ScoreItem) => {
-    if (score.parts) {
-      console.log('Download parts for:', score.title);
-      // TODO: Implement file download
-      // window.open(score.parts.url, '_blank');
-    }
-  }, []);
-
-  const handleDownloadFullScore = useCallback((score: ScoreItem) => {
-    if (score.fullScore) {
-      console.log('Download full score for:', score.title);
-      // TODO: Implement file download
-      // window.open(score.fullScore.url, '_blank');
-    }
-  }, []);
-
   if (isLoading) {
     return <LoadingSpinner />;
   }
@@ -67,12 +51,7 @@ export const ScoresPageClient: React.FC = () => {
       <div className="middle-column flex flex-row">
         <ScoresTableToolbar scores={scores} onFilteredScoresChange={setFilteredScores} />
       </div>
-      <ScoresTable
-        scores={filteredScores}
-        onScoreClick={handleScoreClick}
-        onDownloadParts={handleDownloadParts}
-        onDownloadFullScore={handleDownloadFullScore}
-      />
+      <ScoresTable scores={filteredScores} onScoreClick={handleScoreClick} />
     </div>
   );
 };

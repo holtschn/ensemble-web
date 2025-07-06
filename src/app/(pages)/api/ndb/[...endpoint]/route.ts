@@ -31,12 +31,12 @@ async function handler(request: NextRequest, context: { params: Promise<{ endpoi
 
       case 'POST':
         const postBody = await request.json();
-        const postRepsonse = await apiClient(endpointPath, {
+        const postResponse = await apiClient(endpointPath, {
           method: 'POST',
           body: JSON.stringify(postBody),
         });
         revalidateTag(globalTag);
-        return NextResponse.json(postRepsonse);
+        return NextResponse.json(postResponse);
 
       case 'PUT':
         const putBody = await request.json();

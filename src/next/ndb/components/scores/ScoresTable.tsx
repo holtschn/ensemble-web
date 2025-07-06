@@ -11,18 +11,10 @@ import ScoresMobileView from '@/next/ndb/components/scores/ScoresMobileView';
 interface ScoresTableProps {
   scores: ScoreItem[];
   onScoreClick?: (score: ScoreItem) => void;
-  onDownloadParts?: (score: ScoreItem) => void;
-  onDownloadFullScore?: (score: ScoreItem) => void;
   className?: string;
 }
 
-const ScoresTable: React.FC<ScoresTableProps> = ({
-  scores,
-  onScoreClick,
-  onDownloadParts,
-  onDownloadFullScore,
-  className = '',
-}) => {
+const ScoresTable: React.FC<ScoresTableProps> = ({ scores, onScoreClick, className = '' }) => {
   const columns: TableColumn<ScoreItem>[] = [
     {
       key: 'title',
@@ -61,13 +53,7 @@ const ScoresTable: React.FC<ScoresTableProps> = ({
     {
       key: 'actions',
       header: 'Aktionen',
-      render: (_, row) => (
-        <ScoresDownloadButtons
-          score={row}
-          onDownloadParts={onDownloadParts}
-          onDownloadFullScore={onDownloadFullScore}
-        />
-      ),
+      render: (_, row) => <ScoresDownloadButtons score={row} />,
       className: 'text-right',
     },
   ];
@@ -76,12 +62,7 @@ const ScoresTable: React.FC<ScoresTableProps> = ({
     <div className={className}>
       {/* Mobile view */}
       <div className="md:hidden">
-        <ScoresMobileView
-          scores={scores}
-          onScoreClick={onScoreClick}
-          onDownloadParts={onDownloadParts}
-          onDownloadFullScore={onDownloadFullScore}
-        />
+        <ScoresMobileView scores={scores} onScoreClick={onScoreClick} />
       </div>
 
       {/* Desktop and Tablet view */}
