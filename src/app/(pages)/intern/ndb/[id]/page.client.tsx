@@ -11,6 +11,7 @@ import ScoreEditForm from '@/next/ndb/components/scores/ScoreEditForm';
 import ScoreFilesInline from '@/next/ndb/components/scores/ScoreFilesInline';
 import ScoreSamplesCard from '@/next/ndb/components/scores/ScoreSamplesCard';
 import ScoreActions from '@/next/ndb/components/scores/ScoreActions';
+import Icon from '@/next/ndb/components/Icon';
 
 import { useScores } from '@/next/ndb/hooks/useScores';
 import { updateScore } from '@/next/ndb/api/actions';
@@ -42,10 +43,6 @@ const ScoreDetailsPage: React.FC<ScoreDetailsPageProps> = ({ scoreId }) => {
   };
 
   const handleCancel = () => {
-    if (hasChanges) {
-      const confirmed = window.confirm('Änderungen verwerfen? Alle nicht gespeicherten Änderungen gehen verloren.');
-      if (!confirmed) return;
-    }
     setIsEditMode(false);
     setSaveMessage(null);
     setHasChanges(false);
@@ -94,16 +91,44 @@ const ScoreDetailsPage: React.FC<ScoreDetailsPageProps> = ({ scoreId }) => {
       <div className="middle-column mb-8">
         <h1 className="mb-4">{isEditMode ? `${score.title} bearbeiten` : score.title}</h1>
         <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-          <BackToScores />
-          <div className="ml-auto">
-            <ScoreActions
-              isEditMode={isEditMode}
-              isSaving={isSaving}
-              hasChanges={hasChanges}
-              onEditClick={handleEditClick}
-              onSaveClick={handleSaveClick}
-              onCancelClick={handleCancel}
-            />
+          {isEditMode ? (
+            <button
+              type="button"
+              onClick={handleCancel}
+              disabled={isSaving}
+              className="flex items-center ndb-profex-label disabled:opacity-50"
+            >
+              <Icon name="arrow-left" alt="Cancel" className="mr-2 h-3 w-3" />
+              <div className="mt-0.5">Abbrechen</div>
+            </button>
+          ) : (
+            <BackToScores />
+          )}
+          <div className="ml-auto flex items-center gap-4">
+            {isEditMode && hasChanges && (
+              <span className="text-sm text-amber-600 dark:text-amber-400">
+                Ungespeicherte Änderungen
+              </span>
+            )}
+            {isEditMode ? (
+              <button
+                type="button"
+                onClick={handleSaveClick}
+                disabled={isSaving || !hasChanges}
+                className="flex items-center px-4 py-1.5 text-sm font-medium text-white bg-gray-800 rounded-md hover:bg-gray-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors dark:bg-gray-700 dark:hover:bg-gray-600"
+              >
+                {isSaving ? 'Speichern...' : 'Speichern'}
+              </button>
+            ) : (
+              <ScoreActions
+                isEditMode={isEditMode}
+                isSaving={isSaving}
+                hasChanges={hasChanges}
+                onEditClick={handleEditClick}
+                onSaveClick={handleSaveClick}
+                onCancelClick={handleCancel}
+              />
+            )}
           </div>
         </div>
         {saveMessage && (
@@ -122,16 +147,13 @@ const ScoreDetailsPage: React.FC<ScoreDetailsPageProps> = ({ scoreId }) => {
       <div className="middle-column">
         <div className="max-w-5xl space-y-6">
           {isEditMode ? (
-            <>
-              <ScoreEditForm
-                score={score}
-                onSave={handleSave}
-                isSaving={isSaving}
-                onHasChanges={setHasChanges}
-                submitRef={formSubmitRef}
-              />
-              {/* TODO: Add file upload section here in edit mode */}
-            </>
+            <ScoreEditForm
+              score={score}
+              onSave={handleSave}
+              isSaving={isSaving}
+              onHasChanges={setHasChanges}
+              submitRef={formSubmitRef}
+            />
           ) : (
             <>
               <ScoreDetailsCard score={score} />
