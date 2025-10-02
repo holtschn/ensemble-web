@@ -31,6 +31,14 @@ export const ScoresPageClient: React.FC = () => {
     [router]
   );
 
+  const handleCreateClick = useCallback(() => {
+    router.push('/intern/ndb/new');
+  }, [router]);
+
+  const handleUploadClick = useCallback(() => {
+    router.push('/intern/ndb/upload');
+  }, [router]);
+
   if (isLoading) {
     return <LoadingSpinner />;
   }
@@ -46,7 +54,25 @@ export const ScoresPageClient: React.FC = () => {
   return (
     <div className="flex flex-col mt-8">
       <div className="middle-column">
-        <h1>Notendatenbank</h1>
+        <div className="flex items-center justify-between mb-4">
+          <h1>Notendatenbank</h1>
+          <div className="flex gap-2">
+            <button
+              onClick={handleUploadClick}
+              className="flex items-center px-4 py-1.5 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
+            >
+              <span className="mr-1.5">↑</span>
+              Aus PDF
+            </button>
+            <button
+              onClick={handleCreateClick}
+              className="flex items-center px-4 py-1.5 text-sm font-medium text-white bg-gray-800 rounded-md hover:bg-gray-700 transition-colors dark:bg-gray-700 dark:hover:bg-gray-600"
+            >
+              <span className="mr-1.5">+</span>
+              Neuer Eintrag
+            </button>
+          </div>
+        </div>
       </div>
       <div className="middle-column flex flex-row">
         <ScoresTableToolbar scores={scores} onFilteredScoresChange={setFilteredScores} />
