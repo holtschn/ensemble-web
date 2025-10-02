@@ -2,12 +2,12 @@ import React, { useState, useEffect } from 'react';
 
 import { ScoreItem, ScoreItemWithUploads } from '@/next/ndb/types';
 import { FIELD_LABELS, GENRE_CHOICES, DIFFICULTY_CHOICES, DEFAULT_INSTRUMENTATION } from '@/next/ndb/constants';
-import { Instrumentation, toInstrumentation } from '@/next/ndb/utils/instrumentation';
 
 import TextField from '@/next/ndb/components/TextField';
+import AutocompleteField from '@/next/ndb/components/AutocompleteField';
 import TextAreaField from '@/next/ndb/components/TextAreaField';
 import SelectField from '@/next/ndb/components/SelectField';
-import Icon from '@/next/ndb/components/Icon';
+import InstrumentationEditor from '@/next/ndb/components/InstrumentationEditor';
 
 interface ScoreEditFormProps {
   score: ScoreItem | null;
@@ -38,48 +38,6 @@ const DetailRow: React.FC<{ label: string; children: React.ReactNode; fullWidth?
   );
 };
 
-const InstrumentationDisplay: React.FC<{
-  instrumentation: Instrumentation;
-  withPercussion: boolean;
-  withOrgan: boolean;
-}> = ({ instrumentation, withPercussion, withOrgan }) => {
-  const instruments = [
-    { label: 'Trp.', count: instrumentation.numTrumpets() },
-    { label: 'Hrn.', count: instrumentation.numHorns() },
-    { label: 'Pos.', count: instrumentation.numTrombones() },
-    { label: 'Tub.', count: instrumentation.numTubas() },
-    { label: 'Euph.', count: instrumentation.numEuphoniums() },
-  ];
-
-  return (
-    <div className="space-y-2">
-      <div className="flex flex-wrap gap-x-4 gap-y-1">
-        {instruments
-          .filter((inst) => inst.count > 0)
-          .map((inst) => (
-            <div key={inst.label} className="flex items-baseline gap-1">
-              <span>{inst.count}</span>
-              <span className="ndb-profex-label">{inst.label}</span>
-            </div>
-          ))}
-      </div>
-      <div className="flex flex-wrap gap-x-4">
-        <div className="flex items-center gap-1.5">
-          {withPercussion ? (
-            <Icon name="check" alt="Ja" className="h-4 w-4" />
-          ) : (
-            <Icon name="cross" alt="Nein" className="h-4 w-4" />
-          )}
-          <span className="ndb-profex-label">Percussion</span>
-        </div>
-        <div className="flex items-center gap-1.5">
-          {withOrgan ? <Icon name="check" alt="Ja" className="h-4 w-4" /> : <Icon name="cross" alt="Nein" className="h-4 w-4" />}
-          <span className="ndb-profex-label">Orgel</span>
-        </div>
-      </div>
-    </div>
-  );
-};
 
 const ScoreEditForm: React.FC<ScoreEditFormProps> = ({ score, onSave, isSaving, onHasChanges, submitRef }) => {
   // Initialize form state with default values or existing score data
@@ -151,6 +109,18 @@ const ScoreEditForm: React.FC<ScoreEditFormProps> = ({ score, onSave, isSaving, 
     }
   };
 
+  const handleInstrumentationChange = (instrumentation: string, withPercussion: boolean, withOrgan: boolean) => {
+    setFormData((prev) => ({
+      ...prev,
+      instrumentation,
+      withPercussion,
+      withOrgan,
+    }));
+    const newHasChanges = true;
+    setHasChanges(newHasChanges);
+    onHasChanges(newHasChanges);
+  };
+
   const validate = (): boolean => {
     const newErrors: Record<string, string> = {};
 
@@ -177,8 +147,6 @@ const ScoreEditForm: React.FC<ScoreEditFormProps> = ({ score, onSave, isSaving, 
     submitRef.current = () => handleSubmit();
   }, [formData, submitRef]);
 
-  const instrumentation = toInstrumentation(formData.instrumentation);
-
   return (
     <form onSubmit={handleSubmit}>
       <dl className="grid grid-cols-1 sm:grid-cols-[120px_1fr] gap-x-4 gap-y-0">
@@ -195,8 +163,9 @@ const ScoreEditForm: React.FC<ScoreEditFormProps> = ({ score, onSave, isSaving, 
         </DetailRow>
 
         <DetailRow label={FIELD_LABELS.composer}>
-          <TextField
+          <AutocompleteField
             name="composer"
+            fieldName="composer"
             value={formData.composer}
             onChange={handleChange}
             error={errors.composer}
@@ -207,8 +176,9 @@ const ScoreEditForm: React.FC<ScoreEditFormProps> = ({ score, onSave, isSaving, 
         </DetailRow>
 
         <DetailRow label={FIELD_LABELS.arranger}>
-          <TextField
+          <AutocompleteField
             name="arranger"
+            fieldName="arranger"
             value={formData.arranger ?? ''}
             onChange={handleChange}
             disabled={isSaving}
@@ -217,11 +187,12 @@ const ScoreEditForm: React.FC<ScoreEditFormProps> = ({ score, onSave, isSaving, 
         </DetailRow>
 
         <DetailRow label={FIELD_LABELS.instrumentation}>
-          {/* TODO: Replace with InstrumentationEditor component */}
-          <InstrumentationDisplay
-            instrumentation={instrumentation}
+          <InstrumentationEditor
+            value={formData.instrumentation}
             withPercussion={formData.withPercussion}
             withOrgan={formData.withOrgan}
+            onChange={handleInstrumentationChange}
+            disabled={isSaving}
           />
         </DetailRow>
 
@@ -236,8 +207,9 @@ const ScoreEditForm: React.FC<ScoreEditFormProps> = ({ score, onSave, isSaving, 
         </DetailRow>
 
         <DetailRow label={FIELD_LABELS.publisher}>
-          <TextField
+          <AutocompleteField
             name="publisher"
+            fieldName="publisher"
             value={formData.publisher ?? ''}
             onChange={handleChange}
             disabled={isSaving}
@@ -277,14 +249,6 @@ const ScoreEditForm: React.FC<ScoreEditFormProps> = ({ score, onSave, isSaving, 
           />
         </DetailRow>
       </dl>
-
-      {hasChanges && (
-        <div className="mt-4 p-3 rounded-md bg-amber-50 border border-amber-200 dark:bg-amber-900/20 dark:border-amber-800">
-          <p className="text-sm text-amber-700 dark:text-amber-400">
-            Sie haben ungespeicherte Änderungen. Bitte speichern oder verwerfen Sie diese.
-          </p>
-        </div>
-      )}
     </form>
   );
 };
