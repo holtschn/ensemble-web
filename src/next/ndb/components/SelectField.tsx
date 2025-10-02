@@ -1,32 +1,33 @@
 import React from 'react';
 
-interface TextFieldProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'type'> {
+interface SelectFieldProps extends Omit<React.SelectHTMLAttributes<HTMLSelectElement>, 'children'> {
   label?: string;
   error?: string;
   required?: boolean;
   helperText?: string;
+  options: readonly string[] | string[];
 }
 
-const TextField: React.FC<TextFieldProps> = ({
+const SelectField: React.FC<SelectFieldProps> = ({
   error,
   required = false,
   helperText,
   className = '',
   id,
   name,
+  options,
   ...props
 }) => {
-  const inputId = id || name || 'textfield';
+  const inputId = id || name || 'selectfield';
   const hasError = Boolean(error);
 
   return (
     <div className="mb-4">
-      <input
-        type="text"
+      <select
         id={inputId}
         name={name}
         className={`
-          w-full max-w-2xl px-3 py-2 border rounded-md shadow-sm
+          w-full max-w-xs px-3 py-2 border rounded-md shadow-sm
           focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500
           disabled:bg-gray-50 disabled:text-gray-500 disabled:cursor-not-allowed
           ${
@@ -36,11 +37,17 @@ const TextField: React.FC<TextFieldProps> = ({
           ${className}
         `.trim()}
         {...props}
-      />
+      >
+        {options.map((option) => (
+          <option key={option} value={option}>
+            {option || '—'}
+          </option>
+        ))}
+      </select>
       {hasError && <p className="mt-1 text-sm text-red-600 dark:text-red-400">{error}</p>}
       {helperText && !hasError && <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">{helperText}</p>}
     </div>
   );
 };
 
-export default TextField;
+export default SelectField;
