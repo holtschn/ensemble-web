@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 
 import useRedirectIfLoggedOut from '@/next/auth/loggedInHook';
@@ -8,28 +8,105 @@ import useRedirectIfLoggedOut from '@/next/auth/loggedInHook';
 import BackToScores from '@/next/ndb/components/scores/BackToScores';
 import ScoreEditForm from '@/next/ndb/components/scores/ScoreEditForm';
 import ScoreActions from '@/next/ndb/components/scores/ScoreActions';
+import LoadingSpinner from '@/next/ndb/components/LoadingSpinner';
 
-import { createScore } from '@/next/ndb/api/actions';
-import { ScoreItemWithUploads } from '@/next/ndb/types';
+import { uploadFile, fetchScoreAnalysis, createScore } from '@/next/ndb/api/actions';
+import { ScoreItem, ScoreItemWithUploads } from '@/next/ndb/types';
 import { SUCCESS_MESSAGES, ERROR_MESSAGES } from '@/next/ndb/constants';
+import Icon from '@/next/ndb/components/Icon';
+
+type PageState = 'upload-prompt' | 'uploading' | 'form';
 
 const ScoreCreatePage: React.FC = () => {
   useRedirectIfLoggedOut();
   const router = useRouter();
 
+  const [pageState, setPageState] = useState<PageState>('upload-prompt');
+  const [isUploading, setIsUploading] = useState(false);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [hasChanges, setHasChanges] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
   const [saveMessage, setSaveMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+  const [analyzedScore, setAnalyzedScore] = useState<Partial<ScoreItem> | null>(null);
+  const [uploadedFileKey, setUploadedFileKey] = useState<string | null>(null);
 
-  // Store reference to form submit function
-  const formSubmitRef = React.useRef<(() => void) | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const formSubmitRef = useRef<(() => void) | null>(null);
+
+  const handleSkipUpload = () => {
+    setPageState('form');
+    setAnalyzedScore(null);
+    setUploadedFileKey(null);
+  };
+
+  const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.name.toLowerCase().endsWith('.pdf')) {
+      setUploadError('Bitte laden Sie eine PDF-Datei hoch');
+      return;
+    }
+
+    setPageState('uploading');
+    setIsUploading(true);
+    setUploadError(null);
+
+    try {
+      // Step 1: Upload file to S3
+      const { fileKey } = await uploadFile(file);
+      if (!fileKey) {
+        throw new Error('Upload fehlgeschlagen');
+      }
+
+      setUploadedFileKey(fileKey);
+
+      // Step 2: Analyze the uploaded file
+      setIsAnalyzing(true);
+      setIsUploading(false);
+      const analysis = await fetchScoreAnalysis(fileKey);
+
+      // Convert to ScoreItem format
+      const scoreData: Partial<ScoreItem> = {
+        id: 0,
+        title: analysis.title || '',
+        composer: analysis.composer || '',
+        arranger: analysis.arranger || '',
+        genre: analysis.genre || '',
+        publisher: analysis.publisher || '',
+        difficulty: analysis.difficulty || '',
+        instrumentation: analysis.instrumentation || '00000',
+        withOrgan: analysis.withOrgan || false,
+        withPercussion: analysis.withPercussion || false,
+        comment: analysis.comment || '',
+        moderation: analysis.moderation || '',
+        parts: null,
+        fullScore: null,
+        audioMidi: null,
+        audioMp3: null,
+      };
+
+      setAnalyzedScore(scoreData);
+      setPageState('form');
+    } catch (error) {
+      console.error('Upload/Analysis error:', error);
+      setUploadError('Fehler beim Hochladen oder Analysieren der Datei');
+      setPageState('upload-prompt');
+    } finally {
+      setIsUploading(false);
+      setIsAnalyzing(false);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+    }
+  };
 
   const handleCancel = () => {
     router.push('/intern/ndb');
   };
 
   const handleSaveClick = () => {
-    // Trigger form submit
     if (formSubmitRef.current) {
       formSubmitRef.current();
     }
@@ -39,7 +116,13 @@ const ScoreCreatePage: React.FC = () => {
     setIsSaving(true);
     setSaveMessage(null);
     try {
-      const result = await createScore(scoreData);
+      // Include the uploaded PDF's S3 key if available
+      const dataWithFile: ScoreItemWithUploads = {
+        ...scoreData,
+        partsUploadS3Key: uploadedFileKey || scoreData.partsUploadS3Key,
+      };
+
+      const result = await createScore(dataWithFile);
       setSaveMessage({ type: 'success', text: SUCCESS_MESSAGES.SCORE_CREATED });
       setHasChanges(false);
       // Redirect to the newly created score's detail page
@@ -54,12 +137,100 @@ const ScoreCreatePage: React.FC = () => {
     }
   };
 
+  const handleStartOver = () => {
+    setPageState('upload-prompt');
+    setAnalyzedScore(null);
+    setUploadedFileKey(null);
+    setUploadError(null);
+    setSaveMessage(null);
+    setHasChanges(false);
+  };
+
+  // Upload prompt or uploading state
+  if (pageState === 'upload-prompt' || pageState === 'uploading') {
+    if (isUploading || isAnalyzing) {
+      return (
+        <div className="flex flex-col items-center justify-center mt-16">
+          <LoadingSpinner />
+          <p className="mt-4 text-gray-600">
+            {isUploading ? 'Datei wird hochgeladen...' : 'PDF wird analysiert...'}
+          </p>
+        </div>
+      );
+    }
+
+    return (
+      <div className="flex flex-col mt-8">
+        <div className="middle-column mb-8">
+          <h1 className="mb-4">Neuer Eintrag</h1>
+          <BackToScores />
+        </div>
+
+        <div className="middle-column">
+          <div className="max-w-2xl mx-auto">
+            <div className="p-8 border-2 border-dashed border-gray-300 rounded-lg text-center">
+              <Icon name="upload" alt="Upload" className="mx-auto h-12 w-12 text-gray-400 mb-4" />
+              <h2 className="text-xl font-medium mb-2">Stimmen hochladen (optional)</h2>
+              <p className="text-gray-600 mb-6">
+                Laden Sie eine PDF-Datei hoch. Die Metadaten werden automatisch extrahiert.
+              </p>
+
+              <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                <label className="inline-flex items-center px-6 py-3 text-base font-medium text-white bg-gray-800 rounded-md hover:bg-gray-700 cursor-pointer transition-colors">
+                  <Icon name="upload" alt="Upload" className="mr-2 h-4 w-4" />
+                  PDF auswählen
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept=".pdf"
+                    onChange={handleFileSelect}
+                    className="hidden"
+                  />
+                </label>
+
+                <button
+                  type="button"
+                  onClick={handleSkipUpload}
+                  className="inline-flex items-center px-6 py-3 text-base font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors"
+                >
+                  Überspringen
+                </button>
+              </div>
+
+              {uploadError && (
+                <p className="mt-4 text-sm text-red-600">{uploadError}</p>
+              )}
+            </div>
+
+            <div className="mt-6 p-4 bg-blue-50 rounded-md">
+              <p className="text-sm text-blue-800">
+                <strong>Hinweis:</strong> Sie können entweder eine PDF-Datei hochladen (die Metadaten werden automatisch
+                extrahiert) oder den Upload überspringen und alle Informationen manuell eingeben.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Form state
   return (
     <div className="flex flex-col mt-8">
       <div className="middle-column mb-8">
         <h1 className="mb-4">Neuer Eintrag</h1>
         <div className="flex flex-col sm:flex-row sm:items-center gap-4">
           <BackToScores />
+          {uploadedFileKey && (
+            <button
+              type="button"
+              onClick={handleStartOver}
+              className="flex items-center px-3 py-1.5 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors"
+            >
+              <Icon name="upload" alt="New Upload" className="mr-1.5 h-3.5 w-3.5" />
+              Neue Datei
+            </button>
+          )}
           <div className="ml-auto">
             <ScoreActions
               isEditMode={true}
@@ -82,12 +253,19 @@ const ScoreCreatePage: React.FC = () => {
             {saveMessage.text}
           </div>
         )}
+        {uploadedFileKey && (
+          <div className="mt-4 p-3 rounded-md bg-blue-50 border border-blue-200">
+            <p className="text-sm text-blue-700">
+              Die Metadaten wurden automatisch aus der PDF-Datei extrahiert. Bitte überprüfen und bei Bedarf anpassen.
+            </p>
+          </div>
+        )}
       </div>
 
       <div className="middle-column">
         <div className="max-w-5xl space-y-6">
           <ScoreEditForm
-            score={null}
+            score={analyzedScore as ScoreItem}
             onSave={handleSave}
             isSaving={isSaving}
             onHasChanges={setHasChanges}
