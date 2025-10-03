@@ -17,18 +17,13 @@ const ScoresMobileCard: React.FC<ScoresMobileCardProps> = ({
   onDownloadFullScore,
 }) => {
   return (
-    <div className="border-b px-4 py-4 cursor-pointer" onClick={() => onScoreClick?.(score)}>
-      <div className="flex justify-between items-start">
-        <div>
-          <div className="font-medium text-lg">{score.title}</div>
-          <div className="text-sm text-gray-600">{score.composer}</div>
+    <div className="border-b px-3 py-2 cursor-pointer" onClick={() => onScoreClick?.(score)}>
+      <div className="flex justify-between items-center gap-2">
+        <div className="flex-1 min-w-0">
+          <div className="font-medium text-base truncate">{score.title}</div>
+          <div className="text-sm text-gray-600 truncate">{score.composer}</div>
         </div>
-        <div className="text-right text-sm font-mono pl-2 flex-shrink-0">
-          {toInstrumentation(score.instrumentation).renderValue()}
-        </div>
-      </div>
-      <div className="flex mt-4 justify-end space-x-2">
-        <div style={{ minWidth: '90px' }} className="text-right">
+        <div className="flex gap-1 flex-shrink-0">
           {score.parts && onDownloadParts && (
             <Button
               size="sm"
@@ -41,8 +36,6 @@ const ScoresMobileCard: React.FC<ScoresMobileCardProps> = ({
               Stimmen
             </Button>
           )}
-        </div>
-        <div style={{ minWidth: '90px' }} className="text-right">
           {score.fullScore && onDownloadFullScore && (
             <Button
               size="sm"
