@@ -23,7 +23,7 @@
   }
 
   .ndb-profex-label {
-    @apply text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide;
+    @apply text-xs text-gray-500 uppercase tracking-wide;
   }
 }
 

@@ -16,7 +16,7 @@ const ActionCard: React.FC<ActionCardProps> = ({ isEditMode, onEditClick, disabl
   }
 
   return (
-    <div className="p-4 border rounded-lg shadow-sm bg-white dark:bg-gray-800 dark:border-gray-700">
+    <div className="p-4 border rounded-lg shadow-sm bg-white">
       <Button onClick={onEditClick} disabled={disabled} variant="primary" className="w-full">
         <Icon name="edit" alt="Edit Icon" className="mr-2" />
         Eintrag ändern

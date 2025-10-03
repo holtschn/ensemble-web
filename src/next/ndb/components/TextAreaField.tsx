@@ -32,15 +32,15 @@ const TextAreaField: React.FC<TextAreaFieldProps> = ({
           disabled:bg-gray-50 disabled:text-gray-500 disabled:cursor-not-allowed
           resize-y
           ${
-            hasError ? 'border-red-500 focus:ring-red-500 focus:border-red-500' : 'border-gray-300 dark:border-gray-600'
+            hasError ? 'border-red-500 focus:ring-red-500 focus:border-red-500' : 'border-gray-300'
           }
-          dark:bg-gray-800 dark:text-white dark:focus:ring-blue-400
+         
           ${className}
         `.trim()}
         {...props}
       />
-      {hasError && <p className="mt-1 text-sm text-red-600 dark:text-red-400">{error}</p>}
-      {helperText && !hasError && <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">{helperText}</p>}
+      {hasError && <p className="mt-1 text-sm text-red-600">{error}</p>}
+      {helperText && !hasError && <p className="mt-1 text-sm text-gray-500">{helperText}</p>}
     </div>
   );
 };

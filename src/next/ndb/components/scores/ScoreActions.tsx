@@ -25,7 +25,7 @@ const ScoreActions: React.FC<ScoreActionsProps> = ({
           type="button"
           onClick={onSaveClick}
           disabled={isSaving || !hasChanges}
-          className="flex items-center px-4 py-1.5 text-sm font-medium text-white bg-gray-800 rounded-md hover:bg-gray-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors dark:bg-gray-700 dark:hover:bg-gray-600"
+          className="flex items-center px-4 py-1.5 text-sm font-medium text-white bg-gray-800 rounded-md hover:bg-gray-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
         >
           <Icon name="check" alt="Save" className="mr-1.5 h-3.5 w-3.5" />
           {isSaving ? 'Speichern...' : 'Speichern'}
@@ -34,7 +34,7 @@ const ScoreActions: React.FC<ScoreActionsProps> = ({
           type="button"
           onClick={onCancelClick}
           disabled={isSaving}
-          className="flex items-center px-4 py-1.5 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
+          className="flex items-center px-4 py-1.5 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
         >
           <Icon name="cross" alt="Cancel" className="mr-1.5 h-3.5 w-3.5" />
           Abbrechen
@@ -47,7 +47,7 @@ const ScoreActions: React.FC<ScoreActionsProps> = ({
     <button
       type="button"
       onClick={onEditClick}
-      className="flex items-center px-4 py-1.5 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 max-w-xs"
+      className="flex items-center px-4 py-1.5 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors max-w-xs"
     >
       <Icon name="edit" alt="Edit" className="mr-1.5 h-3.5 w-3.5" />
       Bearbeiten

@@ -75,8 +75,8 @@ const ScoreCreatePage: React.FC = () => {
           <div
             className={`mt-4 p-4 rounded-md ${
               saveMessage.type === 'success'
-                ? 'bg-green-50 text-green-800 dark:bg-green-900 dark:text-green-200'
-                : 'bg-red-50 text-red-800 dark:bg-red-900 dark:text-red-200'
+                ? 'bg-green-50 text-green-800'
+                : 'bg-red-50 text-red-800'
             }`}
           >
             {saveMessage.text}
