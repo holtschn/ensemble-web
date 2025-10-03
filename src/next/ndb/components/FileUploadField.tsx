@@ -36,10 +36,13 @@ const FileUploadField: React.FC<FileUploadFieldProps> = ({
 
   // Track the original file and reset states when it changes (e.g., after form reset or save)
   useEffect(() => {
-    setOriginalFile(currentFile);
-    setIsRemoved(false);
-    setPendingFileName(null);
-  }, [currentFile?.key]); // Only reset when the file key changes, not when it becomes null
+    // Only update originalFile when we have a new file (not when removed)
+    if (currentFile?.key && currentFile.key !== originalFile?.key) {
+      setOriginalFile(currentFile);
+      setIsRemoved(false);
+      setPendingFileName(null);
+    }
+  }, [currentFile]); // Watch the entire currentFile object
 
   const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -106,8 +109,8 @@ const FileUploadField: React.FC<FileUploadFieldProps> = ({
             flex items-center px-3 py-1.5 text-sm font-medium rounded-md cursor-pointer transition-colors
             ${
               disabled || isUploading
-                ? 'bg-gray-300 text-gray-500 cursor-not-allowed dark:bg-gray-700'
-                : 'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600'
+                ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
             }
           `}
         >
@@ -130,7 +133,7 @@ const FileUploadField: React.FC<FileUploadFieldProps> = ({
             type="button"
             onClick={handleDiscard}
             disabled={disabled || isUploading}
-            className="flex items-center px-3 py-1.5 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
+            className="flex items-center px-3 py-1.5 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             <Icon name="arrow-left" alt="Restore" className="mr-1.5 h-3.5 w-3.5" />
             Wiederherstellen
@@ -141,7 +144,7 @@ const FileUploadField: React.FC<FileUploadFieldProps> = ({
             type="button"
             onClick={handleRestore}
             disabled={disabled || isUploading}
-            className="flex items-center px-3 py-1.5 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
+            className="flex items-center px-3 py-1.5 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             <Icon name="arrow-left" alt="Restore" className="mr-1.5 h-3.5 w-3.5" />
             Wiederherstellen
@@ -152,7 +155,7 @@ const FileUploadField: React.FC<FileUploadFieldProps> = ({
             type="button"
             onClick={handleRemove}
             disabled={disabled || isUploading}
-            className="flex items-center px-3 py-1.5 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
+            className="flex items-center px-3 py-1.5 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             <Icon name="cross" alt="Remove" className="mr-1.5 h-3.5 w-3.5" />
             Entfernen
@@ -161,19 +164,19 @@ const FileUploadField: React.FC<FileUploadFieldProps> = ({
 
         {/* File status display */}
         {hasPendingUpload ? (
-          <span className="text-sm text-gray-600 dark:text-gray-400 flex items-center gap-1">
-            <Icon name="check" alt="Success" className="h-3.5 w-3.5 text-green-600 dark:text-green-400" />
-            {pendingFileName} <span className="text-amber-600 dark:text-amber-400">(nicht gespeichert)</span>
+          <span className="text-sm text-gray-600 flex items-center gap-1">
+            <Icon name="check" alt="Success" className="h-3.5 w-3.5 text-green-600" />
+            {pendingFileName} <span className="text-amber-600">(nicht gespeichert)</span>
           </span>
         ) : (hadOriginalFile && !hasFile) || isRemoved ? (
-          <span className="text-sm text-amber-600 dark:text-amber-400">(Entfernt)</span>
+          <span className="text-sm text-amber-600">(Entfernt)</span>
         ) : hasFile ? (
-          <span className="text-sm text-gray-600 dark:text-gray-400">{currentFile?.filename}</span>
+          <span className="text-sm text-gray-600">{currentFile?.filename}</span>
         ) : null}
       </div>
 
       {/* Error message */}
-      {uploadError && <p className="mt-1 text-sm text-red-600 dark:text-red-400">{uploadError}</p>}
+      {uploadError && <p className="mt-1 text-sm text-red-600">{uploadError}</p>}
     </div>
   );
 };
