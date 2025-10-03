@@ -203,15 +203,7 @@ const ScoreCreatePage: React.FC = () => {
       <div className="middle-column mb-8">
         <h1 className="mb-4">Neuer Eintrag</h1>
         <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-          <button
-            type="button"
-            onClick={handleCancel}
-            disabled={isSaving}
-            className="flex items-center ndb-profex-label disabled:opacity-50"
-          >
-            <Icon name="arrow-left" alt="Cancel" className="mr-2 h-3 w-3" />
-            <div className="mt-0.5">Abbrechen</div>
-          </button>
+          <BackToScores />
           <div className="ml-auto">
             <ScoreActions
               isEditMode={true}
