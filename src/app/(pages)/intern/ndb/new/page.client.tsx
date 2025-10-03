@@ -137,15 +137,6 @@ const ScoreCreatePage: React.FC = () => {
     }
   };
 
-  const handleStartOver = () => {
-    setPageState('upload-prompt');
-    setAnalyzedScore(null);
-    setUploadedFileKey(null);
-    setUploadError(null);
-    setSaveMessage(null);
-    setHasChanges(false);
-  };
-
   // Upload prompt or uploading state
   if (pageState === 'upload-prompt' || pageState === 'uploading') {
     if (isUploading || isAnalyzing) {
@@ -168,16 +159,15 @@ const ScoreCreatePage: React.FC = () => {
 
         <div className="middle-column">
           <div className="max-w-2xl mx-auto">
-            <div className="p-8 border-2 border-dashed border-gray-300 rounded-lg text-center">
-              <Icon name="upload" alt="Upload" className="mx-auto h-12 w-12 text-gray-400 mb-4" />
-              <h2 className="text-xl font-medium mb-2">Stimmen hochladen (optional)</h2>
-              <p className="text-gray-600 mb-6">
-                Laden Sie eine PDF-Datei hoch. Die Metadaten werden automatisch extrahiert.
+            <div className="p-6 border-2 border-dashed border-gray-300 rounded-lg text-center">
+              <Icon name="upload" alt="Upload" className="mx-auto h-8 w-8 text-gray-400 mb-3" />
+              <p className="text-gray-600 mb-4">
+                Sie können eine PDF-Datei hochladen (Metadaten werden automatisch extrahiert) oder den Upload überspringen und alle Informationen manuell eingeben.
               </p>
 
-              <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                <label className="inline-flex items-center px-6 py-3 text-base font-medium text-white bg-gray-800 rounded-md hover:bg-gray-700 cursor-pointer transition-colors">
-                  <Icon name="upload" alt="Upload" className="mr-2 h-4 w-4" />
+              <div className="flex flex-col sm:flex-row gap-2 justify-center">
+                <label className="inline-flex items-center px-4 py-1.5 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 cursor-pointer transition-colors">
+                  <Icon name="upload" alt="Upload" className="mr-1.5 h-3.5 w-3.5" />
                   PDF auswählen
                   <input
                     ref={fileInputRef}
@@ -191,7 +181,7 @@ const ScoreCreatePage: React.FC = () => {
                 <button
                   type="button"
                   onClick={handleSkipUpload}
-                  className="inline-flex items-center px-6 py-3 text-base font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors"
+                  className="inline-flex items-center px-4 py-1.5 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors"
                 >
                   Überspringen
                 </button>
@@ -200,13 +190,6 @@ const ScoreCreatePage: React.FC = () => {
               {uploadError && (
                 <p className="mt-4 text-sm text-red-600">{uploadError}</p>
               )}
-            </div>
-
-            <div className="mt-6 p-4 bg-blue-50 rounded-md">
-              <p className="text-sm text-blue-800">
-                <strong>Hinweis:</strong> Sie können entweder eine PDF-Datei hochladen (die Metadaten werden automatisch
-                extrahiert) oder den Upload überspringen und alle Informationen manuell eingeben.
-              </p>
             </div>
           </div>
         </div>
@@ -220,17 +203,15 @@ const ScoreCreatePage: React.FC = () => {
       <div className="middle-column mb-8">
         <h1 className="mb-4">Neuer Eintrag</h1>
         <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-          <BackToScores />
-          {uploadedFileKey && (
-            <button
-              type="button"
-              onClick={handleStartOver}
-              className="flex items-center px-3 py-1.5 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors"
-            >
-              <Icon name="upload" alt="New Upload" className="mr-1.5 h-3.5 w-3.5" />
-              Neue Datei
-            </button>
-          )}
+          <button
+            type="button"
+            onClick={handleCancel}
+            disabled={isSaving}
+            className="flex items-center ndb-profex-label disabled:opacity-50"
+          >
+            <Icon name="arrow-left" alt="Cancel" className="mr-2 h-3 w-3" />
+            <div className="mt-0.5">Abbrechen</div>
+          </button>
           <div className="ml-auto">
             <ScoreActions
               isEditMode={true}
