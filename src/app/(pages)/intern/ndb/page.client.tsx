@@ -55,7 +55,7 @@ export const ScoresPageClient: React.FC = () => {
           <h1>Notendatenbank</h1>
           <button
             onClick={handleCreateClick}
-            className="hidden md:flex items-center px-4 py-1.5 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors"
+            className="hidden md:flex items-center px-4 py-1.5 mt-9 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors"
           >
             <Icon name="plus-circle" alt="Create" className="mr-1.5 h-3.5 w-3.5" />
             Eintrag anlegen
