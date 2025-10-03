@@ -137,7 +137,7 @@ const ScoresTableToolbar: React.FC<ScoresTableToolbarProps> = ({ scores, onFilte
   };
 
   return (
-    <div className={`w-full bg-white border-b border-gray-200 p-4 ${className}`}>
+    <div className={`w-full bg-white border-b border-gray-200 py-4 ${className}`}>
       <div className="flex flex-col gap-0">
         {/* Row 1: Search Input */}
         <div className="w-full">
