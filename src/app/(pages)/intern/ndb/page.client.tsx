@@ -54,19 +54,19 @@ export const ScoresPageClient: React.FC = () => {
   return (
     <div className="flex flex-col mt-8">
       <div className="middle-column">
-        <div className="flex items-center justify-between mb-4">
-          <h1>Notendatenbank</h1>
-          <div className="flex gap-2">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 gap-3">
+          <h1 className="text-2xl sm:text-3xl">Notendatenbank</h1>
+          <div className="flex gap-2 w-full sm:w-auto">
             <button
               onClick={handleUploadClick}
-              className="flex items-center px-4 py-1.5 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
+              className="flex items-center justify-center flex-1 sm:flex-initial px-3 sm:px-4 py-1.5 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors"
             >
               <span className="mr-1.5">↑</span>
               Aus PDF
             </button>
             <button
               onClick={handleCreateClick}
-              className="flex items-center px-4 py-1.5 text-sm font-medium text-white bg-gray-800 rounded-md hover:bg-gray-700 transition-colors dark:bg-gray-700 dark:hover:bg-gray-600"
+              className="flex items-center justify-center flex-1 sm:flex-initial px-3 sm:px-4 py-1.5 text-sm font-medium text-white bg-gray-800 rounded-md hover:bg-gray-700 transition-colors"
             >
               <span className="mr-1.5">+</span>
               Neuer Eintrag
