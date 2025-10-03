@@ -7,17 +7,9 @@ interface ScoreActionsProps {
   hasChanges: boolean;
   onEditClick: () => void;
   onSaveClick: () => void;
-  onCancelClick: () => void;
 }
 
-const ScoreActions: React.FC<ScoreActionsProps> = ({
-  isEditMode,
-  isSaving,
-  hasChanges,
-  onEditClick,
-  onSaveClick,
-  onCancelClick,
-}) => {
+const ScoreActions: React.FC<ScoreActionsProps> = ({ isEditMode, isSaving, hasChanges, onEditClick, onSaveClick }) => {
   if (isEditMode) {
     return (
       <div className="flex gap-2 max-w-sm">
@@ -29,15 +21,6 @@ const ScoreActions: React.FC<ScoreActionsProps> = ({
         >
           <Icon name="check" alt="Save" className="mr-1.5 h-3.5 w-3.5" />
           {isSaving ? 'Speichern...' : 'Speichern'}
-        </button>
-        <button
-          type="button"
-          onClick={onCancelClick}
-          disabled={isSaving}
-          className="flex items-center px-4 py-1.5 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-        >
-          <Icon name="cross" alt="Cancel" className="mr-1.5 h-3.5 w-3.5" />
-          Abbrechen
         </button>
       </div>
     );
