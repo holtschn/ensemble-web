@@ -18,10 +18,10 @@ export const HeaderComponentClient: React.FC<HeaderComponentClientProps> = ({ li
    * ...but we do not know which dimension hits the boundary first.
    */
   let computedLogoHeight = 30;
-  let computedLogoWidth = ((logo?.width ?? 0) / (logo?.height ?? 1)) * computedLogoHeight;
+  let computedLogoWidth = Math.round(((logo?.width ?? 0) / (logo?.height ?? 1)) * computedLogoHeight);
   if (computedLogoWidth > 120) {
     computedLogoWidth = 120;
-    computedLogoHeight = ((logo?.height ?? 0) / (logo?.width ?? 1)) * computedLogoWidth;
+    computedLogoHeight = Math.round(((logo?.height ?? 0) / (logo?.width ?? 1)) * computedLogoWidth);
   }
 
   return (
