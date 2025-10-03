@@ -15,7 +15,7 @@ interface ScoreEditFormProps {
   onSave: (scoreData: ScoreItemWithUploads) => Promise<void>;
   isSaving: boolean;
   onHasChanges: (hasChanges: boolean) => void;
-  submitRef: React.MutableRefObject<(() => void) | null>;
+  submitRef: React.RefObject<(() => void) | null>;
 }
 
 const DetailRow: React.FC<{ label: string; children: React.ReactNode; fullWidth?: boolean }> = ({
@@ -38,7 +38,6 @@ const DetailRow: React.FC<{ label: string; children: React.ReactNode; fullWidth?
     </>
   );
 };
-
 
 const ScoreEditForm: React.FC<ScoreEditFormProps> = ({ score, onSave, isSaving, onHasChanges, submitRef }) => {
   // Initialize form state with default values or existing score data
@@ -66,7 +65,6 @@ const ScoreEditForm: React.FC<ScoreEditFormProps> = ({ score, onSave, isSaving, 
   }));
 
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [hasChanges, setHasChanges] = useState(false);
 
   // Update form data when score prop changes
   useEffect(() => {
@@ -93,7 +91,6 @@ const ScoreEditForm: React.FC<ScoreEditFormProps> = ({ score, onSave, isSaving, 
         audioMidiUploadS3Key: null,
         audioMp3UploadS3Key: null,
       });
-      setHasChanges(false);
       onHasChanges(false);
     }
   }, [score, onHasChanges]);
@@ -102,7 +99,6 @@ const ScoreEditForm: React.FC<ScoreEditFormProps> = ({ score, onSave, isSaving, 
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
     const newHasChanges = true;
-    setHasChanges(newHasChanges);
     onHasChanges(newHasChanges);
     // Clear error for this field
     if (errors[name]) {
@@ -118,7 +114,6 @@ const ScoreEditForm: React.FC<ScoreEditFormProps> = ({ score, onSave, isSaving, 
       withOrgan,
     }));
     const newHasChanges = true;
-    setHasChanges(newHasChanges);
     onHasChanges(newHasChanges);
   };
 
@@ -155,7 +150,6 @@ const ScoreEditForm: React.FC<ScoreEditFormProps> = ({ score, onSave, isSaving, 
     }
 
     const newHasChanges = true;
-    setHasChanges(newHasChanges);
     onHasChanges(newHasChanges);
   };
 
