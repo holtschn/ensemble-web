@@ -1,7 +1,7 @@
 import Link from 'next/link';
+import { getPayload } from 'payload';
 
 import config from '@payload-config';
-import { getPayload } from 'payload';
 
 type FooterComponentProps = {
   copyrightOwner?: string;
@@ -10,6 +10,7 @@ type FooterComponentProps = {
 
 async function getFooterData(): Promise<FooterComponentProps> {
   const payload = await getPayload({ config });
+
   try {
     const data = await payload.findGlobal({ slug: 'footer' });
 

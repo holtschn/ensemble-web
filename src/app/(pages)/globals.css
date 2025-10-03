@@ -2,10 +2,7 @@
 
 @theme {
   --background-image-gradient-radial: radial-gradient(var(--tw-gradient-stops));
-  --background-image-gradient-conic: conic-gradient(
-    from 180deg at 50% 50%,
-    var(--tw-gradient-stops)
-  );
+  --background-image-gradient-conic: conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops));
 }
 
 /*
@@ -23,6 +20,10 @@
   ::backdrop,
   ::file-selector-button {
     border-color: var(--color-gray-200, currentColor);
+  }
+
+  .ndb-profex-label {
+    @apply text-xs text-gray-500 uppercase tracking-wide;
   }
 }
 
@@ -64,7 +65,6 @@
 }
 
 @layer utilities {
-
   h1 {
     @apply text-2xl font-bold mt-12 mb-4 text-center;
   }

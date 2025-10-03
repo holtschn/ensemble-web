@@ -25,11 +25,10 @@ export const PrivateHomePageClient: React.FC<PrivateHomePageClientProps> = ({ ev
         </div>
         <div className="middle-column">
           <div className="flex flex-col space-y-4">
-            <Link href={process.env.NEXT_PUBLIC_NOTENDATENBANK_LINK!} target="_blank">
-              Notendatenbank
-            </Link>
+            <Link href="/intern/ndb">Notendatenbank</Link>
             <Link href={`${SERVER_URL!}/admin/collections/events`}>Events verwalten</Link>
             <Link href={`${SERVER_URL!}/admin/collections/users`}>Nutzer verwalten</Link>
+            <Link href="/intern/players">Adressliste</Link>
           </div>
         </div>
         <div className="middle-column">

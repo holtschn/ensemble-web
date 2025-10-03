@@ -1,8 +1,9 @@
 import 'server-only';
 
+import { getPayload } from 'payload';
+
 import config from '@payload-config';
 import { Page } from '@/payload-types';
-import { getPayload } from 'payload';
 
 export type PublicPage = Pick<Page, 'title' | 'content' | 'slug' | 'meta'>;
 
@@ -17,6 +18,7 @@ export function sanitizePage(page: Page): PublicPage {
 
 export async function getPublicPage(slug: string, isDraftMode: boolean): Promise<PublicPage | null> {
   const payload = await getPayload({ config });
+
   const data = await payload.find({
     collection: 'pages',
     where: {
@@ -32,6 +34,7 @@ export async function getPublicPage(slug: string, isDraftMode: boolean): Promise
 
 export async function getAllPublicPages(isDraftMode: boolean, limit: number = 1000): Promise<PublicPage[]> {
   const payload = await getPayload({ config });
+
   return payload
     .find({
       collection: 'pages',

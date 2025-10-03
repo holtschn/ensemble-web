@@ -31,6 +31,7 @@ export const Events: CollectionConfig = {
     preview: createPreviewUrlProvider(eventUrlProvider),
     useAsTitle: 'title',
   },
+  defaultSort: '-eventEnd',
   fields: [
     {
       tabs: [
@@ -62,6 +63,7 @@ export const Events: CollectionConfig = {
               name: 'eventEnd',
               label: 'Ende des Events',
               type: 'date',
+              required: true,
               admin: {
                 date: {
                   pickerAppearance: 'default',
