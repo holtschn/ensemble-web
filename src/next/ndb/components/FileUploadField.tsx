@@ -42,7 +42,7 @@ const FileUploadField: React.FC<FileUploadFieldProps> = ({
       setIsRemoved(false);
       setPendingFileName(null);
     }
-  }, [currentFile]); // Watch the entire currentFile object
+  }, [currentFile, originalFile?.key]); // Watch the entire currentFile object
 
   const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
