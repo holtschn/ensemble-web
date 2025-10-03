@@ -7,16 +7,20 @@ interface ScoresDownloadButtonsProps {
 }
 
 const ScoresDownloadButtons: React.FC<ScoresDownloadButtonsProps> = ({ score }) => {
+  const hasParts = score.parts !== null;
+  const hasFullScore = score.fullScore !== null;
+
+  // If no files, show placeholder
+  if (!hasParts && !hasFullScore) {
+    return <div className="text-sm text-gray-400">-</div>;
+  }
+
   return (
     <div className="flex space-x-2 justify-end">
-      <div className="w-24 text-center">
-        {score.parts && <ScoreDownloadButton file={score.parts} label="Stimmen" size="sm" className="w-full" />}
-      </div>
-      <div className="w-24 text-center">
-        {score.fullScore && (
-          <ScoreDownloadButton file={score.fullScore} label="Partitur" size="sm" className="w-full" />
-        )}
-      </div>
+      {hasParts && <ScoreDownloadButton file={score.parts} label="Stimmen" size="sm" className="min-w-[90px]" />}
+      {hasFullScore && (
+        <ScoreDownloadButton file={score.fullScore} label="Partitur" size="sm" className="min-w-[90px]" />
+      )}
     </div>
   );
 };
