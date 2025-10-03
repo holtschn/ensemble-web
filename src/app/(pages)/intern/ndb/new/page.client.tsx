@@ -143,9 +143,7 @@ const ScoreCreatePage: React.FC = () => {
       return (
         <div className="flex flex-col items-center justify-center mt-16">
           <LoadingSpinner />
-          <p className="mt-4 text-gray-600">
-            {isUploading ? 'Datei wird hochgeladen...' : 'PDF wird analysiert...'}
-          </p>
+          <p className="mt-4 text-gray-600">{isUploading ? 'Datei wird hochgeladen...' : 'PDF wird analysiert...'}</p>
         </div>
       );
     }
@@ -160,22 +158,16 @@ const ScoreCreatePage: React.FC = () => {
         <div className="middle-column">
           <div className="max-w-2xl mx-auto">
             <div className="p-6 border-2 border-dashed border-gray-300 rounded-lg text-center">
-              <Icon name="upload" alt="Upload" className="mx-auto h-8 w-8 text-gray-400 mb-3" />
               <p className="text-gray-600 mb-4">
-                Sie können eine PDF-Datei hochladen (Metadaten werden automatisch extrahiert) oder den Upload überspringen und alle Informationen manuell eingeben.
+                Laden Sie das PDF mit den Einzelstimmen herauf, um Daten wie Titel, Komponist u.a. automatisch zu
+                extrahieren. Auf der folgenden Seite können Sie die Daten manuell korrigieren und ergänzen.
               </p>
 
               <div className="flex flex-col sm:flex-row gap-2 justify-center">
                 <label className="inline-flex items-center px-4 py-1.5 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 cursor-pointer transition-colors">
                   <Icon name="upload" alt="Upload" className="mr-1.5 h-3.5 w-3.5" />
                   PDF auswählen
-                  <input
-                    ref={fileInputRef}
-                    type="file"
-                    accept=".pdf"
-                    onChange={handleFileSelect}
-                    className="hidden"
-                  />
+                  <input ref={fileInputRef} type="file" accept=".pdf" onChange={handleFileSelect} className="hidden" />
                 </label>
 
                 <button
@@ -187,9 +179,7 @@ const ScoreCreatePage: React.FC = () => {
                 </button>
               </div>
 
-              {uploadError && (
-                <p className="mt-4 text-sm text-red-600">{uploadError}</p>
-              )}
+              {uploadError && <p className="mt-4 text-sm text-red-600">{uploadError}</p>}
             </div>
           </div>
         </div>
@@ -211,16 +201,13 @@ const ScoreCreatePage: React.FC = () => {
               hasChanges={hasChanges}
               onEditClick={() => {}}
               onSaveClick={handleSaveClick}
-              onCancelClick={handleCancel}
             />
           </div>
         </div>
         {saveMessage && (
           <div
             className={`mt-4 p-4 rounded-md ${
-              saveMessage.type === 'success'
-                ? 'bg-green-50 text-green-800'
-                : 'bg-red-50 text-red-800'
+              saveMessage.type === 'success' ? 'bg-green-50 text-green-800' : 'bg-red-50 text-red-800'
             }`}
           >
             {saveMessage.text}
