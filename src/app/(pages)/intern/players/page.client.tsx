@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Link from 'next/link';
 
 import { useAuth } from '@/next/auth/context';
 import useRedirectIfLoggedOut from '@/next/auth/loggedInHook';
@@ -19,8 +20,12 @@ export const PrivatePlayersListPageClient: React.FC<PrivatePlayersListPageClient
     status === 'loggedIn' && (
       <div className="flex flex-col mt-8">
         <div className="middle-column mb-6">
-          <h1>Adressliste</h1>
-          <p className="text-sm text-gray-600 mt-2">{players.length} Mitglieder</p>
+          <h1 className="mb-4">Adressliste</h1>
+          <Link href="/intern" className="flex items-center ndb-profex-label">
+            <Icon name="arrow-left" alt="Back" className="mr-2 h-3 w-3" />
+            <div className="mt-0.5">Zurück zur Übersicht</div>
+          </Link>
+          <p className="text-sm text-gray-600 mt-4">{players.length} Mitglieder</p>
         </div>
         <div className="middle-column">
           <div className="flex flex-col gap-4">
