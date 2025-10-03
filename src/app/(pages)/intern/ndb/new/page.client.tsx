@@ -14,10 +14,12 @@ import { uploadFile, fetchScoreAnalysis, createScore } from '@/next/ndb/api/acti
 import { ScoreItem, ScoreItemWithUploads } from '@/next/ndb/types';
 import { SUCCESS_MESSAGES, ERROR_MESSAGES } from '@/next/ndb/constants';
 import Icon from '@/next/ndb/components/Icon';
+import { useAuth } from '@/next/auth/context';
 
 type PageState = 'upload-prompt' | 'uploading' | 'form';
 
 const ScoreCreatePage: React.FC = () => {
+  const { status } = useAuth();
   useRedirectIfLoggedOut();
   const router = useRouter();
 
@@ -102,10 +104,6 @@ const ScoreCreatePage: React.FC = () => {
     }
   };
 
-  const handleCancel = () => {
-    router.push('/intern/ndb');
-  };
-
   const handleSaveClick = () => {
     if (formSubmitRef.current) {
       formSubmitRef.current();
@@ -149,91 +147,100 @@ const ScoreCreatePage: React.FC = () => {
     }
 
     return (
-      <div className="flex flex-col mt-8">
-        <div className="middle-column mb-8">
-          <h1 className="mb-4">Neuer Eintrag</h1>
-          <BackToScores />
-        </div>
+      status === 'loggedIn' && (
+        <div className="flex flex-col mt-8">
+          <div className="middle-column mb-8">
+            <h1 className="mb-4">Neuer Eintrag</h1>
+            <BackToScores />
+          </div>
 
-        <div className="middle-column">
-          <div className="max-w-2xl mx-auto">
-            <div className="p-6 border-2 border-dashed border-gray-300 rounded-lg text-center">
-              <p className="text-gray-600 mb-4">
-                Laden Sie das PDF mit den Einzelstimmen herauf, um Daten wie Titel, Komponist u.a. automatisch zu
-                extrahieren. Auf der folgenden Seite können Sie die Daten manuell korrigieren und ergänzen.
-              </p>
+          <div className="middle-column">
+            <div className="max-w-2xl mx-auto">
+              <div className="p-6 border-2 border-dashed border-gray-300 rounded-lg text-center">
+                <p className="text-gray-600 mb-4">
+                  Laden Sie das PDF mit den Einzelstimmen herauf, um Daten wie Titel, Komponist u.a. automatisch zu
+                  extrahieren. Auf der folgenden Seite können Sie die Daten manuell korrigieren und ergänzen.
+                </p>
 
-              <div className="flex flex-col sm:flex-row gap-2 justify-center">
-                <label className="inline-flex items-center px-4 py-1.5 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 cursor-pointer transition-colors">
-                  <Icon name="upload" alt="Upload" className="mr-1.5 h-3.5 w-3.5" />
-                  PDF auswählen
-                  <input ref={fileInputRef} type="file" accept=".pdf" onChange={handleFileSelect} className="hidden" />
-                </label>
+                <div className="flex flex-col sm:flex-row gap-2 justify-center">
+                  <label className="inline-flex items-center px-4 py-1.5 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 cursor-pointer transition-colors">
+                    <Icon name="upload" alt="Upload" className="mr-1.5 h-3.5 w-3.5" />
+                    PDF auswählen
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      accept=".pdf"
+                      onChange={handleFileSelect}
+                      className="hidden"
+                    />
+                  </label>
 
-                <button
-                  type="button"
-                  onClick={handleSkipUpload}
-                  className="inline-flex items-center px-4 py-1.5 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors"
-                >
-                  Überspringen
-                </button>
+                  <button
+                    type="button"
+                    onClick={handleSkipUpload}
+                    className="inline-flex items-center px-4 py-1.5 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors"
+                  >
+                    Überspringen
+                  </button>
+                </div>
+
+                {uploadError && <p className="mt-4 text-sm text-red-600">{uploadError}</p>}
               </div>
-
-              {uploadError && <p className="mt-4 text-sm text-red-600">{uploadError}</p>}
             </div>
           </div>
         </div>
-      </div>
+      )
     );
   }
 
-  // Form state
   return (
-    <div className="flex flex-col mt-8">
-      <div className="middle-column mb-8">
-        <h1 className="mb-4">Neuer Eintrag</h1>
-        <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-          <BackToScores />
-          <div className="ml-auto">
-            <ScoreActions
-              isEditMode={true}
+    status === 'loggedIn' && (
+      <div className="flex flex-col mt-8">
+        <div className="middle-column mb-8">
+          <h1 className="mb-4">Neuer Eintrag</h1>
+          <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+            <BackToScores />
+            <div className="ml-auto">
+              <ScoreActions
+                isEditMode={true}
+                isSaving={isSaving}
+                hasChanges={hasChanges}
+                onEditClick={() => {}}
+                onSaveClick={handleSaveClick}
+              />
+            </div>
+          </div>
+          {saveMessage && (
+            <div
+              className={`mt-4 p-4 rounded-md ${
+                saveMessage.type === 'success' ? 'bg-green-50 text-green-800' : 'bg-red-50 text-red-800'
+              }`}
+            >
+              {saveMessage.text}
+            </div>
+          )}
+          {uploadedFileKey && (
+            <div className="mt-4 p-3 rounded-md bg-blue-50 border border-blue-200">
+              <p className="text-sm text-blue-700">
+                Die Metadaten wurden automatisch aus der PDF-Datei extrahiert. Bitte überprüfen und bei Bedarf anpassen.
+              </p>
+            </div>
+          )}
+        </div>
+
+        <div className="middle-column">
+          <div className="max-w-5xl space-y-6">
+            <ScoreEditForm
+              score={analyzedScore as ScoreItem}
+              onSave={handleSave}
               isSaving={isSaving}
-              hasChanges={hasChanges}
-              onEditClick={() => {}}
-              onSaveClick={handleSaveClick}
+              onHasChanges={setHasChanges}
+              submitRef={formSubmitRef}
             />
           </div>
         </div>
-        {saveMessage && (
-          <div
-            className={`mt-4 p-4 rounded-md ${
-              saveMessage.type === 'success' ? 'bg-green-50 text-green-800' : 'bg-red-50 text-red-800'
-            }`}
-          >
-            {saveMessage.text}
-          </div>
-        )}
-        {uploadedFileKey && (
-          <div className="mt-4 p-3 rounded-md bg-blue-50 border border-blue-200">
-            <p className="text-sm text-blue-700">
-              Die Metadaten wurden automatisch aus der PDF-Datei extrahiert. Bitte überprüfen und bei Bedarf anpassen.
-            </p>
-          </div>
-        )}
       </div>
-
-      <div className="middle-column">
-        <div className="max-w-5xl space-y-6">
-          <ScoreEditForm
-            score={analyzedScore as ScoreItem}
-            onSave={handleSave}
-            isSaving={isSaving}
-            onHasChanges={setHasChanges}
-            submitRef={formSubmitRef}
-          />
-        </div>
-      </div>
-    </div>
+    )
   );
 };
 

@@ -12,8 +12,10 @@ import ScoresTable from '@/next/ndb/components/scores/ScoresTable';
 import ScoresTableToolbar from '@/next/ndb/components/scores/ScoresTableToolbar';
 import LoadingSpinner from '@/next/ndb/components/LoadingSpinner';
 import Icon from '@/next/ndb/components/Icon';
+import { useAuth } from '@/next/auth/context';
 
 export const ScoresPageClient: React.FC = () => {
+  const { status } = useAuth();
   useRedirectIfLoggedOut();
 
   const router = useRouter();

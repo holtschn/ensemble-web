@@ -17,12 +17,14 @@ import { useScores } from '@/next/ndb/hooks/useScores';
 import { updateScore } from '@/next/ndb/api/actions';
 import { ScoreItemWithUploads } from '@/next/ndb/types';
 import { SUCCESS_MESSAGES, ERROR_MESSAGES } from '@/next/ndb/constants';
+import { useAuth } from '@/next/auth/context';
 
 interface ScoreDetailsPageProps {
   scoreId: number | null;
 }
 
 const ScoreDetailsPage: React.FC<ScoreDetailsPageProps> = ({ scoreId }) => {
+  const { status } = useAuth();
   useRedirectIfLoggedOut();
 
   const { getScoreById, isLoading } = useScores();
@@ -87,76 +89,78 @@ const ScoreDetailsPage: React.FC<ScoreDetailsPageProps> = ({ scoreId }) => {
   }
 
   return (
-    <div className="flex flex-col mt-8">
-      <div className="middle-column mb-8">
-        <h1 className="mb-4">{isEditMode ? `${score.title} bearbeiten` : score.title}</h1>
-        <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-          {isEditMode ? (
-            <button
-              type="button"
-              onClick={handleCancel}
-              disabled={isSaving}
-              className="flex items-center ndb-profex-label disabled:opacity-50"
-            >
-              <Icon name="arrow-left" alt="Cancel" className="mr-2 h-3 w-3" />
-              <div className="mt-0.5">Abbrechen</div>
-            </button>
-          ) : (
-            <BackToScores />
-          )}
-          <div className="ml-auto flex items-center gap-4">
-            {isEditMode && hasChanges && <span className="text-sm text-amber-600">Ungespeicherte Änderungen</span>}
+    status === 'loggedIn' && (
+      <div className="flex flex-col mt-8">
+        <div className="middle-column mb-8">
+          <h1 className="mb-4">{isEditMode ? `${score.title} bearbeiten` : score.title}</h1>
+          <div className="flex flex-col sm:flex-row sm:items-center gap-4">
             {isEditMode ? (
               <button
                 type="button"
-                onClick={handleSaveClick}
-                disabled={isSaving || !hasChanges}
-                className="flex items-center px-4 py-1.5 text-sm font-medium text-white bg-gray-800 rounded-md hover:bg-gray-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+                onClick={handleCancel}
+                disabled={isSaving}
+                className="flex items-center ndb-profex-label disabled:opacity-50"
               >
-                {isSaving ? 'Speichern...' : 'Speichern'}
+                <Icon name="arrow-left" alt="Cancel" className="mr-2 h-3 w-3" />
+                <div className="mt-0.5">Abbrechen</div>
               </button>
             ) : (
-              <ScoreActions
-                isEditMode={isEditMode}
+              <BackToScores />
+            )}
+            <div className="ml-auto flex items-center gap-4">
+              {isEditMode && hasChanges && <span className="text-sm text-amber-600">Ungespeicherte Änderungen</span>}
+              {isEditMode ? (
+                <button
+                  type="button"
+                  onClick={handleSaveClick}
+                  disabled={isSaving || !hasChanges}
+                  className="flex items-center px-4 py-1.5 text-sm font-medium text-white bg-gray-800 rounded-md hover:bg-gray-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+                >
+                  {isSaving ? 'Speichern...' : 'Speichern'}
+                </button>
+              ) : (
+                <ScoreActions
+                  isEditMode={isEditMode}
+                  isSaving={isSaving}
+                  hasChanges={hasChanges}
+                  onEditClick={handleEditClick}
+                  onSaveClick={handleSaveClick}
+                />
+              )}
+            </div>
+          </div>
+          {saveMessage && (
+            <div
+              className={`mt-4 p-4 rounded-md ${
+                saveMessage.type === 'success' ? 'bg-green-50 text-green-800' : 'bg-red-50 text-red-800'
+              }`}
+            >
+              {saveMessage.text}
+            </div>
+          )}
+        </div>
+
+        <div className="middle-column">
+          <div className="max-w-5xl space-y-6">
+            {isEditMode ? (
+              <ScoreEditForm
+                score={score}
+                onSave={handleSave}
                 isSaving={isSaving}
-                hasChanges={hasChanges}
-                onEditClick={handleEditClick}
-                onSaveClick={handleSaveClick}
+                onHasChanges={setHasChanges}
+                submitRef={formSubmitRef}
               />
+            ) : (
+              <>
+                <ScoreDetailsCard score={score} />
+                <ScoreFilesInline score={score} />
+                <ScoreSamplesCard score={score} />
+              </>
             )}
           </div>
         </div>
-        {saveMessage && (
-          <div
-            className={`mt-4 p-4 rounded-md ${
-              saveMessage.type === 'success' ? 'bg-green-50 text-green-800' : 'bg-red-50 text-red-800'
-            }`}
-          >
-            {saveMessage.text}
-          </div>
-        )}
       </div>
-
-      <div className="middle-column">
-        <div className="max-w-5xl space-y-6">
-          {isEditMode ? (
-            <ScoreEditForm
-              score={score}
-              onSave={handleSave}
-              isSaving={isSaving}
-              onHasChanges={setHasChanges}
-              submitRef={formSubmitRef}
-            />
-          ) : (
-            <>
-              <ScoreDetailsCard score={score} />
-              <ScoreFilesInline score={score} />
-              <ScoreSamplesCard score={score} />
-            </>
-          )}
-        </div>
-      </div>
-    </div>
+    )
   );
 };
 
