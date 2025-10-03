@@ -16,6 +16,9 @@ export const PrivatePlayersListPageClient: React.FC<PrivatePlayersListPageClient
   const { status } = useAuth();
   useRedirectIfLoggedOut();
 
+  // Filter out users without instruments
+  const playersWithInstruments = players.filter((player) => player.instrumentsString && player.instrumentsString.trim() !== '');
+
   return (
     status === 'loggedIn' && (
       <div className="flex flex-col mt-8">
@@ -23,13 +26,12 @@ export const PrivatePlayersListPageClient: React.FC<PrivatePlayersListPageClient
           <h1 className="mb-4">Adressliste</h1>
           <Link href="/intern" className="flex items-center ndb-profex-label">
             <Icon name="arrow-left" alt="Back" className="mr-2 h-3 w-3" />
-            <div className="mt-0.5">Zurück zur Übersicht</div>
+            <div className="mt-0.5">Zurück zur internen Startseite</div>
           </Link>
-          <p className="text-sm text-gray-600 mt-4">{players.length} Mitglieder</p>
         </div>
         <div className="middle-column">
           <div className="flex flex-col gap-4">
-            {players.map((player, index) => {
+            {playersWithInstruments.map((player, index) => {
               return (
                 <div
                   key={`user-display-${index}`}
@@ -54,10 +56,7 @@ export const PrivatePlayersListPageClient: React.FC<PrivatePlayersListPageClient
                       {player.email && (
                         <div className="flex items-start text-sm text-gray-700">
                           <Icon name="mail" alt="Email" className="mr-2 h-4 w-4 flex-shrink-0 mt-0.5" />
-                          <a
-                            href={`mailto:${player.email}`}
-                            className="hover:text-gray-900 hover:underline break-all"
-                          >
+                          <a href={`mailto:${player.email}`} className="hover:text-gray-900 hover:underline break-all">
                             {player.email}
                           </a>
                         </div>

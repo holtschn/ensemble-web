@@ -58,7 +58,7 @@ export const ScoresPageClient: React.FC = () => {
           <h1>Notendatenbank</h1>
           <button
             onClick={handleCreateClick}
-            className="hidden md:flex items-center px-4 py-1.5 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors"
+            className="hidden md:flex items-center px-4 py-1.5 mt-8 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors"
           >
             <Icon name="plus-circle" alt="Create" className="mr-1.5 h-3.5 w-3.5" />
             Eintrag anlegen
@@ -66,7 +66,7 @@ export const ScoresPageClient: React.FC = () => {
         </div>
         <Link href="/intern" className="flex items-center ndb-profex-label">
           <Icon name="arrow-left" alt="Back" className="mr-2 h-3 w-3" />
-          <div className="mt-0.5">Zurück zur Übersicht</div>
+          <div className="mt-0.5">Zurück zur internen Startseite</div>
         </Link>
       </div>
       <div className="middle-column flex flex-row">
