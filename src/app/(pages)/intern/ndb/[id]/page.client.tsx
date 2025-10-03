@@ -105,11 +105,7 @@ const ScoreDetailsPage: React.FC<ScoreDetailsPageProps> = ({ scoreId }) => {
             <BackToScores />
           )}
           <div className="ml-auto flex items-center gap-4">
-            {isEditMode && hasChanges && (
-              <span className="text-sm text-amber-600">
-                Ungespeicherte Änderungen
-              </span>
-            )}
+            {isEditMode && hasChanges && <span className="text-sm text-amber-600">Ungespeicherte Änderungen</span>}
             {isEditMode ? (
               <button
                 type="button"
@@ -126,7 +122,6 @@ const ScoreDetailsPage: React.FC<ScoreDetailsPageProps> = ({ scoreId }) => {
                 hasChanges={hasChanges}
                 onEditClick={handleEditClick}
                 onSaveClick={handleSaveClick}
-                onCancelClick={handleCancel}
               />
             )}
           </div>
@@ -134,9 +129,7 @@ const ScoreDetailsPage: React.FC<ScoreDetailsPageProps> = ({ scoreId }) => {
         {saveMessage && (
           <div
             className={`mt-4 p-4 rounded-md ${
-              saveMessage.type === 'success'
-                ? 'bg-green-50 text-green-800'
-                : 'bg-red-50 text-red-800'
+              saveMessage.type === 'success' ? 'bg-green-50 text-green-800' : 'bg-red-50 text-red-800'
             }`}
           >
             {saveMessage.text}
