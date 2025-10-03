@@ -8,6 +8,7 @@ import AutocompleteField from '@/next/ndb/components/AutocompleteField';
 import TextAreaField from '@/next/ndb/components/TextAreaField';
 import SelectField from '@/next/ndb/components/SelectField';
 import InstrumentationEditor from '@/next/ndb/components/InstrumentationEditor';
+import FileUploadField from '@/next/ndb/components/FileUploadField';
 
 interface ScoreEditFormProps {
   score: ScoreItem | null;
@@ -116,6 +117,43 @@ const ScoreEditForm: React.FC<ScoreEditFormProps> = ({ score, onSave, isSaving, 
       withPercussion,
       withOrgan,
     }));
+    const newHasChanges = true;
+    setHasChanges(newHasChanges);
+    onHasChanges(newHasChanges);
+  };
+
+  const handleFileChange = (fileType: 'parts' | 'fullScore' | 'audioMidi' | 'audioMp3', fileKey: string | null) => {
+    const uploadKeyMap = {
+      parts: 'partsUploadS3Key',
+      fullScore: 'fullScoreUploadS3Key',
+      audioMidi: 'audioMidiUploadS3Key',
+      audioMp3: 'audioMp3UploadS3Key',
+    } as const;
+
+    const uploadKeyField = uploadKeyMap[fileType];
+
+    if (fileKey === '__REMOVE__') {
+      // Remove the file by setting it to null
+      setFormData((prev) => ({
+        ...prev,
+        [fileType]: null,
+        [uploadKeyField]: null,
+      }));
+    } else if (fileKey === '__RESTORE__') {
+      // Restore the original file from the score
+      setFormData((prev) => ({
+        ...prev,
+        [fileType]: score?.[fileType] ?? null,
+        [uploadKeyField]: null,
+      }));
+    } else {
+      // New upload or discard - only set the upload key
+      setFormData((prev) => ({
+        ...prev,
+        [uploadKeyField]: fileKey,
+      }));
+    }
+
     const newHasChanges = true;
     setHasChanges(newHasChanges);
     onHasChanges(newHasChanges);
@@ -246,6 +284,46 @@ const ScoreEditForm: React.FC<ScoreEditFormProps> = ({ score, onSave, isSaving, 
             disabled={isSaving}
             placeholder="Moderationstext (optional)"
             rows={3}
+          />
+        </DetailRow>
+
+        <DetailRow label={FIELD_LABELS.parts} fullWidth>
+          <FileUploadField
+            label=""
+            fileType="parts"
+            currentFile={formData.parts}
+            onFileChange={(fileKey) => handleFileChange('parts', fileKey)}
+            disabled={isSaving}
+          />
+        </DetailRow>
+
+        <DetailRow label={FIELD_LABELS.fullScore} fullWidth>
+          <FileUploadField
+            label=""
+            fileType="fullScore"
+            currentFile={formData.fullScore}
+            onFileChange={(fileKey) => handleFileChange('fullScore', fileKey)}
+            disabled={isSaving}
+          />
+        </DetailRow>
+
+        <DetailRow label={FIELD_LABELS.audioMidi} fullWidth>
+          <FileUploadField
+            label=""
+            fileType="audioMidi"
+            currentFile={formData.audioMidi}
+            onFileChange={(fileKey) => handleFileChange('audioMidi', fileKey)}
+            disabled={isSaving}
+          />
+        </DetailRow>
+
+        <DetailRow label={FIELD_LABELS.audioMp3} fullWidth>
+          <FileUploadField
+            label=""
+            fileType="audioMp3"
+            currentFile={formData.audioMp3}
+            onFileChange={(fileKey) => handleFileChange('audioMp3', fileKey)}
+            disabled={isSaving}
           />
         </DetailRow>
       </dl>
