@@ -50,10 +50,10 @@ const AutocompleteField: React.FC<AutocompleteFieldProps> = ({
 
     const inputValue = value.toLowerCase();
     const filtered = suggestions
-      .filter((suggestion) => suggestion.toLowerCase().includes(inputValue))
+      .filter((suggestion) => suggestion && suggestion.toLowerCase().includes(inputValue))
       .slice(0, 5); // Limit to 5 suggestions
 
-    setFilteredSuggestions(filtered);
+    setFilteredSuggestions(filtered as string[]);
   }, [value, suggestions]);
 
   // Close dropdown when clicking outside
@@ -90,9 +90,7 @@ const AutocompleteField: React.FC<AutocompleteFieldProps> = ({
     switch (e.key) {
       case 'ArrowDown':
         e.preventDefault();
-        setHighlightedIndex((prev) =>
-          prev < filteredSuggestions.length - 1 ? prev + 1 : prev
-        );
+        setHighlightedIndex((prev) => (prev < filteredSuggestions.length - 1 ? prev + 1 : prev));
         break;
       case 'ArrowUp':
         e.preventDefault();
@@ -129,10 +127,8 @@ const AutocompleteField: React.FC<AutocompleteFieldProps> = ({
           w-full max-w-2xl px-3 py-2 border rounded-md shadow-sm
           focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500
           disabled:bg-gray-50 disabled:text-gray-500 disabled:cursor-not-allowed
-          ${
-            hasError ? 'border-red-500 focus:ring-red-500 focus:border-red-500' : 'border-gray-300'
-          }
-         
+          ${hasError ? 'border-red-500 focus:ring-red-500 focus:border-red-500' : 'border-gray-300'}
+
           ${className}
         `.trim()}
         {...props}
@@ -148,11 +144,7 @@ const AutocompleteField: React.FC<AutocompleteFieldProps> = ({
               onMouseEnter={() => setHighlightedIndex(index)}
               className={`
                 px-3 py-2 cursor-pointer transition-colors
-                ${
-                  index === highlightedIndex
-                    ? 'bg-gray-100'
-                    : 'hover:bg-gray-50'
-                }
+                ${index === highlightedIndex ? 'bg-gray-100' : 'hover:bg-gray-50'}
                 text-gray-900
               `}
             >

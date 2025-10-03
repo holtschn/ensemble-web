@@ -5,6 +5,7 @@ import LoadingSpinner from '@/next/ndb/components/LoadingSpinner';
 import { useScoreSamples } from '@/next/ndb/hooks/useScoreSamples';
 
 import Icon from '@/next/ndb/components/Icon';
+import Image from 'next/image';
 
 const SampleItem: React.FC<{ sample: ScoreSampleItem; type: 'youtube' | 'spotify' }> = ({ sample, type }) => {
   const getIcon = (sampleType: 'youtube' | 'spotify') => {
