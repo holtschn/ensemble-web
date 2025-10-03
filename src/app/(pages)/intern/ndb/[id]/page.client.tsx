@@ -106,7 +106,7 @@ const ScoreDetailsPage: React.FC<ScoreDetailsPageProps> = ({ scoreId }) => {
           )}
           <div className="ml-auto flex items-center gap-4">
             {isEditMode && hasChanges && (
-              <span className="text-sm text-amber-600 dark:text-amber-400">
+              <span className="text-sm text-amber-600">
                 Ungespeicherte Änderungen
               </span>
             )}
@@ -115,7 +115,7 @@ const ScoreDetailsPage: React.FC<ScoreDetailsPageProps> = ({ scoreId }) => {
                 type="button"
                 onClick={handleSaveClick}
                 disabled={isSaving || !hasChanges}
-                className="flex items-center px-4 py-1.5 text-sm font-medium text-white bg-gray-800 rounded-md hover:bg-gray-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors dark:bg-gray-700 dark:hover:bg-gray-600"
+                className="flex items-center px-4 py-1.5 text-sm font-medium text-white bg-gray-800 rounded-md hover:bg-gray-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
               >
                 {isSaving ? 'Speichern...' : 'Speichern'}
               </button>
@@ -135,8 +135,8 @@ const ScoreDetailsPage: React.FC<ScoreDetailsPageProps> = ({ scoreId }) => {
           <div
             className={`mt-4 p-4 rounded-md ${
               saveMessage.type === 'success'
-                ? 'bg-green-50 text-green-800 dark:bg-green-900 dark:text-green-200'
-                : 'bg-red-50 text-red-800 dark:bg-red-900 dark:text-red-200'
+                ? 'bg-green-50 text-green-800'
+                : 'bg-red-50 text-red-800'
             }`}
           >
             {saveMessage.text}
