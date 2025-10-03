@@ -136,7 +136,7 @@ const ScoreUploadPage: React.FC = () => {
     return (
       <div className="flex flex-col items-center justify-center mt-16">
         <LoadingSpinner />
-        <p className="mt-4 text-gray-600 dark:text-gray-400">
+        <p className="mt-4 text-gray-600">
           {isUploading ? 'Datei wird hochgeladen...' : 'PDF wird analysiert...'}
         </p>
       </div>
@@ -153,14 +153,14 @@ const ScoreUploadPage: React.FC = () => {
 
         <div className="middle-column">
           <div className="max-w-2xl mx-auto">
-            <div className="p-8 border-2 border-dashed border-gray-300 rounded-lg text-center dark:border-gray-600">
+            <div className="p-8 border-2 border-dashed border-gray-300 rounded-lg text-center">
               <Icon name="upload" alt="Upload" className="mx-auto h-12 w-12 text-gray-400 mb-4" />
               <h2 className="text-xl font-medium mb-2">PDF-Datei hochladen</h2>
-              <p className="text-gray-600 dark:text-gray-400 mb-6">
+              <p className="text-gray-600 mb-6">
                 Laden Sie eine PDF-Datei hoch (Stimmen oder Partitur). Die Metadaten werden automatisch extrahiert.
               </p>
 
-              <label className="inline-flex items-center px-6 py-3 text-base font-medium text-white bg-gray-800 rounded-md hover:bg-gray-700 cursor-pointer transition-colors dark:bg-gray-700 dark:hover:bg-gray-600">
+              <label className="inline-flex items-center px-6 py-3 text-base font-medium text-white bg-gray-800 rounded-md hover:bg-gray-700 cursor-pointer transition-colors">
                 <Icon name="upload" alt="Upload" className="mr-2 h-4 w-4" />
                 PDF auswählen
                 <input
@@ -173,12 +173,12 @@ const ScoreUploadPage: React.FC = () => {
               </label>
 
               {uploadError && (
-                <p className="mt-4 text-sm text-red-600 dark:text-red-400">{uploadError}</p>
+                <p className="mt-4 text-sm text-red-600">{uploadError}</p>
               )}
             </div>
 
-            <div className="mt-6 p-4 bg-blue-50 rounded-md dark:bg-blue-900/20">
-              <p className="text-sm text-blue-800 dark:text-blue-300">
+            <div className="mt-6 p-4 bg-blue-50 rounded-md">
+              <p className="text-sm text-blue-800">
                 <strong>Hinweis:</strong> Nach dem Upload wird die PDF-Datei automatisch analysiert und die Metadaten
                 werden in das Formular eingetragen. Sie können diese anschließend überprüfen und anpassen.
               </p>
@@ -198,7 +198,7 @@ const ScoreUploadPage: React.FC = () => {
           <button
             type="button"
             onClick={handleStartOver}
-            className="flex items-center px-3 py-1.5 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
+            className="flex items-center px-3 py-1.5 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors"
           >
             <Icon name="upload" alt="New Upload" className="mr-1.5 h-3.5 w-3.5" />
             Neue Datei
@@ -218,15 +218,15 @@ const ScoreUploadPage: React.FC = () => {
           <div
             className={`mt-4 p-4 rounded-md ${
               saveMessage.type === 'success'
-                ? 'bg-green-50 text-green-800 dark:bg-green-900 dark:text-green-200'
-                : 'bg-red-50 text-red-800 dark:bg-red-900 dark:text-red-200'
+                ? 'bg-green-50 text-green-800'
+                : 'bg-red-50 text-red-800'
             }`}
           >
             {saveMessage.text}
           </div>
         )}
-        <div className="mt-4 p-3 rounded-md bg-blue-50 border border-blue-200 dark:bg-blue-900/20 dark:border-blue-800">
-          <p className="text-sm text-blue-700 dark:text-blue-400">
+        <div className="mt-4 p-3 rounded-md bg-blue-50 border border-blue-200">
+          <p className="text-sm text-blue-700">
             Die Metadaten wurden automatisch aus der PDF-Datei extrahiert. Bitte überprüfen und bei Bedarf anpassen.
           </p>
         </div>

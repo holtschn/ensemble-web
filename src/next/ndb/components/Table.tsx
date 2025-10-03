@@ -36,19 +36,19 @@ const Table = <T,>({
   };
 
   if (data.length === 0) {
-    return <div className="text-center p-8 text-gray-500 dark:text-gray-400">{emptyMessage}</div>;
+    return <div className="text-center p-8 text-gray-500">{emptyMessage}</div>;
   }
 
   return (
-    <div className={`overflow-x-auto flex justify-center ${className}`}>
-      <table className="max-w-7xl w-full divide-y divide-gray-200 dark:divide-gray-700">
-        <thead className="bg-gray-50 dark:bg-gray-800">
+    <div className={`flex justify-center ${className}`}>
+      <table className="max-w-7xl w-full divide-y divide-gray-200">
+        <thead className="bg-gray-50">
           <tr>
             {columns.map((column, index) => (
               <th
                 key={index}
                 className={`
-                  px-2 py-1 text-left text-xs text-gray-400 dark:text-gray-400 uppercase tracking-wider
+                  px-2 py-1 text-left text-xs text-gray-400 uppercase tracking-wider
                   ${column.className || ''} ${column.headerClassName || ''}
                 `.trim()}
               >
@@ -57,12 +57,12 @@ const Table = <T,>({
             ))}
           </tr>
         </thead>
-        <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
+        <tbody className="bg-white divide-y divide-gray-200">
           {data.map((row) => (
             <tr
               key={keyExtractor(row)}
               className={`
-                hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors
+                hover:bg-gray-50 transition-colors
                 ${onRowClick ? 'cursor-pointer' : ''}
               `.trim()}
               onClick={() => onRowClick?.(row)}
@@ -73,7 +73,7 @@ const Table = <T,>({
                   <td
                     key={colIndex}
                     className={`
-                      px-2 py-1 text-sm text-gray-900 dark:text-gray-100
+                      px-2 py-1 text-sm text-gray-900
                       ${column.className || ''}
                     `.trim()}
                   >

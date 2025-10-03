@@ -123,9 +123,9 @@ const SelectField: React.FC<SelectFieldProps> = ({
           focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500
           disabled:bg-gray-50 disabled:text-gray-500 disabled:cursor-not-allowed
           ${
-            hasError ? 'border-red-500 focus:ring-red-500 focus:border-red-500' : 'border-gray-300 dark:border-gray-600'
+            hasError ? 'border-red-500 focus:ring-red-500 focus:border-red-500' : 'border-gray-300'
           }
-          dark:bg-gray-800 dark:text-white dark:focus:ring-blue-400
+         
           flex items-center justify-between
           ${className}
         `.trim()}
@@ -140,7 +140,7 @@ const SelectField: React.FC<SelectFieldProps> = ({
 
       {/* Options dropdown */}
       {isOpen && (
-        <ul className="absolute z-10 w-full max-w-xs mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto dark:bg-gray-800 dark:border-gray-600">
+        <ul className="absolute z-10 w-full max-w-xs mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto">
           {options.map((option, index) => (
             <li
               key={`${option}-${index}`}
@@ -150,11 +150,11 @@ const SelectField: React.FC<SelectFieldProps> = ({
                 px-3 py-2 cursor-pointer transition-colors
                 ${
                   index === highlightedIndex
-                    ? 'bg-gray-100 dark:bg-gray-700'
-                    : 'hover:bg-gray-50 dark:hover:bg-gray-750'
+                    ? 'bg-gray-100'
+                    : 'hover:bg-gray-50'
                 }
                 ${option === value ? 'font-medium' : ''}
-                text-gray-900 dark:text-gray-100
+                text-gray-900
               `}
             >
               {option || '—'}
@@ -163,8 +163,8 @@ const SelectField: React.FC<SelectFieldProps> = ({
         </ul>
       )}
 
-      {hasError && <p className="mt-1 text-sm text-red-600 dark:text-red-400">{error}</p>}
-      {helperText && !hasError && <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">{helperText}</p>}
+      {hasError && <p className="mt-1 text-sm text-red-600">{error}</p>}
+      {helperText && !hasError && <p className="mt-1 text-sm text-gray-500">{helperText}</p>}
     </div>
   );
 };

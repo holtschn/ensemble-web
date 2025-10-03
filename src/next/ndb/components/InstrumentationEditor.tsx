@@ -94,7 +94,7 @@ const InstrumentationEditor: React.FC<InstrumentationEditorProps> = ({
                 }
               }}
               disabled={disabled}
-              className="w-12 px-2 py-1 text-center border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed dark:bg-gray-800 dark:border-gray-600"
+              className="w-12 px-2 py-1 text-center border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
             />
           </div>
         ))}
@@ -132,7 +132,7 @@ const InstrumentationEditor: React.FC<InstrumentationEditorProps> = ({
               key={preset.name}
               type="button"
               onClick={() => handlePreset(preset.value)}
-              className="px-3 py-1 text-xs font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
+              className="px-3 py-1 text-xs font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors"
             >
               {preset.name}
             </button>
