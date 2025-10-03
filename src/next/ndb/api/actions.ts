@@ -68,9 +68,7 @@ export const uploadFile = async (file: File): Promise<{ uploadUrl: string; fileK
     const { uploadUrl, fileKey } = uploadResponse;
 
     // Upload the file to S3
-    const formData = new FormData();
-    formData.append('file', file);
-
+    // The x-amz-acl header is required as it's part of the signed headers
     const s3Response = await fetch(uploadUrl, {
       method: 'PUT',
       headers: {
