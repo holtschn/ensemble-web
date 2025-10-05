@@ -4,10 +4,10 @@ import React from 'react';
 
 import { useLivePreview } from '@payloadcms/live-preview-react';
 
-import RichText from '@/next/richtext/component';
+import RichText from '@/next/components/richtext/Component';
 import { useAuth } from '@/next/auth/context';
 import useRedirectIfLoggedOut from '@/next/auth/loggedInHook';
-import { EventPublicDisplay } from '@/next/components/event';
+import { EventPublicDisplay } from '@/next/sections/Event';
 import { EnrichedEvent } from '@/next/utils/events';
 import { SERVER_URL } from '@/next/utils/serverUrl';
 

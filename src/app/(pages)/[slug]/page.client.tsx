@@ -5,7 +5,7 @@ import React from 'react';
 import { useLivePreview } from '@payloadcms/live-preview-react';
 
 import { PublicPage } from '@/next/utils/pages';
-import { Blocks } from '@/next/components/blocks';
+import { Blocks } from '@/next/sections/Blocks';
 import { SERVER_URL } from '@/next/utils/serverUrl';
 
 type PublicPageClientProps = {
