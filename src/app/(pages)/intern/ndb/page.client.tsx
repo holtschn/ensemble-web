@@ -14,6 +14,7 @@ import ScoresTableToolbar from '@/next/ndb/components/scores/ScoresTableToolbar'
 import LoadingSpinner from '@/next/ndb/components/LoadingSpinner';
 import Icon from '@/next/ndb/components/Icon';
 import { useAuth } from '@/next/auth/context';
+import { EmptyState } from '@/next/components/EmptyState';
 
 export const ScoresPageClient: React.FC = () => {
   const { status } = useAuth();
@@ -46,7 +47,20 @@ export const ScoresPageClient: React.FC = () => {
   if (!scores || scores.length < 1) {
     return (
       <div className="middle-column mt-8">
-        <h1>Keine Noten gefunden</h1>
+        <Link href="/intern" className="flex items-center ndb-profex-label mb-4">
+          <Icon name="arrow-left" alt="Back" className="mr-2 h-3 w-3" />
+          <div className="mt-0.5">Zurück zur internen Startseite</div>
+        </Link>
+        <EmptyState
+          variant="no-data"
+          icon="music"
+          heading="Noch keine Noten vorhanden"
+          message="Erstellen Sie Ihren ersten Eintrag in der Notendatenbank."
+          action={{
+            label: 'Eintrag anlegen',
+            onClick: handleCreateClick,
+          }}
+        />
       </div>
     );
   }
@@ -72,7 +86,18 @@ export const ScoresPageClient: React.FC = () => {
       <div className="middle-column flex flex-row">
         <ScoresTableToolbar scores={scores} onFilteredScoresChange={setFilteredScores} />
       </div>
-      <ScoresTable scores={filteredScores} onScoreClick={handleScoreClick} />
+      {filteredScores.length === 0 && scores.length > 0 ? (
+        <div className="middle-column">
+          <EmptyState
+            variant="no-results"
+            icon="search"
+            heading="Keine Ergebnisse"
+            message="Keine Noten gefunden, die Ihren Suchkriterien entsprechen. Versuchen Sie, die Filter zurückzusetzen."
+          />
+        </div>
+      ) : (
+        <ScoresTable scores={filteredScores} onScoreClick={handleScoreClick} />
+      )}
     </div>
   );
 };
