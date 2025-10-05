@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { toast } from 'sonner';
 
 import useRedirectIfLoggedOut from '@/next/auth/loggedInHook';
 
@@ -12,6 +13,8 @@ import ScoreFilesInline from '@/next/ndb/components/scores/ScoreFilesInline';
 import ScoreSamplesCard from '@/next/ndb/components/scores/ScoreSamplesCard';
 import ScoreActions from '@/next/ndb/components/scores/ScoreActions';
 import Icon from '@/next/ndb/components/Icon';
+import { ErrorBoundary } from '@/next/components/ErrorBoundary';
+import { ErrorFallback } from '@/next/components/ErrorFallback';
 
 import { useScores } from '@/next/ndb/hooks/useScores';
 import { updateScore } from '@/next/ndb/api/actions';
@@ -33,20 +36,17 @@ const ScoreDetailsPage: React.FC<ScoreDetailsPageProps> = ({ scoreId }) => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [hasChanges, setHasChanges] = useState(false);
-  const [saveMessage, setSaveMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
   // Store reference to form submit function
   const formSubmitRef = React.useRef<(() => void) | null>(null);
 
   const handleEditClick = () => {
     setIsEditMode(true);
-    setSaveMessage(null);
     setHasChanges(false);
   };
 
   const handleCancel = () => {
     setIsEditMode(false);
-    setSaveMessage(null);
     setHasChanges(false);
   };
 
@@ -59,17 +59,16 @@ const ScoreDetailsPage: React.FC<ScoreDetailsPageProps> = ({ scoreId }) => {
 
   const handleSave = async (scoreData: ScoreItemWithUploads) => {
     setIsSaving(true);
-    setSaveMessage(null);
     try {
       await updateScore(scoreData);
-      setSaveMessage({ type: 'success', text: SUCCESS_MESSAGES.SCORE_UPDATED });
+      toast.success(SUCCESS_MESSAGES.SCORE_UPDATED);
       setIsEditMode(false);
       setHasChanges(false);
       // Reload the page to fetch updated data
       window.location.reload();
     } catch (error) {
       console.error('Failed to save score:', error);
-      setSaveMessage({ type: 'error', text: ERROR_MESSAGES.SAVE_ERROR });
+      toast.error(ERROR_MESSAGES.SAVE_ERROR);
     } finally {
       setIsSaving(false);
     }
@@ -129,34 +128,34 @@ const ScoreDetailsPage: React.FC<ScoreDetailsPageProps> = ({ scoreId }) => {
               )}
             </div>
           </div>
-          {saveMessage && (
-            <div
-              className={`mt-4 p-4 rounded-md ${
-                saveMessage.type === 'success' ? 'bg-green-50 text-green-800' : 'bg-red-50 text-red-800'
-              }`}
-            >
-              {saveMessage.text}
-            </div>
-          )}
         </div>
 
         <div className="middle-column">
           <div className="max-w-5xl space-y-6">
-            {isEditMode ? (
-              <ScoreEditForm
-                score={score}
-                onSave={handleSave}
-                isSaving={isSaving}
-                onHasChanges={setHasChanges}
-                submitRef={formSubmitRef}
-              />
-            ) : (
-              <>
-                <ScoreDetailsCard score={score} />
-                <ScoreFilesInline score={score} />
-                <ScoreSamplesCard score={score} />
-              </>
-            )}
+            <ErrorBoundary
+              fallback={
+                <ErrorFallback
+                  title="Fehler beim Laden der Note"
+                  message="Die Notendetails konnten nicht geladen werden."
+                />
+              }
+            >
+              {isEditMode ? (
+                <ScoreEditForm
+                  score={score}
+                  onSave={handleSave}
+                  isSaving={isSaving}
+                  onHasChanges={setHasChanges}
+                  submitRef={formSubmitRef}
+                />
+              ) : (
+                <>
+                  <ScoreDetailsCard score={score} />
+                  <ScoreFilesInline score={score} />
+                  <ScoreSamplesCard score={score} />
+                </>
+              )}
+            </ErrorBoundary>
           </div>
         </div>
       </div>

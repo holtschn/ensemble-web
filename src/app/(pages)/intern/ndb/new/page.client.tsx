@@ -2,6 +2,7 @@
 
 import React, { useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
 
 import useRedirectIfLoggedOut from '@/next/auth/loggedInHook';
 
@@ -9,6 +10,8 @@ import BackToScores from '@/next/ndb/components/scores/BackToScores';
 import ScoreEditForm from '@/next/ndb/components/scores/ScoreEditForm';
 import ScoreActions from '@/next/ndb/components/scores/ScoreActions';
 import LoadingSpinner from '@/next/ndb/components/LoadingSpinner';
+import { ErrorBoundary } from '@/next/components/ErrorBoundary';
+import { ErrorFallback } from '@/next/components/ErrorFallback';
 
 import { uploadFile, fetchScoreAnalysis, createScore } from '@/next/ndb/api/actions';
 import { ScoreItem, ScoreItemWithUploads } from '@/next/ndb/types';
@@ -29,7 +32,6 @@ const ScoreCreatePage: React.FC = () => {
   const [isSaving, setIsSaving] = useState(false);
   const [hasChanges, setHasChanges] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
-  const [saveMessage, setSaveMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const [analyzedScore, setAnalyzedScore] = useState<Partial<ScoreItem> | null>(null);
   const [uploadedFileKey, setUploadedFileKey] = useState<string | null>(null);
 
@@ -91,6 +93,7 @@ const ScoreCreatePage: React.FC = () => {
 
       setAnalyzedScore(scoreData);
       setPageState('form');
+      toast.info('Die Metadaten wurden automatisch aus der PDF-Datei extrahiert. Bitte überprüfen und bei Bedarf anpassen.');
     } catch (error) {
       console.error('Upload/Analysis error:', error);
       setUploadError('Fehler beim Hochladen oder Analysieren der Datei');
@@ -112,7 +115,6 @@ const ScoreCreatePage: React.FC = () => {
 
   const handleSave = async (scoreData: ScoreItemWithUploads) => {
     setIsSaving(true);
-    setSaveMessage(null);
     try {
       // Include the uploaded PDF's S3 key if available
       const dataWithFile: ScoreItemWithUploads = {
@@ -121,7 +123,7 @@ const ScoreCreatePage: React.FC = () => {
       };
 
       const result = await createScore(dataWithFile);
-      setSaveMessage({ type: 'success', text: SUCCESS_MESSAGES.SCORE_CREATED });
+      toast.success(SUCCESS_MESSAGES.SCORE_CREATED);
       setHasChanges(false);
       // Redirect to the newly created score's detail page
       setTimeout(() => {
@@ -129,7 +131,7 @@ const ScoreCreatePage: React.FC = () => {
       }, 1000);
     } catch (error) {
       console.error('Failed to create score:', error);
-      setSaveMessage({ type: 'error', text: ERROR_MESSAGES.SAVE_ERROR });
+      toast.error(ERROR_MESSAGES.SAVE_ERROR);
     } finally {
       setIsSaving(false);
     }
@@ -210,33 +212,26 @@ const ScoreCreatePage: React.FC = () => {
               />
             </div>
           </div>
-          {saveMessage && (
-            <div
-              className={`mt-4 p-4 rounded-md ${
-                saveMessage.type === 'success' ? 'bg-green-50 text-green-800' : 'bg-red-50 text-red-800'
-              }`}
-            >
-              {saveMessage.text}
-            </div>
-          )}
-          {uploadedFileKey && (
-            <div className="mt-4 p-3 rounded-md bg-blue-50 border border-blue-200">
-              <p className="text-sm text-blue-700">
-                Die Metadaten wurden automatisch aus der PDF-Datei extrahiert. Bitte überprüfen und bei Bedarf anpassen.
-              </p>
-            </div>
-          )}
         </div>
 
         <div className="middle-column">
           <div className="max-w-5xl space-y-6">
-            <ScoreEditForm
-              score={analyzedScore as ScoreItem}
-              onSave={handleSave}
-              isSaving={isSaving}
-              onHasChanges={setHasChanges}
-              submitRef={formSubmitRef}
-            />
+            <ErrorBoundary
+              fallback={
+                <ErrorFallback
+                  title="Fehler beim Laden des Formulars"
+                  message="Das Eingabeformular konnte nicht geladen werden."
+                />
+              }
+            >
+              <ScoreEditForm
+                score={analyzedScore as ScoreItem}
+                onSave={handleSave}
+                isSaving={isSaving}
+                onHasChanges={setHasChanges}
+                submitRef={formSubmitRef}
+              />
+            </ErrorBoundary>
           </div>
         </div>
       </div>
