@@ -23,7 +23,7 @@ type ScoresFilterButtonProps = {
 
 const ScoresFilterButton: React.FC<ScoresFilterButtonProps> = ({ isActive, onClick, children }) => {
   return (
-    <Button size="sm" className="text-xs" variant={isActive ? 'primary' : 'outline'} onClick={onClick}>
+    <Button size="sm" className="text-xs" variant={isActive ? 'highlighted' : 'default'} onClick={onClick}>
       {isActive ? (
         <Icon name="filter-active" alt="Filter Active Icon" className="mr-2 h-3 w-3" />
       ) : (
@@ -37,10 +37,11 @@ const ScoresFilterButton: React.FC<ScoresFilterButtonProps> = ({ isActive, onCli
 interface ScoresTableToolbarProps {
   scores: ScoreItem[];
   onFilteredScoresChange: (filteredScores: ScoreItem[]) => void;
+  onColumnsClick?: () => void;
   className?: string;
 }
 
-const ScoresTableToolbar: React.FC<ScoresTableToolbarProps> = ({ scores, onFilteredScoresChange, className = '' }) => {
+const ScoresTableToolbar: React.FC<ScoresTableToolbarProps> = ({ scores, onFilteredScoresChange, onColumnsClick, className = '' }) => {
   const [filters, setFilters] = useState<FilterState>({
     search: '',
     minHorns: null,
@@ -175,7 +176,15 @@ const ScoresTableToolbar: React.FC<ScoresTableToolbarProps> = ({ scores, onFilte
           {/* Reset Filters Button */}
           {activeFilters.size > 0 && (
             <Button className="text-xs" size="sm" variant="ghost" onClick={resetFilters}>
-              <Icon name="/cross" alt="Cross Icon" className="mr-1 h-3 w-3" /> zurücksetzen
+              <Icon name="cross" alt="Cross Icon" className="mr-1 h-3 w-3" /> zurücksetzen
+            </Button>
+          )}
+
+          {/* Columns Button - Hidden below 768px */}
+          {onColumnsClick && (
+            <Button className="text-xs max-md:hidden ml-auto" size="sm" variant="default" onClick={onColumnsClick}>
+              <Icon name="columns" alt="Spalten" className="mr-2 h-3 w-3" />
+              Spalten
             </Button>
           )}
         </div>

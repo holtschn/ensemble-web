@@ -23,6 +23,7 @@ export const ScoresPageClient: React.FC = () => {
   const router = useRouter();
   const { scores, isLoading } = useScores();
   const [filteredScores, setFilteredScores] = useState<ScoreItem[]>([]);
+  const [isColumnsModalOpen, setIsColumnsModalOpen] = useState(false);
 
   // Update filtered scores when main scores data changes
   React.useEffect(() => {
@@ -84,7 +85,11 @@ export const ScoresPageClient: React.FC = () => {
         </Link>
       </div>
       <div className="middle-column flex flex-row">
-        <ScoresTableToolbar scores={scores} onFilteredScoresChange={setFilteredScores} />
+        <ScoresTableToolbar
+          scores={scores}
+          onFilteredScoresChange={setFilteredScores}
+          onColumnsClick={() => setIsColumnsModalOpen(true)}
+        />
       </div>
       {filteredScores.length === 0 && scores.length > 0 ? (
         <div className="middle-column">
@@ -96,7 +101,12 @@ export const ScoresPageClient: React.FC = () => {
           />
         </div>
       ) : (
-        <ScoresTable scores={filteredScores} onScoreClick={handleScoreClick} />
+        <ScoresTable
+          scores={filteredScores}
+          onScoreClick={handleScoreClick}
+          onColumnsModalOpen={isColumnsModalOpen}
+          onColumnsModalClose={() => setIsColumnsModalOpen(false)}
+        />
       )}
     </div>
   );
