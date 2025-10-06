@@ -13,6 +13,7 @@ import ScoreFilesInline from '@/next/ndb/components/scores/ScoreFilesInline';
 import ScoreSamplesCard from '@/next/ndb/components/scores/ScoreSamplesCard';
 import ScoreActions from '@/next/ndb/components/scores/ScoreActions';
 import Icon from '@/next/ndb/components/Icon';
+import Button from '@/next/ndb/components/Button';
 import { ErrorBoundary } from '@/next/components/ErrorBoundary';
 import { ErrorFallback } from '@/next/components/ErrorFallback';
 
@@ -109,14 +110,16 @@ const ScoreDetailsPage: React.FC<ScoreDetailsPageProps> = ({ scoreId }) => {
             <div className="ml-auto flex items-center gap-4">
               {isEditMode && hasChanges && <span className="text-sm text-amber-600">Ungespeicherte Änderungen</span>}
               {isEditMode ? (
-                <button
+                <Button
                   type="button"
                   onClick={handleSaveClick}
                   disabled={isSaving || !hasChanges}
-                  className="flex items-center px-4 py-1.5 text-sm font-medium text-white bg-gray-800 rounded-md hover:bg-gray-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+                  variant="highlighted"
+                  size="sm"
+                  isLoading={isSaving}
                 >
-                  {isSaving ? 'Speichern...' : 'Speichern'}
-                </button>
+                  Speichern
+                </Button>
               ) : (
                 <ScoreActions
                   isEditMode={isEditMode}

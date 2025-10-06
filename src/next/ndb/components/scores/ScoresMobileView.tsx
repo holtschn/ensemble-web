@@ -27,7 +27,7 @@ const ScoresMobileCard: React.FC<ScoresMobileCardProps> = ({
           {score.parts && onDownloadParts && (
             <Button
               size="sm"
-              variant="outline"
+              variant="default"
               onClick={(e) => {
                 e.stopPropagation();
                 onDownloadParts(score);
@@ -39,7 +39,7 @@ const ScoresMobileCard: React.FC<ScoresMobileCardProps> = ({
           {score.fullScore && onDownloadFullScore && (
             <Button
               size="sm"
-              variant="outline"
+              variant="default"
               onClick={(e) => {
                 e.stopPropagation();
                 onDownloadFullScore(score);

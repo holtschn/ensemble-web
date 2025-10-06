@@ -25,7 +25,7 @@ const ScoreDownloadButton: React.FC<DownloadButtonProps> = ({ file, label, ...bu
   };
 
   return (
-    <Button {...buttonProps} variant="outline" disabled={isDisabled} onClick={handleClick}>
+    <Button {...buttonProps} variant="default" disabled={isDisabled} onClick={handleClick}>
       {isLoading ? (
         <Icon name="spinner" alt="Herunterladen..." className="mr-2 h-3 w-3 animate-spin" />
       ) : (

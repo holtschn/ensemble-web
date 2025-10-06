@@ -17,6 +17,7 @@ import { uploadFile, fetchScoreAnalysis, createScore } from '@/next/ndb/api/acti
 import { ScoreItem, ScoreItemWithUploads } from '@/next/ndb/types';
 import { SUCCESS_MESSAGES, ERROR_MESSAGES } from '@/next/ndb/constants';
 import Icon from '@/next/ndb/components/Icon';
+import Button from '@/next/ndb/components/Button';
 import { useAuth } from '@/next/auth/context';
 
 type PageState = 'upload-prompt' | 'uploading' | 'form';
@@ -177,13 +178,14 @@ const ScoreCreatePage: React.FC = () => {
                     />
                   </label>
 
-                  <button
+                  <Button
                     type="button"
                     onClick={handleSkipUpload}
-                    className="inline-flex items-center px-4 py-1.5 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors"
+                    variant="default"
+                    size="sm"
                   >
                     Überspringen
-                  </button>
+                  </Button>
                 </div>
 
                 {uploadError && <p className="mt-4 text-sm text-red-600">{uploadError}</p>}
