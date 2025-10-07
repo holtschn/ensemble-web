@@ -256,14 +256,18 @@ External API communication follows this pattern:
 
 ### ✅ Completed Features
 
-**Phase 1: Infrastructure Foundation**
+**Phase 1: Infrastructure Foundation - COMPLETE**
+- ✅ **INFRA-1:** Toast Notification System (sonner 2.0.7)
+  - `ToastProvider` component created and integrated
+  - Already in use across NDB pages and hooks
+  - Documentation in `docs/infrastructure-usage.md`
 - ✅ **INFRA-4:** EmptyState component with variants (no-results, no-data, error-state)
 - ✅ **INFRA-5:** User Preferences System with Payload API + localStorage hybrid storage
   - `useUserPreference` hook created
   - `preferences.ts` utility functions
   - Handles logged-out users with localStorage fallback
 
-**Phase 2: Advanced Table Filtering**
+**Phase 2: Advanced Table Filtering - COMPLETE**
 - ✅ **TABLE-1:** Column Configuration System
   - `ColumnConfig` interface and types
   - Payload Preferences storage (`ndb_column_preferences`)
@@ -284,6 +288,11 @@ External API communication follows this pattern:
   - Blue outline styling for active filters (not green background)
   - "Spalten konfigurieren" button aligned with table edge
   - "alle Filter zurücksetzen" button right-aligned in filter row
+  - Table headers remain visible when no results (allows fixing filter typos)
+
+- ✅ **TABLE-3:** Filter Persistence (Mobile UI not needed)
+  - Column filters already persist via user preferences
+  - Mobile support not required per user decision
 
 **Test Infrastructure**
 - ✅ Complete test setup with MSW 2.11.3 for API mocking
@@ -302,34 +311,34 @@ External API communication follows this pattern:
 
 ### 🚧 In Progress
 
-None currently.
+**Phase 3: Setlist Management**
+- Implementation starting based on fully-implemented backend API
 
-### 📋 Ready to Start
+### 📋 Backend API Status
 
-**Next Recommended Tasks:**
-
-1. **TABLE-3: Filter Persistence & Mobile** - Column filters are already persistent, but mobile UI needs:
-   - Hide per-column filter icons on mobile
-   - Create `MobileFilterSheet.tsx` (bottom sheet)
-   - "Erweiterte Filter" button with active filter count badge
-   - `FilterBadge.tsx` component
-
-2. **INFRA-1: Toast Notification System** - Already have `sonner` installed, need to:
-   - Create `ToastProvider` wrapper
-   - Add helper functions
-   - Wrap app in provider
-
-3. **INFRA-2: Confirmation Dialog Component** - Needed for delete operations
+**NDB API (ensemble-web-ndb) - Setlists COMPLETE**
+- ✅ Single worksheet design with redundant data (setlistId, setlistName, scoreId, orderIndex, allocations)
+- ✅ GET /v1/setlists - List all setlists with full details
+- ✅ POST /v1/setlist - Create new setlist
+- ✅ PUT /v1/setlist - Update setlist (setlistId in body)
+- ✅ POST /v1/download/setlist - Download ZIP with ordered score PDFs
+- ✅ 48 integration tests passing
+- ✅ Retry logic with exponential backoff
+- ✅ Comprehensive validation
+- **Note:** NO DELETE endpoint (not supported by API)
 
 ### 📊 Progress Summary
 
-**Infrastructure:** 2/5 completed (40%)
-- ✅ INFRA-4, INFRA-5
-- ⏳ INFRA-1, INFRA-2, INFRA-3
+**Infrastructure:** 3/4 completed (75%) - INFRA-2 removed (no delete operations in API)
+- ✅ INFRA-1, INFRA-4, INFRA-5
+- ⏳ INFRA-3 (optional)
 
-**Table Features:** 2/4 completed (50%)
-- ✅ TABLE-1, TABLE-2
-- ⏳ TABLE-3, TABLE-4
+**Table Features:** 3/4 completed (75%)
+- ✅ TABLE-1, TABLE-2, TABLE-3
+- ⏳ TABLE-4 (low priority)
+
+**Setlist Features:** 0/8 tasks
+- Backend API ready, frontend implementation starting
 
 **Test Coverage:** Excellent
 - 7 test suites, 103 tests, all passing
@@ -341,24 +350,18 @@ None currently.
 
 ### 🎯 Infrastructure Foundation
 
-**INFRA-1: Toast Notification System** (Medium Priority)
-- Install `sonner` library
-- Create `ToastProvider` wrapper component
-- Add helper functions: `toast.success()`, `toast.error()`, `toast.info()`
-- Wrap app in provider
-- Document usage pattern
-- **Depends on:** Nothing
-- **Blocks:** All features needing user feedback
+**INFRA-1: Toast Notification System** ✅ COMPLETE
+- `sonner` library (v2.0.7) installed
+- `ToastProvider` wrapper component created
+- Integrated into app layout
+- Already in use across NDB pages and hooks
+- Documentation in `docs/infrastructure-usage.md`
 
-**INFRA-2: Confirmation Dialog Component** (Medium Priority)
-- Create `ConfirmDialog.tsx` component
-- Props: title, message, confirmText, cancelText, onConfirm, variant
-- Use headlessui Dialog or native dialog element
-- Make accessible (ARIA, focus trap, ESC to close)
-- **Depends on:** Nothing
-- **Blocks:** Delete operations (setlist, score, etc.)
+~~**INFRA-2: Confirmation Dialog Component**~~ REMOVED
+- Delete operations not supported by NDB API
+- No longer needed
 
-**INFRA-3: Error Boundaries** (Medium Priority)
+**INFRA-3: Error Boundaries** (Low Priority - Optional)
 - Create `ErrorBoundary` component with fallback UI
 - Create `ErrorFallback` component (friendly message + retry button)
 - Wrap key sections: setlist pages, score pages, file uploads
