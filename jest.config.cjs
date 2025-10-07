@@ -1,7 +1,9 @@
 /** @type {import('jest').Config} */
 module.exports = {
   preset: 'ts-jest',
-  testEnvironment: 'node',
+
+  // Use jsdom for component tests, node for utility tests
+  testEnvironment: 'jsdom',
 
   // Setup files
   setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
@@ -9,6 +11,10 @@ module.exports = {
   // Module resolution
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
+    // Mock SVG and image imports
+    '\\.(svg|png|jpg|jpeg|gif)$': '<rootDir>/src/__mocks__/fileMock.js',
+    // Mock CSS imports
+    '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
   },
 
   // Test file patterns
@@ -20,6 +26,7 @@ module.exports = {
       'ts-jest',
       {
         tsconfig: {
+          jsx: 'react',
           module: 'commonjs',
           esModuleInterop: true,
           allowSyntheticDefaultImports: true,
