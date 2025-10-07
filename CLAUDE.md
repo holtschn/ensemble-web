@@ -179,11 +179,17 @@ External API communication follows this pattern:
 4. Response flows back through the chain
 
 ### Testing
-- Jest with ts-jest for TypeScript
+- **Jest 30.2.0** with ts-jest for TypeScript, jsdom environment for React components
+- **MSW 2.11.3** for API mocking at the network level
+- **React Testing Library 16.3.0** for component testing
+- **@testing-library/jest-dom 6.9.1** for DOM matchers
+- Mock data and handlers: `src/next/ndb/__mocks__/`
+- Test utilities: `src/next/ndb/__tests__/testUtils.tsx`
 - Focus on testing `src/next/ndb/**` modules
 - Test files: `*.test.ts` or `*.spec.ts` or in `__tests__/` directories
 - Run NDB-specific tests: `npm run test:ndb`
 - Single test file: `jest path/to/file.test.ts`
+- **Current status:** 7 test suites, 103 tests, all passing
 
 ### Styling
 - TailwindCSS 4.0 for styling
@@ -243,6 +249,91 @@ External API communication follows this pattern:
 - **Filters:** Already exist ("mit Schlagzeug", "hat Partitur", "zurücksetzen" button)
 - **API Caching:** TanStack Query approach (requires approval before implementation)
 - **Working Model:** Kanban-style (no sprints/releases, work one item at a time)
+
+---
+
+## Current Status (Updated: 2025-10-07)
+
+### ✅ Completed Features
+
+**Phase 1: Infrastructure Foundation**
+- ✅ **INFRA-4:** EmptyState component with variants (no-results, no-data, error-state)
+- ✅ **INFRA-5:** User Preferences System with Payload API + localStorage hybrid storage
+  - `useUserPreference` hook created
+  - `preferences.ts` utility functions
+  - Handles logged-out users with localStorage fallback
+
+**Phase 2: Advanced Table Filtering**
+- ✅ **TABLE-1:** Column Configuration System
+  - `ColumnConfig` interface and types
+  - Payload Preferences storage (`ndb_column_preferences`)
+  - `ColumnSettingsModal` with drag-and-drop reordering
+  - Dynamic column visibility and ordering
+  - Graceful mobile degradation
+
+- ✅ **TABLE-2:** Column-Based Filtering - Core (COMPLETE with all improvements)
+  - Filter icons in all column headers
+  - `FilterPopover` component with auto-positioning (fixed positioning, flips upward when needed)
+  - All filter types implemented:
+    - `TextFilter` for text inputs
+    - `SelectFilter` for dropdowns (genre, difficulty)
+    - `BooleanFilter` for radio buttons (organ, percussion)
+    - `FileFilter` for file presence
+  - Filter persistence via user preferences (`ndb_column_filters`)
+  - Coordinated reset between toolbar and column filters
+  - Blue outline styling for active filters (not green background)
+  - "Spalten konfigurieren" button aligned with table edge
+  - "alle Filter zurücksetzen" button right-aligned in filter row
+
+**Test Infrastructure**
+- ✅ Complete test setup with MSW 2.11.3 for API mocking
+- ✅ React Testing Library 16.3.0 + jest-dom 6.9.1
+- ✅ Jest configured for React components with jsdom
+- ✅ MSW handlers for all NDB API endpoints
+- ✅ Test utilities and helpers (`testUtils.tsx`)
+- ✅ **103 tests written and passing:**
+  - 11 tests for filter utilities
+  - 28 tests for column configuration
+  - 21 tests for instrumentation parsing
+  - 20 tests for Button component
+  - 11 tests for TextFilter component
+  - 12 tests for SelectFilter component
+  - 12 tests for BooleanFilter component
+
+### 🚧 In Progress
+
+None currently.
+
+### 📋 Ready to Start
+
+**Next Recommended Tasks:**
+
+1. **TABLE-3: Filter Persistence & Mobile** - Column filters are already persistent, but mobile UI needs:
+   - Hide per-column filter icons on mobile
+   - Create `MobileFilterSheet.tsx` (bottom sheet)
+   - "Erweiterte Filter" button with active filter count badge
+   - `FilterBadge.tsx` component
+
+2. **INFRA-1: Toast Notification System** - Already have `sonner` installed, need to:
+   - Create `ToastProvider` wrapper
+   - Add helper functions
+   - Wrap app in provider
+
+3. **INFRA-2: Confirmation Dialog Component** - Needed for delete operations
+
+### 📊 Progress Summary
+
+**Infrastructure:** 2/5 completed (40%)
+- ✅ INFRA-4, INFRA-5
+- ⏳ INFRA-1, INFRA-2, INFRA-3
+
+**Table Features:** 2/4 completed (50%)
+- ✅ TABLE-1, TABLE-2
+- ⏳ TABLE-3, TABLE-4
+
+**Test Coverage:** Excellent
+- 7 test suites, 103 tests, all passing
+- MSW mocking infrastructure ready for integration tests
 
 ---
 
