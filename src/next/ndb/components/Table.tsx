@@ -4,6 +4,7 @@ interface TableColumn<T> {
   key: keyof T | string;
   header: string;
   render?: (value: any, row: T) => React.ReactNode;
+  renderHeader?: () => React.ReactNode; // Custom header content (e.g., with filters)
   sortable?: boolean;
   className?: string;
   headerClassName?: string;
@@ -52,7 +53,7 @@ const Table = <T,>({
                   ${column.className || ''} ${column.headerClassName || ''}
                 `.trim()}
               >
-                {column.header}
+                {column.renderHeader ? column.renderHeader() : column.header}
               </th>
             ))}
           </tr>

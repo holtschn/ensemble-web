@@ -23,7 +23,8 @@ export const ScoresPageClient: React.FC = () => {
   const router = useRouter();
   const { scores, isLoading } = useScores();
   const [filteredScores, setFilteredScores] = useState<ScoreItem[]>([]);
-  const [isColumnsModalOpen, setIsColumnsModalOpen] = useState(false);
+  const [hasActiveColumnFilters, setHasActiveColumnFilters] = useState(false);
+  const columnFiltersResetRef = React.useRef<(() => void) | null>(null);
 
   // Update filtered scores when main scores data changes
   React.useEffect(() => {
@@ -88,7 +89,10 @@ export const ScoresPageClient: React.FC = () => {
         <ScoresTableToolbar
           scores={scores}
           onFilteredScoresChange={setFilteredScores}
-          onColumnsClick={() => setIsColumnsModalOpen(true)}
+          hasActiveColumnFilters={hasActiveColumnFilters}
+          onResetAllFilters={() => {
+            columnFiltersResetRef.current?.();
+          }}
         />
       </div>
       {filteredScores.length === 0 && scores.length > 0 ? (
@@ -104,8 +108,10 @@ export const ScoresPageClient: React.FC = () => {
         <ScoresTable
           scores={filteredScores}
           onScoreClick={handleScoreClick}
-          onColumnsModalOpen={isColumnsModalOpen}
-          onColumnsModalClose={() => setIsColumnsModalOpen(false)}
+          onColumnFiltersChange={setHasActiveColumnFilters}
+          onResetColumnFilters={(clearFn) => {
+            columnFiltersResetRef.current = clearFn;
+          }}
         />
       )}
     </div>
