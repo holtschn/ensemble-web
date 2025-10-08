@@ -110,7 +110,7 @@ export const EditSetlistPageClient: React.FC = () => {
                 Speichern
               </Button>
             ) : (
-              <Button type="button" onClick={handleEditClick} variant="highlighted" size="sm">
+              <Button type="button" onClick={handleEditClick} variant="secondary" size="sm">
                 Bearbeiten
               </Button>
             )
