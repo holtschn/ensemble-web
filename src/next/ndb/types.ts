@@ -33,6 +33,7 @@ export interface ScoreItem {
   fullScore: ScoreFileItem | null;
   audioMidi: ScoreFileItem | null;
   audioMp3: ScoreFileItem | null;
+  customParts?: string[] | null; // Custom part names for special scores (e.g., choirs, flügelhorn)
 }
 
 // Extended score item with upload keys for create/update operations

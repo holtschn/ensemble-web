@@ -1,42 +1,52 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { toast } from 'sonner';
-import { SetlistItem, SetlistScoreItem, ScoreItem } from '@/next/ndb/types';
+import { SetlistItem, SetlistScoreItem, ScoreItem, PlayerAllocation } from '@/next/ndb/types';
 import { createSetlist, updateSetlist } from '@/next/ndb/api/actions';
 import { useScores } from '@/next/ndb/hooks/useScores';
 import { SUCCESS_MESSAGES, ERROR_MESSAGES } from '@/next/ndb/constants';
 import TextField from '@/next/ndb/components/TextField';
-import Button from '@/next/ndb/components/Button';
-import Icon from '@/next/ndb/components/Icon';
 import ScoreListItem from '@/next/ndb/components/setlists/ScoreListItem';
+import PlayerAllocationEditor from '@/next/ndb/components/setlists/PlayerAllocationEditor';
 
 interface SetlistEditorProps {
   mode: 'create' | 'edit';
   setlistId?: number;
   initialData?: SetlistItem;
   onSaveSuccess: (setlistId: number) => void;
-  onCancel: () => void;
+  onHasChanges?: (hasChanges: boolean) => void;
+  submitRef?: React.MutableRefObject<(() => void) | null>;
+  isSaving: boolean;
 }
 
-const SetlistEditor: React.FC<SetlistEditorProps> = ({ mode, setlistId, initialData, onSaveSuccess, onCancel }) => {
+const SetlistEditor: React.FC<SetlistEditorProps> = ({
+  mode,
+  setlistId,
+  initialData,
+  onSaveSuccess,
+  onHasChanges,
+  submitRef,
+  isSaving,
+}) => {
   const { scores } = useScores();
 
   const [displayName, setDisplayName] = useState(initialData?.displayName || '');
   const [items, setItems] = useState<SetlistScoreItem[]>(initialData?.items || []);
-  const [isSaving, setIsSaving] = useState(false);
-  const [isDirty, setIsDirty] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [showSearchResults, setShowSearchResults] = useState(false);
+  const [activeTab, setActiveTab] = useState<'overview' | 'allocations'>('overview');
 
   // Track changes for dirty state
   useEffect(() => {
+    let hasChanges = false;
     if (mode === 'create') {
-      setIsDirty(displayName.trim().length > 0 || items.length > 0);
+      hasChanges = displayName.trim().length > 0 || items.length > 0;
     } else {
       const nameChanged = displayName !== initialData?.displayName;
       const itemsChanged = JSON.stringify(items) !== JSON.stringify(initialData?.items);
-      setIsDirty(nameChanged || itemsChanged);
+      hasChanges = nameChanged || itemsChanged;
     }
-  }, [displayName, items, mode, initialData]);
+    onHasChanges?.(hasChanges);
+  }, [displayName, items, mode, initialData, onHasChanges]);
 
   // Filter scores based on search query
   const filteredScores = React.useMemo(() => {
@@ -113,7 +123,19 @@ const SetlistEditor: React.FC<SetlistEditorProps> = ({ mode, setlistId, initialD
     [items]
   );
 
-  const handleSave = async () => {
+  const handleAllocationsChange = useCallback(
+    (itemIndex: number, allocations: PlayerAllocation[]) => {
+      const newItems = [...items];
+      newItems[itemIndex] = {
+        ...newItems[itemIndex],
+        allocations,
+      };
+      setItems(newItems);
+    },
+    [items]
+  );
+
+  const handleSave = useCallback(async () => {
     // Validation
     if (!displayName.trim()) {
       toast.error('Bitte geben Sie einen Namen für die Setlist ein');
@@ -121,11 +143,9 @@ const SetlistEditor: React.FC<SetlistEditorProps> = ({ mode, setlistId, initialD
     }
 
     if (items.length === 0) {
-      toast.error('Bitte fügen Sie mindestens eine Note hinzu');
+      toast.error('Bitte fügen Sie mindestens ein Stück hinzu');
       return;
     }
-
-    setIsSaving(true);
 
     try {
       if (mode === 'create') {
@@ -147,10 +167,15 @@ const SetlistEditor: React.FC<SetlistEditorProps> = ({ mode, setlistId, initialD
     } catch (error) {
       toast.error(ERROR_MESSAGES.SAVE_ERROR);
       console.error('Save error:', error);
-    } finally {
-      setIsSaving(false);
     }
-  };
+  }, [displayName, items, mode, setlistId, onSaveSuccess]);
+
+  // Expose save function via ref
+  useEffect(() => {
+    if (submitRef) {
+      submitRef.current = handleSave;
+    }
+  }, [handleSave, submitRef]);
 
   const getScoreDetails = (scoreId: number) => {
     const score = scores.find((s) => s.id === scoreId);
@@ -170,144 +195,171 @@ const SetlistEditor: React.FC<SetlistEditorProps> = ({ mode, setlistId, initialD
   };
 
   return (
-    <div className="max-w-4xl">
-      {/* Display Name Field */}
-      <div className="mb-6">
-        <label htmlFor="displayName" className="block text-sm font-medium text-gray-700 mb-2">
-          Name der Setlist *
-        </label>
-        <TextField
-          id="displayName"
-          name="displayName"
-          value={displayName}
-          onChange={(e) => setDisplayName(e.target.value)}
-          placeholder="z.B. Weihnachtskonzert 2025"
-          required
-        />
+    <div className="w-full">
+      {/* Tab Navigation */}
+      <div className="border-b border-gray-200 mb-6">
+        <nav className="-mb-px flex gap-8">
+          <button
+            type="button"
+            onClick={() => setActiveTab('overview')}
+            className={`py-4 px-1 border-b-2 font-medium text-sm ${
+              activeTab === 'overview'
+                ? 'border-blue-500 text-blue-600'
+                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+            }`}
+          >
+            Übersicht
+          </button>
+          {/* Hide Besetzung tab on mobile (< 768px) */}
+          <button
+            type="button"
+            onClick={() => setActiveTab('allocations')}
+            className={`hidden md:block py-4 px-1 border-b-2 font-medium text-sm ${
+              activeTab === 'allocations'
+                ? 'border-blue-500 text-blue-600'
+                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+            }`}
+          >
+            Besetzung
+          </button>
+        </nav>
       </div>
 
-      {/* Items List */}
+      {/* Tab Content */}
       <div className="mb-6">
-        <div className="flex justify-between items-center mb-2">
-          <label className="block text-sm font-medium text-gray-700">Noten in der Setlist ({items.length})</label>
-        </div>
-
-        <div className="border border-gray-200 rounded-lg">
-          {/* Existing items */}
-          {items.length > 0 && (
-            <div className="divide-y divide-gray-200">
-              {items.map((item, index) => {
-                const scoreDetails = getScoreDetails(item.score);
-                return (
-                  <div key={`${item.score}-${index}`} className="p-3 flex items-start gap-3 hover:bg-gray-50">
-                    {/* Order number */}
-                    <div className="text-sm font-medium text-gray-500 w-8 pt-1">{index + 1}.</div>
-
-                    {/* Score details */}
-                    <div className="flex-1">
-                      <ScoreListItem
-                        title={scoreDetails.title}
-                        composer={scoreDetails.composer}
-                        arranger={scoreDetails.arranger}
-                        instrumentation={scoreDetails.instrumentation}
-                        compact
-                      />
-                    </div>
-
-                    {/* Action buttons */}
-                    <div className="flex gap-2">
-                      <button
-                        type="button"
-                        onClick={() => handleMoveUp(index)}
-                        disabled={index === 0}
-                        className="px-2 py-1 text-xs text-gray-600 hover:text-gray-900 disabled:opacity-30 disabled:cursor-not-allowed"
-                        title="Nach oben"
-                      >
-                        ↑
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => handleMoveDown(index)}
-                        disabled={index === items.length - 1}
-                        className="px-2 py-1 text-xs text-gray-600 hover:text-gray-900 disabled:opacity-30 disabled:cursor-not-allowed"
-                        title="Nach unten"
-                      >
-                        ↓
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => handleRemoveScore(index)}
-                        className="px-2 py-1 text-xs text-red-600 hover:text-red-800"
-                        title="Entfernen"
-                      >
-                        ✕
-                      </button>
-                    </div>
-                  </div>
-                );
-              })}
+        {activeTab === 'overview' && (
+          <div className="max-w-4xl mx-auto">
+            {/* Display Name Field */}
+            <div className="mb-6">
+              <label htmlFor="displayName" className="block text-sm font-medium text-gray-700 mb-2">
+                Name der Setlist *
+              </label>
+              <TextField
+                id="displayName"
+                name="displayName"
+                value={displayName}
+                onChange={(e) => setDisplayName(e.target.value)}
+                placeholder="z.B. Weihnachtskonzert 2025"
+                required
+              />
             </div>
-          )}
 
-          {/* Add Score Section - at the bottom */}
-          <div className={`p-3 relative ${items.length > 0 ? 'border-t border-gray-200 bg-gray-50' : ''}`}>
-            <TextField
-              value={searchQuery}
-              onChange={(e) => {
-                setSearchQuery(e.target.value);
-                setShowSearchResults(true);
-              }}
-              onFocus={() => setShowSearchResults(true)}
-              placeholder="Nach Titel, Komponist oder Besetzung suchen..."
-              autoComplete="off"
-            />
-
-            {/* Search Results Dropdown */}
-            {showSearchResults && searchQuery.trim() && (
-              <div className="absolute z-10 left-3 right-3 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto" style={{ top: '100%', marginTop: '-1rem' }}>
-                {filteredScores.length > 0 ? (
-                  filteredScores.map((score) => (
-                    <button
-                      key={score.id}
-                      type="button"
-                      onClick={() => handleAddScore(score)}
-                      className="w-full px-4 py-2 text-left hover:bg-gray-50 border-b border-gray-100 last:border-b-0"
-                    >
-                      <ScoreListItem
-                        title={score.title}
-                        composer={score.composer}
-                        arranger={score.arranger}
-                        instrumentation={score.instrumentation}
-                        compact
-                      />
-                    </button>
-                  ))
-                ) : (
-                  <div className="px-4 py-3 text-sm text-gray-500">Keine Noten gefunden</div>
-                )}
+            {/* Items List */}
+            <div className="mb-6">
+              <div className="flex justify-between items-center mb-2">
+                <label className="block text-sm font-medium text-gray-700">Stücke in der Setlist ({items.length})</label>
               </div>
-            )}
+
+              <div className="border border-gray-200 rounded-lg">
+                {/* Existing items */}
+                {items.length > 0 && (
+                  <div className="divide-y divide-gray-200">
+                    {items.map((item, index) => {
+                      const scoreDetails = getScoreDetails(item.score);
+                      return (
+                        <div key={`${item.score}-${index}`} className="p-3 flex items-start gap-3 hover:bg-gray-50">
+                          {/* Order number */}
+                          <div className="text-sm font-medium text-gray-500 w-8 pt-1">{index + 1}.</div>
+
+                          {/* Score details */}
+                          <div className="flex-1">
+                            <ScoreListItem
+                              title={scoreDetails.title}
+                              composer={scoreDetails.composer}
+                              arranger={scoreDetails.arranger}
+                              instrumentation={scoreDetails.instrumentation}
+                              compact
+                            />
+                          </div>
+
+                          {/* Action buttons */}
+                          <div className="flex gap-2">
+                            <button
+                              type="button"
+                              onClick={() => handleMoveUp(index)}
+                              disabled={index === 0}
+                              className="px-2 py-1 text-xs text-gray-600 hover:text-gray-900 disabled:opacity-30 disabled:cursor-not-allowed"
+                              title="Nach oben"
+                            >
+                              ↑
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => handleMoveDown(index)}
+                              disabled={index === items.length - 1}
+                              className="px-2 py-1 text-xs text-gray-600 hover:text-gray-900 disabled:opacity-30 disabled:cursor-not-allowed"
+                              title="Nach unten"
+                            >
+                              ↓
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => handleRemoveScore(index)}
+                              className="px-2 py-1 text-xs text-red-600 hover:text-red-800"
+                              title="Entfernen"
+                            >
+                              ✕
+                            </button>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+
+                {/* Add Score Section - at the bottom */}
+                <div className={`p-3 relative ${items.length > 0 ? 'border-t border-gray-200 bg-gray-50' : ''}`}>
+                  <TextField
+                    value={searchQuery}
+                    onChange={(e) => {
+                      setSearchQuery(e.target.value);
+                      setShowSearchResults(true);
+                    }}
+                    onFocus={() => setShowSearchResults(true)}
+                    placeholder="Stück hinzufügen..."
+                    autoComplete="off"
+                  />
+
+                  {/* Search Results Dropdown */}
+                  {showSearchResults && searchQuery.trim() && (
+                    <div
+                      className="absolute z-10 left-3 right-3 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto"
+                      style={{ top: '100%', marginTop: '-1rem' }}
+                    >
+                      {filteredScores.length > 0 ? (
+                        filteredScores.map((score) => (
+                          <button
+                            key={score.id}
+                            type="button"
+                            onClick={() => handleAddScore(score)}
+                            className="w-full px-4 py-2 text-left hover:bg-gray-50 border-b border-gray-100 last:border-b-0"
+                          >
+                            <ScoreListItem
+                              title={score.title}
+                              composer={score.composer}
+                              arranger={score.arranger}
+                              instrumentation={score.instrumentation}
+                              compact
+                            />
+                          </button>
+                        ))
+                      ) : (
+                        <div className="px-4 py-3 text-sm text-gray-500">Keine Stücke gefunden</div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
+        )}
 
-      {/* Action Buttons */}
-      <div className="flex gap-3 pt-4 border-t border-gray-200">
-        <Button onClick={handleSave} disabled={isSaving || !isDirty} isLoading={isSaving}>
-          {mode === 'create' ? 'Setlist erstellen' : 'Änderungen speichern'}
-        </Button>
-        <Button variant="ghost" onClick={onCancel} disabled={isSaving}>
-          Abbrechen
-        </Button>
+        {activeTab === 'allocations' && (
+          <div className="hidden md:block">
+            <PlayerAllocationEditor items={items} onAllocationsChange={handleAllocationsChange} />
+          </div>
+        )}
       </div>
-
-      {/* Dirty state indicator */}
-      {isDirty && (
-        <p className="mt-2 text-sm text-gray-500">
-          <Icon name="info" alt="Info" className="inline h-3 w-3 mr-1" />
-          Ungespeicherte Änderungen
-        </p>
-      )}
     </div>
   );
 };
