@@ -10,12 +10,13 @@ import { AnimationProvider } from '@/next/animation/context';
 import { getSettings } from '@/next/utils/settings';
 import { getFont } from '@/next/utils/fonts';
 import { ToastProvider } from '@/next/components/ToastProvider';
+import { ThemeProvider } from '@/next/components/ThemeProvider';
 
 export const metadata = generateMeta();
 
 const getDefaultFont = async () => {
   const settings = await getSettings();
-  return getFont(settings.fontFamily);
+  return getFont(settings.theme?.fontFamily || 'lexend');
 };
 
 export default async function PagesLayout({ children }: { children: React.ReactNode }) {
@@ -23,16 +24,18 @@ export default async function PagesLayout({ children }: { children: React.ReactN
   return (
     <html lang="de">
       <body className={defaultFont.className}>
-        <div className="min-h-screen flex flex-col">
-          <AnimationProvider>
-            <HeaderComponent />
-            <main className="grow">{children}</main>
-            <FooterComponent />
-          </AnimationProvider>
-        </div>
-        <SpeedInsights />
-        <Analytics />
-        <ToastProvider />
+        <ThemeProvider>
+          <div className="min-h-screen flex flex-col">
+            <AnimationProvider>
+              <HeaderComponent />
+              <main className="grow">{children}</main>
+              <FooterComponent />
+            </AnimationProvider>
+          </div>
+          <SpeedInsights />
+          <Analytics />
+          <ToastProvider />
+        </ThemeProvider>
       </body>
     </html>
   );
