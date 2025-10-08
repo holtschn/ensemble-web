@@ -38,26 +38,27 @@
     "@lexical/selection": "^0.35.0",
     "@lexical/table": "^0.35.0",
     "@lexical/utils": "^0.35.0",
-    "@payloadcms/db-postgres": "^3.58.0",
-    "@payloadcms/email-nodemailer": "^3.58.0",
-    "@payloadcms/live-preview-react": "^3.58.0",
-    "@payloadcms/next": "^3.58.0",
-    "@payloadcms/plugin-seo": "^3.58.0",
-    "@payloadcms/richtext-lexical": "^3.58.0",
-    "@payloadcms/storage-s3": "^3.58.0",
-    "@payloadcms/storage-vercel-blob": "^3.58.0",
+    "@payloadcms/db-postgres": "^3.59.1",
+    "@payloadcms/email-nodemailer": "^3.59.1",
+    "@payloadcms/live-preview-react": "^3.59.1",
+    "@payloadcms/next": "^3.59.1",
+    "@payloadcms/plugin-seo": "^3.59.1",
+    "@payloadcms/richtext-lexical": "^3.59.1",
+    "@payloadcms/storage-s3": "^3.59.1",
+    "@payloadcms/storage-vercel-blob": "^3.59.1",
     "@vercel/analytics": "^1.5.0",
     "@vercel/speed-insights": "^1.2.0",
     "escape-html": "^1.0.3",
     "next": "^15.5.4",
-    "nodemailer": "^7.0.6",
-    "payload": "^3.58.0",
+    "nodemailer": "^7.0.9",
+    "payload": "^3.59.1",
     "react": "19.2.0",
     "react-dom": "19.2.0",
     "sonner": "^2.0.7"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.1.14",
+    "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.0",
     "@testing-library/user-event": "^14.6.1",
@@ -77,5 +78,9 @@
     "tailwindcss": "^4.1.14",
     "ts-jest": "^29.4.4",
     "typescript": "^5.9.3"
+  },
+  "overrides": {
+    "nodemailer": "^7.0.9",
+    "esbuild": ">=0.25.0"
   }
 }
