@@ -35,6 +35,8 @@ const SetlistEditor: React.FC<SetlistEditorProps> = ({
   const [showSearchResults, setShowSearchResults] = useState(false);
   const [activeTab, setActiveTab] = useState<'overview' | 'allocations'>('overview');
 
+  const searchInputRef = React.useRef<HTMLInputElement>(null);
+
   // Track changes for dirty state
   useEffect(() => {
     let hasChanges = false;
@@ -80,6 +82,11 @@ const SetlistEditor: React.FC<SetlistEditorProps> = ({
       toast.success(`"${score.title}" zur Setlist hinzugefügt`);
       setSearchQuery(''); // Clear search
       setShowSearchResults(false);
+
+      // Focus the search input for next entry
+      setTimeout(() => {
+        searchInputRef.current?.focus();
+      }, 0);
     },
     [items]
   );
@@ -311,6 +318,7 @@ const SetlistEditor: React.FC<SetlistEditorProps> = ({
                 {/* Add Score Section - at the bottom */}
                 <div className={`p-3 relative ${items.length > 0 ? 'border-t border-neutral-200 bg-neutral-50' : ''}`}>
                   <TextField
+                    ref={searchInputRef}
                     value={searchQuery}
                     onChange={(e) => {
                       setSearchQuery(e.target.value);

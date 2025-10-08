@@ -7,31 +7,28 @@ interface TextFieldProps extends Omit<React.InputHTMLAttributes<HTMLInputElement
   helperText?: string;
 }
 
-const TextField: React.FC<TextFieldProps> = ({
-  error,
-  required = false,
-  helperText,
-  className = '',
-  id,
-  name,
-  ...props
-}) => {
-  const inputId = id || name || 'textfield';
-  const hasError = Boolean(error);
+const TextField = React.forwardRef<HTMLInputElement, TextFieldProps>(
+  ({ error, required = false, helperText, className = '', id, name, ...props }, ref) => {
+    const inputId = id || name || 'textfield';
+    const hasError = Boolean(error);
 
-  return (
-    <div className="mb-4">
-      <input
-        type="text"
-        id={inputId}
-        name={name}
-        className={`input max-w-2xl ${hasError ? 'input-error' : ''} ${className}`.trim()}
-        {...props}
-      />
-      {hasError && <p className="input-error-text">{error}</p>}
-      {helperText && !hasError && <p className="input-helper">{helperText}</p>}
-    </div>
-  );
-};
+    return (
+      <div className="mb-4">
+        <input
+          ref={ref}
+          type="text"
+          id={inputId}
+          name={name}
+          className={`input max-w-2xl ${hasError ? 'input-error' : ''} ${className}`.trim()}
+          {...props}
+        />
+        {hasError && <p className="input-error-text">{error}</p>}
+        {helperText && !hasError && <p className="input-helper">{helperText}</p>}
+      </div>
+    );
+  }
+);
+
+TextField.displayName = 'TextField';
 
 export default TextField;
