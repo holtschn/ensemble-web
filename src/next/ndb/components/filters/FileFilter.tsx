@@ -13,18 +13,20 @@ export const FileFilter: React.FC<FileFilterProps> = ({ value, onChange }) => {
           type="radio"
           checked={value === true}
           onChange={() => onChange(true)}
-          className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
+          className="w-4 h-4 border-neutral-300 focus:ring-2"
+          style={{ accentColor: 'var(--color-primary-500)' }}
         />
-        <span className="text-sm text-gray-700">Vorhanden</span>
+        <span className="text-sm text-neutral-700">Vorhanden</span>
       </label>
       <label className="flex items-center space-x-2 cursor-pointer">
         <input
           type="radio"
           checked={value === false}
           onChange={() => onChange(false)}
-          className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
+          className="w-4 h-4 border-neutral-300 focus:ring-2"
+          style={{ accentColor: 'var(--color-primary-500)' }}
         />
-        <span className="text-sm text-gray-700">Nicht vorhanden</span>
+        <span className="text-sm text-neutral-700">Nicht vorhanden</span>
       </label>
     </div>
   );

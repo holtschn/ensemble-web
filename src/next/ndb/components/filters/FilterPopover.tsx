@@ -97,8 +97,8 @@ export const FilterPopover: React.FC<FilterPopoverProps> = ({ isActive, onClear,
         ref={buttonRef}
         type="button"
         onClick={handleToggle}
-        className={`p-1 rounded hover:bg-gray-100 transition-colors flex-shrink-0 ${
-          isActive ? 'text-blue-600' : 'text-gray-400 hover:text-gray-600'
+        className={`p-1 rounded hover:bg-neutral-100 transition-colors flex-shrink-0 ${
+          isActive ? 'text-primary-600' : 'text-neutral-400 hover:text-neutral-600'
         }`}
         aria-label={`Filter ${label}`}
         aria-expanded={isOpen}
@@ -113,7 +113,7 @@ export const FilterPopover: React.FC<FilterPopoverProps> = ({ isActive, onClear,
       {isOpen && position && (
         <div
           ref={popoverRef}
-          className="fixed bg-white border border-gray-200 rounded-md shadow-lg z-50 min-w-[200px] max-h-[400px] overflow-y-auto"
+          className="fixed bg-white border border-neutral-200 rounded-md shadow-lg z-50 min-w-[200px] max-h-[400px] overflow-y-auto"
           style={{
             top: `${position.top}px`,
             left: `${position.left}px`,
@@ -123,7 +123,7 @@ export const FilterPopover: React.FC<FilterPopoverProps> = ({ isActive, onClear,
             {children}
           </div>
           {isActive && (
-            <div className="border-t border-gray-200 p-2">
+            <div className="border-t border-neutral-200 p-2">
               <Button
                 variant="ghost"
                 size="sm"
