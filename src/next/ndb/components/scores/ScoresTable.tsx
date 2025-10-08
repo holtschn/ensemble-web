@@ -285,7 +285,7 @@ const ScoresTable: React.FC<ScoresTableProps> = ({
           row.parts ? (
             <ScoreDownloadButton file={row.parts} label="Stimmen" size="sm" className="w-full" />
           ) : (
-            <span className="text-sm text-gray-400">-</span>
+            <span className="text-muted">-</span>
           ),
         className: 'text-center',
         renderHeader: () => (
@@ -311,7 +311,7 @@ const ScoresTable: React.FC<ScoresTableProps> = ({
           row.fullScore ? (
             <ScoreDownloadButton file={row.fullScore} label="Partitur" size="sm" className="w-full" />
           ) : (
-            <span className="text-sm text-gray-400">-</span>
+            <span className="text-muted">-</span>
           ),
         className: 'text-center',
         renderHeader: () => (
@@ -402,7 +402,7 @@ const ScoresTable: React.FC<ScoresTableProps> = ({
           row.audioMidi ? (
             <ScoreDownloadButton file={row.audioMidi} label="MIDI" size="sm" className="w-full" />
           ) : (
-            <span className="text-sm text-gray-400">-</span>
+            <span className="text-muted">-</span>
           ),
         className: 'text-center',
         renderHeader: () => (
@@ -428,7 +428,7 @@ const ScoresTable: React.FC<ScoresTableProps> = ({
           row.audioMp3 ? (
             <ScoreDownloadButton file={row.audioMp3} label="MP3" size="sm" className="w-full" />
           ) : (
-            <span className="text-sm text-gray-400">-</span>
+            <span className="text-muted">-</span>
           ),
         className: 'text-center',
         renderHeader: () => (
@@ -475,7 +475,7 @@ const ScoresTable: React.FC<ScoresTableProps> = ({
             <button
               type="button"
               onClick={() => setIsModalOpen(true)}
-              className="text-xs text-gray-600 hover:text-gray-900 underline"
+              className="text-caption hover:text-neutral-900 underline"
             >
               Spalten konfigurieren
             </button>

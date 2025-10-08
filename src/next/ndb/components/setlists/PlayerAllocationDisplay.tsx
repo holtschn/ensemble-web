@@ -113,7 +113,7 @@ const PlayerAllocationDisplay: React.FC<PlayerAllocationDisplayProps> = ({ items
 
   if (items.length === 0) {
     return (
-      <div className="border border-dashed border-gray-300 rounded-lg p-8 text-center text-gray-500">
+      <div className="border border-dashed border-neutral-300 rounded-card p-8 text-center text-muted">
         Keine Stücke in der Setlist.
       </div>
     );
@@ -124,24 +124,21 @@ const PlayerAllocationDisplay: React.FC<PlayerAllocationDisplayProps> = ({ items
       {/* Desktop/Tablet: Horizontal scrolling table */}
       <div className="hidden md:block">
         <ScrollableTable>
-          <div className="border border-gray-200 rounded-lg">
-            <table className="w-full border-collapse text-sm">
+          <div className="border-base rounded-card">
+            <table className="w-full border-collapse text-body">
               <thead>
-                <tr className="bg-gray-50 border-b border-gray-200">
-                  <th className="sticky left-0 z-10 bg-gray-50 px-2 py-1.5 text-left text-xs font-medium text-gray-700 uppercase tracking-wider border-r border-gray-200 min-w-[140px]">
+                <tr className="bg-neutral-50 border-b border-neutral-200">
+                  <th className="sticky left-0 z-10 table-header-cell min-w-[140px]">
                     Stück
                   </th>
                   {allParts.map((part) => (
-                    <th
-                      key={part}
-                      className="px-1.5 py-1.5 text-center text-xs font-medium text-gray-700 uppercase tracking-wider min-w-[90px]"
-                    >
+                    <th key={part} className="table-header-cell-center min-w-[90px]">
                       {part}
                     </th>
                   ))}
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody className="bg-white divide-base">
                 {items.map((item, itemIndex) => {
                   const score = getScore(item.score);
                   const scoreParts = getScoreParts(item.score);
@@ -149,11 +146,11 @@ const PlayerAllocationDisplay: React.FC<PlayerAllocationDisplayProps> = ({ items
                   return (
                     <tr key={`${item.score}-${itemIndex}`}>
                       {/* Score title (sticky first column) */}
-                      <td className="sticky left-0 z-10 bg-white px-2 py-1.5 text-xs font-medium text-gray-900 border-r border-gray-200 max-w-[140px]">
+                      <td className="sticky left-0 z-10 bg-white px-2 py-1.5 text-caption font-medium border-r border-neutral-200 max-w-[140px]">
                         <div className="truncate" title={score?.title || `Score #${item.score}`}>
                           {score?.title || `Score #${item.score}`}
                         </div>
-                        <div className="text-xs text-gray-500 truncate mt-0.5" title={score?.composer || ''}>
+                        <div className="text-caption truncate mt-0.5" title={score?.composer || ''}>
                           {score?.composer || ''}
                         </div>
                       </td>
@@ -168,12 +165,8 @@ const PlayerAllocationDisplay: React.FC<PlayerAllocationDisplayProps> = ({ items
                         return (
                           <td
                             key={column}
-                            className={`px-1.5 py-1.5 text-xs text-center ${
-                              isOrphaned
-                                ? 'bg-amber-50 text-amber-700'
-                                : isValidPart
-                                  ? 'text-gray-900'
-                                  : 'text-gray-300'
+                            className={`px-1.5 py-1.5 text-caption text-center ${
+                              isOrphaned ? 'bg-amber-50 text-amber-700' : isValidPart ? '' : 'text-neutral-300'
                             }`}
                             title={isOrphaned ? 'Veraltete Stimme (nicht mehr im Stück vorhanden)' : ''}
                           >
@@ -200,29 +193,29 @@ const PlayerAllocationDisplay: React.FC<PlayerAllocationDisplayProps> = ({ items
           const orphanedAllocations = allocations.filter((alloc) => !scoreParts.includes(alloc.part));
 
           return (
-            <div key={`${item.score}-${itemIndex}`} className="border border-gray-200 rounded-lg p-4">
+            <div key={`${item.score}-${itemIndex}`} className="border-base rounded-card p-4">
               {/* Score header */}
-              <div className="mb-3 pb-3 border-b border-gray-200">
-                <div className="font-medium text-gray-900 text-sm">
+              <div className="mb-3 pb-3 border-b border-neutral-200">
+                <div className="font-medium text-body">
                   {itemIndex + 1}. {score?.title || `Score #${item.score}`}
                 </div>
-                <div className="text-xs text-gray-500 mt-1">{score?.composer || ''}</div>
+                <div className="text-caption mt-1">{score?.composer || ''}</div>
               </div>
 
               {/* Allocations */}
               {validAllocations.length === 0 && orphanedAllocations.length === 0 ? (
-                <div className="text-xs text-gray-400 italic">Keine Besetzung festgelegt</div>
+                <div className="text-caption italic text-neutral-400">Keine Besetzung festgelegt</div>
               ) : (
                 <div className="space-y-2">
                   {/* Valid allocations */}
                   {validAllocations.length > 0 && (
-                    <div className="grid grid-cols-2 gap-x-3 gap-y-1.5 text-xs">
+                    <div className="grid grid-cols-2 gap-x-3 gap-y-1.5 text-caption">
                       {sortParts(validAllocations.map((a) => a.part)).map((part) => {
                         const allocation = validAllocations.find((a) => a.part === part);
                         return (
                           <div key={part} className="flex">
-                            <span className="font-medium text-gray-700 w-12">{part}:</span>
-                            <span className="text-gray-900 truncate">{allocation?.player}</span>
+                            <span className="font-medium text-body w-12">{part}:</span>
+                            <span className="truncate">{allocation?.player}</span>
                           </div>
                         );
                       })}
@@ -232,8 +225,8 @@ const PlayerAllocationDisplay: React.FC<PlayerAllocationDisplayProps> = ({ items
                   {/* Orphaned allocations */}
                   {orphanedAllocations.length > 0 && (
                     <div className="pt-2 border-t border-amber-200">
-                      <div className="text-xs font-medium text-amber-700 mb-1.5">Veraltete Stimmen:</div>
-                      <div className="grid grid-cols-2 gap-x-3 gap-y-1.5 text-xs">
+                      <div className="text-caption font-medium text-amber-700 mb-1.5">Veraltete Stimmen:</div>
+                      <div className="grid grid-cols-2 gap-x-3 gap-y-1.5 text-caption">
                         {sortParts(orphanedAllocations.map((a) => a.part)).map((part) => {
                           const allocation = orphanedAllocations.find((a) => a.part === part);
                           return (

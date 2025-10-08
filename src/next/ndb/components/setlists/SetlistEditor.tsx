@@ -196,15 +196,15 @@ const SetlistEditor: React.FC<SetlistEditorProps> = ({
   return (
     <div className="w-full">
       {/* Tab Navigation */}
-      <div className="border-b border-gray-200 mb-6">
+      <div className="border-b border-neutral-200 mb-6">
         <nav className="-mb-px flex gap-8">
           <button
             type="button"
             onClick={() => setActiveTab('overview')}
-            className={`py-4 px-1 border-b-2 font-medium text-sm ${
+            className={`py-4 px-1 border-b-2 font-medium text-body ${
               activeTab === 'overview'
-                ? 'border-blue-500 text-blue-600'
-                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                ? 'border-primary-600 text-primary-700'
+                : 'border-transparent text-muted hover:text-neutral-700 hover:border-neutral-300'
             }`}
           >
             Übersicht
@@ -213,10 +213,10 @@ const SetlistEditor: React.FC<SetlistEditorProps> = ({
           <button
             type="button"
             onClick={() => setActiveTab('allocations')}
-            className={`hidden md:block py-4 px-1 border-b-2 font-medium text-sm ${
+            className={`hidden md:block py-4 px-1 border-b-2 font-medium text-body ${
               activeTab === 'allocations'
-                ? 'border-blue-500 text-blue-600'
-                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                ? 'border-primary-600 text-primary-700'
+                : 'border-transparent text-muted hover:text-neutral-700 hover:border-neutral-300'
             }`}
           >
             Besetzung
@@ -230,7 +230,7 @@ const SetlistEditor: React.FC<SetlistEditorProps> = ({
           <div className="max-w-4xl mx-auto">
             {/* Display Name Field */}
             <div className="mb-6">
-              <label htmlFor="displayName" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="displayName" className="input-label mb-2">
                 Name der Setlist *
               </label>
               <TextField
@@ -246,21 +246,21 @@ const SetlistEditor: React.FC<SetlistEditorProps> = ({
             {/* Items List */}
             <div className="mb-6">
               <div className="flex justify-between items-center mb-2">
-                <label className="block text-sm font-medium text-gray-700">
+                <label className="input-label">
                   Stücke in der Setlist ({items.length})
                 </label>
               </div>
 
-              <div className="border border-gray-200 rounded-lg">
+              <div className="border-base rounded-card">
                 {/* Existing items */}
                 {items.length > 0 && (
-                  <div className="divide-y divide-gray-200">
+                  <div className="divide-base">
                     {items.map((item, index) => {
                       const scoreDetails = getScoreDetails(item.score);
                       return (
-                        <div key={`${item.score}-${index}`} className="p-3 flex items-start gap-3 hover:bg-gray-50">
+                        <div key={`${item.score}-${index}`} className="p-3 flex items-start gap-3 hover:bg-neutral-50">
                           {/* Order number */}
-                          <div className="text-sm font-medium text-gray-500 w-8 pt-1">{index + 1}.</div>
+                          <div className="text-body font-medium text-muted w-8 pt-1">{index + 1}.</div>
 
                           {/* Score details */}
                           <div className="flex-1">
@@ -279,7 +279,7 @@ const SetlistEditor: React.FC<SetlistEditorProps> = ({
                               type="button"
                               onClick={() => handleMoveUp(index)}
                               disabled={index === 0}
-                              className="px-2 py-1 text-xs text-gray-600 hover:text-gray-900 disabled:opacity-30 disabled:cursor-not-allowed"
+                              className="px-2 py-1 text-caption hover:text-neutral-900 disabled:opacity-30 disabled:cursor-not-allowed"
                               title="Nach oben"
                             >
                               ↑
@@ -288,7 +288,7 @@ const SetlistEditor: React.FC<SetlistEditorProps> = ({
                               type="button"
                               onClick={() => handleMoveDown(index)}
                               disabled={index === items.length - 1}
-                              className="px-2 py-1 text-xs text-gray-600 hover:text-gray-900 disabled:opacity-30 disabled:cursor-not-allowed"
+                              className="px-2 py-1 text-caption hover:text-neutral-900 disabled:opacity-30 disabled:cursor-not-allowed"
                               title="Nach unten"
                             >
                               ↓
@@ -296,7 +296,7 @@ const SetlistEditor: React.FC<SetlistEditorProps> = ({
                             <button
                               type="button"
                               onClick={() => handleRemoveScore(index)}
-                              className="px-2 py-1 text-xs text-red-600 hover:text-red-800"
+                              className="px-2 py-1 text-caption text-red-600 hover:text-red-800"
                               title="Entfernen"
                             >
                               ✕
@@ -309,7 +309,7 @@ const SetlistEditor: React.FC<SetlistEditorProps> = ({
                 )}
 
                 {/* Add Score Section - at the bottom */}
-                <div className={`p-3 relative ${items.length > 0 ? 'border-t border-gray-200 bg-gray-50' : ''}`}>
+                <div className={`p-3 relative ${items.length > 0 ? 'border-t border-neutral-200 bg-neutral-50' : ''}`}>
                   <TextField
                     value={searchQuery}
                     onChange={(e) => {
@@ -324,7 +324,7 @@ const SetlistEditor: React.FC<SetlistEditorProps> = ({
                   {/* Search Results Dropdown */}
                   {showSearchResults && searchQuery.trim() && (
                     <div
-                      className="absolute z-10 left-3 right-3 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto"
+                      className="absolute z-10 left-3 right-3 bg-white border-popover max-h-60 overflow-auto"
                       style={{ top: '100%', marginTop: '-1rem' }}
                     >
                       {filteredScores.length > 0 ? (
@@ -333,7 +333,7 @@ const SetlistEditor: React.FC<SetlistEditorProps> = ({
                             key={score.id}
                             type="button"
                             onClick={() => handleAddScore(score)}
-                            className="w-full px-4 py-2 text-left hover:bg-gray-50 border-b border-gray-100 last:border-b-0"
+                            className="w-full px-4 py-2 text-left hover:bg-neutral-50 border-b border-neutral-100 last:border-b-0"
                           >
                             <ScoreListItem
                               title={score.title}
@@ -345,7 +345,7 @@ const SetlistEditor: React.FC<SetlistEditorProps> = ({
                           </button>
                         ))
                       ) : (
-                        <div className="px-4 py-3 text-sm text-gray-500">Keine Stücke gefunden</div>
+                        <div className="px-4 py-3 text-muted">Keine Stücke gefunden</div>
                       )}
                     </div>
                   )}

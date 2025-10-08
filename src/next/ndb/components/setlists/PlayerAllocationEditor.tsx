@@ -167,48 +167,48 @@ const PlayerAllocationEditor: React.FC<PlayerAllocationEditorProps> = ({ items, 
 
   if (items.length === 0) {
     return (
-      <div className="border border-dashed border-gray-300 rounded-lg p-8 text-center text-gray-500">
+      <div className="border border-dashed border-neutral-300 rounded-card p-8 text-center text-muted">
         Keine Stücke in der Setlist. Fügen Sie zuerst Stücke hinzu, um die Besetzung festzulegen.
       </div>
     );
   }
 
   if (isLoadingUsers) {
-    return <div className="border border-gray-200 rounded-lg p-8 text-center text-gray-500">Lade Musiker...</div>;
+    return <div className="border-base rounded-card p-8 text-center text-muted">Lade Musiker...</div>;
   }
 
   return (
     <ScrollableTable>
-      <div className="border border-gray-200 rounded-lg">
-        <table className="w-full border-collapse text-sm">
+      <div className="border-base rounded-card">
+        <table className="w-full border-collapse text-body">
           <thead>
-            <tr className="bg-gray-50 border-b border-gray-200">
-              <th className="sticky left-0 z-10 bg-gray-50 px-2 py-1.5 text-left text-xs font-medium text-gray-700 uppercase tracking-wider border-r border-gray-200 min-w-[140px]">
+            <tr className="bg-neutral-50 border-b border-neutral-200">
+              <th className="sticky left-0 z-10 table-header-cell min-w-[140px]">
                 Stücke
               </th>
               {allParts.map((part) => (
                 <th
                   key={part}
-                  className="px-1.5 py-1.5 text-center text-xs font-medium text-gray-700 uppercase tracking-wider min-w-[90px]"
+                  className="table-header-cell-center min-w-[90px]"
                 >
                   {part}
                 </th>
               ))}
             </tr>
           </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
+          <tbody className="bg-white divide-base">
             {items.map((item, itemIndex) => {
               const score = getScore(item.score);
               const scoreParts = getScoreParts(item.score);
 
               return (
-                <tr key={`${item.score}-${itemIndex}`} className="hover:bg-gray-50">
+                <tr key={`${item.score}-${itemIndex}`} className="hover:bg-neutral-50">
                   {/* Score title (sticky first column) */}
-                  <td className="sticky left-0 z-10 bg-white px-2 py-1.5 text-xs font-medium text-gray-900 border-r border-gray-200 max-w-[140px]">
+                  <td className="sticky left-0 z-10 bg-white px-2 py-1.5 text-caption font-medium text-neutral-900 border-r border-neutral-200 max-w-[140px]">
                     <div className="truncate" title={score?.title || `Score #${item.score}`}>
                       {score?.title || `Score #${item.score}`}
                     </div>
-                    <div className="text-xs text-gray-500 truncate mt-0.5" title={score?.composer || ''}>
+                    <div className="text-caption truncate mt-0.5" title={score?.composer || ''}>
                       {score?.composer || ''}
                     </div>
                   </td>
@@ -230,7 +230,7 @@ const PlayerAllocationEditor: React.FC<PlayerAllocationEditorProps> = ({ items, 
                             placeholder="-"
                           />
                         ) : (
-                          <div className="text-center text-gray-300 text-xs py-1">-</div>
+                          <div className="text-center text-neutral-300 text-caption py-1">-</div>
                         )}
                       </td>
                     );
