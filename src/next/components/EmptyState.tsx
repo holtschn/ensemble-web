@@ -72,16 +72,16 @@ export function EmptyState({
 }: EmptyStateProps) {
   const variantStyles = {
     'no-results': {
-      iconBg: 'bg-gray-100',
-      iconColor: 'text-gray-400',
+      iconBg: 'bg-neutral-100',
+      iconColor: 'text-neutral-400',
     },
     'no-data': {
-      iconBg: 'bg-blue-100',
-      iconColor: 'text-blue-400',
+      iconBg: 'bg-primary-100',
+      iconColor: 'text-primary-400',
     },
     error: {
-      iconBg: 'bg-red-100',
-      iconColor: 'text-red-400',
+      iconBg: 'bg-danger-100',
+      iconColor: 'text-danger-400',
     },
   };
 
@@ -95,16 +95,13 @@ export function EmptyState({
             <Icon name={icon} alt="" className={`h-8 w-8 ${styles.iconColor}`} />
           </div>
         </div>
-        <h2 className="text-xl font-semibold text-gray-900 mb-2">{heading}</h2>
-        {message && <p className="text-gray-600 mb-6">{message}</p>}
+        <h2 className="text-xl font-semibold text-neutral-900 mb-2">{heading}</h2>
+        {message && <p className="text-neutral-600 mb-6">{message}</p>}
 
         {children}
 
         {action && (
-          <button
-            onClick={action.onClick}
-            className="mt-6 px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-          >
+          <button onClick={action.onClick} className="btn-primary btn-md mt-6">
             {action.label}
           </button>
         )}

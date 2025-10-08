@@ -26,7 +26,7 @@ const ScoresFilterButton: React.FC<ScoresFilterButtonProps> = ({ isActive, onCli
   return (
     <Button
       size="sm"
-      className={`text-xs ${isActive ? 'border-2 border-blue-600' : ''}`}
+      className={`text-xs ${isActive ? 'ring-2 ring-primary-600' : ''}`}
       variant="default"
       onClick={onClick}
     >
@@ -161,7 +161,7 @@ const ScoresTableToolbar: React.FC<ScoresTableToolbarProps> = ({
   };
 
   return (
-    <div className={`w-full bg-white border-b border-gray-200 py-4 ${className}`}>
+    <div className={`w-full bg-white border-b border-neutral-200 py-4 ${className}`}>
       <div className="flex flex-col gap-2">
         {/* Row 1: Search Input */}
         <div className="w-full">

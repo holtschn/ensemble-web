@@ -94,7 +94,7 @@ const InstrumentationEditor: React.FC<InstrumentationEditorProps> = ({
                 }
               }}
               disabled={disabled}
-              className="w-12 px-2 py-1 text-center border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
+              className="w-12 px-2 py-1 text-center border border-neutral-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 disabled:bg-neutral-100 disabled:cursor-not-allowed"
             />
           </div>
         ))}
@@ -108,7 +108,8 @@ const InstrumentationEditor: React.FC<InstrumentationEditorProps> = ({
             checked={withPercussion}
             onChange={(e) => handlePercussionChange(e.target.checked)}
             disabled={disabled}
-            className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 disabled:cursor-not-allowed"
+            className="w-4 h-4 rounded border-neutral-300 focus:ring-2 disabled:cursor-not-allowed"
+            style={{ accentColor: 'var(--color-primary-500)' }}
           />
           <span className="text-sm">mit Schlagzeug</span>
         </label>
@@ -118,7 +119,8 @@ const InstrumentationEditor: React.FC<InstrumentationEditorProps> = ({
             checked={withOrgan}
             onChange={(e) => handleOrganChange(e.target.checked)}
             disabled={disabled}
-            className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 disabled:cursor-not-allowed"
+            className="w-4 h-4 rounded border-neutral-300 focus:ring-2 disabled:cursor-not-allowed"
+            style={{ accentColor: 'var(--color-primary-500)' }}
           />
           <span className="text-sm">mit Orgel</span>
         </label>
@@ -132,7 +134,7 @@ const InstrumentationEditor: React.FC<InstrumentationEditorProps> = ({
               key={preset.name}
               type="button"
               onClick={() => handlePreset(preset.value)}
-              className="px-3 py-1 text-xs font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors"
+              className="btn-secondary btn-sm"
             >
               {preset.name}
             </button>

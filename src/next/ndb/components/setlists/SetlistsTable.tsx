@@ -56,7 +56,7 @@ const SetlistsTable: React.FC<SetlistsTableProps> = ({ setlists, onSetlistClick,
         <div className="flex gap-2 justify-center" onClick={(e) => e.stopPropagation()}>
           <button
             onClick={(e) => handleDownload(e, row, 'parts')}
-            className="px-3 py-1 text-xs font-medium text-blue-700 bg-blue-50 rounded hover:bg-blue-100 transition-colors"
+            className="btn-primary btn-sm"
             title="Stimmen herunterladen"
           >
             <Icon name="download" alt="Download Stimmen" className="h-3 w-3 inline mr-1" />
@@ -64,7 +64,7 @@ const SetlistsTable: React.FC<SetlistsTableProps> = ({ setlists, onSetlistClick,
           </button>
           <button
             onClick={(e) => handleDownload(e, row, 'fullScore')}
-            className="px-3 py-1 text-xs font-medium text-blue-700 bg-blue-50 rounded hover:bg-blue-100 transition-colors"
+            className="btn-primary btn-sm"
             title="Partituren herunterladen"
           >
             <Icon name="download" alt="Download Partitur" className="h-3 w-3 inline mr-1" />
@@ -98,24 +98,21 @@ const SetlistsTable: React.FC<SetlistsTableProps> = ({ setlists, onSetlistClick,
             <div
               key={setlist.id}
               onClick={() => onSetlistClick?.(setlist)}
-              className="bg-white border border-gray-200 rounded-lg p-4 cursor-pointer hover:bg-gray-50 transition-colors"
+              className="bg-white border border-neutral-200 rounded-lg p-4 cursor-pointer hover:bg-neutral-50 transition-colors"
             >
               <div className="flex justify-between items-start mb-2">
-                <h3 className="font-medium text-gray-900">{setlist.displayName}</h3>
-                <span className="text-gray-400 flex-shrink-0 ml-2">→</span>
+                <h3 className="font-medium text-neutral-900">{setlist.displayName}</h3>
+                <span className="text-neutral-400 flex-shrink-0 ml-2">→</span>
               </div>
-              <div className="text-sm text-gray-500 mb-3">{setlist.items.length} Stücke</div>
+              <div className="text-sm text-neutral-500 mb-3">{setlist.items.length} Stücke</div>
               <div className="flex gap-2">
-                <button
-                  onClick={(e) => handleDownload(e, setlist, 'parts')}
-                  className="flex-1 px-3 py-1.5 text-xs font-medium text-blue-700 bg-blue-50 rounded hover:bg-blue-100 transition-colors"
-                >
+                <button onClick={(e) => handleDownload(e, setlist, 'parts')} className="btn-primary btn-sm flex-1">
                   <Icon name="download" alt="Download" className="h-3 w-3 inline mr-1" />
                   Stimmen
                 </button>
                 <button
                   onClick={(e) => handleDownload(e, setlist, 'fullScore')}
-                  className="flex-1 px-3 py-1.5 text-xs font-medium text-blue-700 bg-blue-50 rounded hover:bg-blue-100 transition-colors"
+                  className="btn-primary btn-sm flex-1"
                   title="Partituren herunterladen"
                 >
                   <Icon name="download" alt="Download" className="h-3 w-3 inline mr-1" />

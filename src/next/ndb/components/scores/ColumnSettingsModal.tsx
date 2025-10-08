@@ -90,13 +90,13 @@ export const ColumnSettingsModal: React.FC<ColumnSettingsModalProps> = ({
     >
       <div className="bg-white rounded-lg">
         {/* Header */}
-        <div className="flex items-center justify-between px-3 py-2 border-b border-gray-200">
-          <h2 id="column-settings-title" className="text-base font-semibold text-gray-900">
+        <div className="flex items-center justify-between px-3 py-2 border-b border-neutral-200">
+          <h2 id="column-settings-title" className="text-base font-semibold text-neutral-900">
             Spalten anzeigen
           </h2>
           <button
             onClick={handleCancel}
-            className="text-gray-400 hover:text-gray-600 transition-colors"
+            className="text-neutral-400 hover:text-neutral-600 transition-colors"
             aria-label="Schließen"
           >
             <Icon name="cross" alt="Schließen" className="h-4 w-4" />
@@ -110,7 +110,7 @@ export const ColumnSettingsModal: React.FC<ColumnSettingsModalProps> = ({
               <div
                 key={column.id}
                 className={`flex items-center space-x-1.5 py-0.5 px-1.5 rounded ${
-                  !column.alwaysVisible ? 'hover:bg-gray-50' : 'opacity-50'
+                  !column.alwaysVisible ? 'hover:bg-neutral-50' : 'opacity-50'
                 } transition-colors`}
               >
                 {/* Reorder buttons */}
@@ -119,7 +119,7 @@ export const ColumnSettingsModal: React.FC<ColumnSettingsModalProps> = ({
                     type="button"
                     onClick={() => handleMoveUp(index)}
                     disabled={index === 0}
-                    className="p-0 hover:bg-gray-200 rounded disabled:opacity-30 disabled:cursor-not-allowed"
+                    className="p-0 hover:bg-neutral-200 rounded disabled:opacity-30 disabled:cursor-not-allowed"
                     aria-label="Nach oben"
                   >
                     <Icon name="chevron-down" alt="Up" className="h-2.5 w-2.5 transform rotate-180" />
@@ -128,7 +128,7 @@ export const ColumnSettingsModal: React.FC<ColumnSettingsModalProps> = ({
                     type="button"
                     onClick={() => handleMoveDown(index)}
                     disabled={index === columns.length - 1}
-                    className="p-0 hover:bg-gray-200 rounded disabled:opacity-30 disabled:cursor-not-allowed"
+                    className="p-0 hover:bg-neutral-200 rounded disabled:opacity-30 disabled:cursor-not-allowed"
                     aria-label="Nach unten"
                   >
                     <Icon name="chevron-down" alt="Down" className="h-2.5 w-2.5" />
@@ -146,11 +146,12 @@ export const ColumnSettingsModal: React.FC<ColumnSettingsModalProps> = ({
                     checked={column.visible}
                     disabled={column.alwaysVisible}
                     onChange={() => handleToggle(column.id)}
-                    className="w-3.5 h-3.5 text-blue-600 border-gray-300 rounded focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-3.5 h-3.5 border-neutral-300 rounded focus:ring-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                    style={{ accentColor: 'var(--color-primary-500)' }}
                   />
-                  <span className="text-sm text-gray-700">
+                  <span className="text-sm text-neutral-700">
                     {column.label}
-                    {column.alwaysVisible && <span className="ml-1.5 text-xs text-gray-400">(immer sichtbar)</span>}
+                    {column.alwaysVisible && <span className="ml-1.5 text-xs text-neutral-400">(immer sichtbar)</span>}
                   </span>
                 </label>
               </div>
@@ -159,7 +160,7 @@ export const ColumnSettingsModal: React.FC<ColumnSettingsModalProps> = ({
         </div>
 
         {/* Footer */}
-        <div className="flex items-center justify-between px-3 py-2 border-t border-gray-200 bg-gray-50 rounded-b-lg">
+        <div className="flex items-center justify-between px-3 py-2 border-t border-neutral-200 bg-neutral-50 rounded-b-lg">
           <Button variant="ghost" size="sm" onClick={handleReset}>
             Zurücksetzen
           </Button>
