@@ -44,7 +44,7 @@ const SetlistsTable: React.FC<SetlistsTableProps> = ({ setlists, onSetlistClick,
     },
     {
       key: 'items',
-      header: 'Anzahl Noten',
+      header: 'Anzahl Stücke',
       className: 'text-center',
       render: (value) => (value as any[])?.length || 0,
     },
@@ -65,7 +65,7 @@ const SetlistsTable: React.FC<SetlistsTableProps> = ({ setlists, onSetlistClick,
           <button
             onClick={(e) => handleDownload(e, row, 'fullScore')}
             className="px-3 py-1 text-xs font-medium text-blue-700 bg-blue-50 rounded hover:bg-blue-100 transition-colors"
-            title="Partitur herunterladen"
+            title="Partituren herunterladen"
           >
             <Icon name="download" alt="Download Partitur" className="h-3 w-3 inline mr-1" />
             Partitur
@@ -104,7 +104,7 @@ const SetlistsTable: React.FC<SetlistsTableProps> = ({ setlists, onSetlistClick,
                 <h3 className="font-medium text-gray-900">{setlist.displayName}</h3>
                 <span className="text-gray-400 flex-shrink-0 ml-2">→</span>
               </div>
-              <div className="text-sm text-gray-500 mb-3">{setlist.items.length} Noten</div>
+              <div className="text-sm text-gray-500 mb-3">{setlist.items.length} Stücke</div>
               <div className="flex gap-2">
                 <button
                   onClick={(e) => handleDownload(e, setlist, 'parts')}
@@ -116,6 +116,7 @@ const SetlistsTable: React.FC<SetlistsTableProps> = ({ setlists, onSetlistClick,
                 <button
                   onClick={(e) => handleDownload(e, setlist, 'fullScore')}
                   className="flex-1 px-3 py-1.5 text-xs font-medium text-blue-700 bg-blue-50 rounded hover:bg-blue-100 transition-colors"
+                  title="Partituren herunterladen"
                 >
                   <Icon name="download" alt="Download" className="h-3 w-3 inline mr-1" />
                   Partitur
