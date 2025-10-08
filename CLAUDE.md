@@ -272,9 +272,37 @@ External API communication follows this pattern:
 
 ---
 
-## Current Status (Updated: 2025-10-08)
+## Current Status (Updated: 2025-10-09)
 
 ### ✅ Completed Features
+
+**Recent Improvements (2025-10-09):**
+- ✅ **CSS Consistency & Semantic Utilities**
+  - Created 11 semantic utility classes in `globals.css`:
+    - Typography: `text-label`, `text-body`, `text-muted`, `text-caption`
+    - Borders: `border-base`, `border-card`, `border-popover`
+    - Tables: `table-header-cell`, `table-header-cell-center`
+    - Highlights: `bg-highlight`, `text-highlight`
+  - Migrated 35+ components from verbose inline Tailwind to semantic utilities
+  - Eliminated all hardcoded blue colors, replaced with `primary` color variables
+  - Added VS Code settings to suppress Tailwind CSS 4.0 at-rule warnings
+
+- ✅ **UX Improvements**
+  - Focus management: Auto-focus search input after adding scores in SetlistEditor
+  - Smart dropdown positioning: Autocomplete and filter dropdowns flip upward when near viewport bottom
+  - Fixed positioning for PlayerAutocompleteInput to prevent table scrollbars
+  - Mobile typography: Reduced part labels (trp1, etc.) to 10px in allocation cards
+
+- ✅ **Button Styling & Hierarchy**
+  - Consistent button variants: `highlighted` for primary actions (Save), `default` for secondary (Edit, Download, Create)
+  - All secondary action buttons now have light grey background (`btn-secondary`)
+  - Fixed button hierarchy across scores and setlists pages
+
+- ✅ **Layout Improvements**
+  - Centered tab navigation (Übersicht/Besetzung) in setlist editor
+  - Right-aligned download buttons within middle-column in setlist detail view
+  - Moved "Abbrechen" button to left side in setlist edit mode
+  - Consistent page header layout with NDBPageHeader component
 
 **Phase 1: Infrastructure Foundation - COMPLETE**
 - ✅ **INFRA-1:** Toast Notification System (sonner 2.0.7)
@@ -400,6 +428,22 @@ External API communication follows this pattern:
 ### 🚧 In Progress
 
 None currently.
+
+### ⚠️ Known Issues
+
+**Database Schema Migration Required:**
+- The `Settings` global config has `theme.fontFamily` and `theme.highlightColor` fields
+- These create database columns `theme_font_family` and `theme_highlight_color`
+- **Build error:** `column "theme_font_family" does not exist`
+- **Solution needed:** Run database migration to add these columns
+- **SQL migration:**
+  ```sql
+  ALTER TABLE rheinblech_dev.settings
+  ADD COLUMN IF NOT EXISTS theme_font_family VARCHAR(255) DEFAULT 'lexend',
+  ADD COLUMN IF NOT EXISTS theme_highlight_color VARCHAR(255) DEFAULT '#10b981';
+  ```
+- **Status:** Migration SQL prepared, needs to be applied to database
+- **Impact:** Build fails when trying to fetch Settings global during static page generation
 
 ### 📋 Backend API Status
 
@@ -1008,6 +1052,45 @@ Low priority items as needed:
 
 ---
 
+## Recent Development Activity
+
+**Pull Request #14: CSS Consistency, UX Improvements, and Complete Setlist Features**
+- Branch: `feat/phase-1-infrastructure`
+- Target: `main`
+- Status: Open
+- URL: https://github.com/holtschn/ensemble-web/pull/14
+
+**Recent Commits (2025-10-09):**
+1. `e7d692d` - Reduce part label font size in mobile allocation view
+2. `8408508` - Use fixed positioning for autocomplete dropdown to prevent scrollbars
+3. `938b4d2` - Fix button variants and move Abbrechen to left side
+4. `52c723d` - Make setlist detail buttons consistent with scores detail view
+5. `17ae000` - Fix PlayerAutocompleteInput dropdown positioning
+6. `c6c1d35` - Add focus management to setlist score input
+7. `907bfb4` - Refine setlist UX: button styling, text, and layout improvements
+8. `ef573c0` - Change create buttons from highlighted to secondary variant
+9. `25cd707` - Migrate remaining NDB components to semantic utilities
+10. `d07edf9` - Migrate filter components and modal to semantic utilities
+11. `6abfab5` - Migrate high-priority components to semantic utilities
+12. `16b136e` - Add semantic typography and border utilities to globals.css
+13. `595087b` - Add VS Code settings to suppress Tailwind CSS at-rule warnings
+14. `0c827e6` - Simplify globals.css with typography and border utilities
+
+**Files Modified (Recent Session):**
+- `src/app/(pages)/globals.css` - Added 11 semantic utility classes
+- `src/next/ndb/components/TextField.tsx` - Added ref forwarding
+- `src/next/ndb/components/setlists/SetlistEditor.tsx` - Focus management, layout
+- `src/next/ndb/components/setlists/PlayerAutocompleteInput.tsx` - Fixed positioning
+- `src/next/ndb/components/setlists/PlayerAllocationDisplay.tsx` - Mobile font sizes
+- `src/next/ndb/components/setlists/SetlistDisplay.tsx` - Button alignment
+- `src/app/(pages)/intern/ndb/page.client.tsx` - Button variants
+- `src/app/(pages)/intern/ndb/setlists/page.client.tsx` - Button variants
+- `src/app/(pages)/intern/ndb/setlists/[id]/page.client.tsx` - Button variants, cancel placement
+- `.vscode/settings.json` - CSS lint configuration
+- `.vscode/tailwind.css-data.json` - IntelliSense for Tailwind 4.0
+
+---
+
 ## Working Model
 
 **Kanban Style:** No sprints or releases. Work on one item at a time as directed by the project owner.
@@ -1030,12 +1113,13 @@ Low priority items as needed:
 - `/intern` - Internal home with events
 - `/intern/ndb` - Score list (NDB-powered)
 - `/intern/ndb/[id]` - Score detail (NDB-powered)
+- `/intern/ndb/setlists` - Setlist list (NDB-powered) ✅
+- `/intern/ndb/setlists/new` - Create setlist (NDB-powered) ✅
+- `/intern/ndb/setlists/[id]` - Setlist editor with player allocations (NDB-powered) ✅
 - `/intern/players` - Address list (Payload Users)
 - `/intern/events/[slug]` - Event detail (Payload content)
 
 **Planned Pages:**
-- `/intern/ndb/setlists` - Setlist list
-- `/intern/ndb/setlists/[id]` - Setlist editor
 - `/intern/events/new` - Event wizard (low priority, end of roadmap)
 
 **Key Patterns:**
