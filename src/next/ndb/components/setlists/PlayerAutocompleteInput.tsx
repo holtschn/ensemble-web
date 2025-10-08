@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 
 interface PlayerAutocompleteInputProps {
   value: string;
@@ -23,6 +23,7 @@ const PlayerAutocompleteInput: React.FC<PlayerAutocompleteInputProps> = ({
   const [filteredSuggestions, setFilteredSuggestions] = useState<string[]>([]);
   const [highlightedIndex, setHighlightedIndex] = useState(-1);
   const [shouldFlipUpward, setShouldFlipUpward] = useState(false);
+  const [dropdownPosition, setDropdownPosition] = useState<{ top: number; left: number; width: number } | null>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const dropdownRef = useRef<HTMLUListElement>(null);
@@ -38,21 +39,56 @@ const PlayerAutocompleteInput: React.FC<PlayerAutocompleteInputProps> = ({
     setFilteredSuggestions(suggestions.slice(0, 8));
   }, [suggestions, isOpen]);
 
-  // Determine dropdown positioning (flip upward if not enough space below)
-  useEffect(() => {
-    if (!isOpen || !wrapperRef.current || !dropdownRef.current) {
+  // Calculate dropdown position using fixed positioning
+  const updateDropdownPosition = useCallback(() => {
+    if (!wrapperRef.current || !inputRef.current) {
       return;
     }
 
-    const inputRect = wrapperRef.current.getBoundingClientRect();
-    const dropdownHeight = dropdownRef.current.scrollHeight;
+    const inputRect = inputRef.current.getBoundingClientRect();
+    const dropdownHeight = dropdownRef.current?.scrollHeight || 192; // Default max-h-48 = 192px
     const viewportHeight = window.innerHeight;
     const spaceBelow = viewportHeight - inputRect.bottom;
     const spaceAbove = inputRect.top;
 
     // Flip upward if not enough space below but enough space above
-    setShouldFlipUpward(spaceBelow < dropdownHeight && spaceAbove > dropdownHeight);
-  }, [isOpen, filteredSuggestions]);
+    const shouldFlip = spaceBelow < dropdownHeight && spaceAbove > dropdownHeight;
+    setShouldFlipUpward(shouldFlip);
+
+    // Calculate position
+    setDropdownPosition({
+      top: shouldFlip ? inputRect.top - 4 : inputRect.bottom + 4,
+      left: inputRect.left,
+      width: inputRect.width,
+    });
+  }, []);
+
+  // Update position when opening or when suggestions change
+  useEffect(() => {
+    if (!isOpen) {
+      setDropdownPosition(null);
+      return;
+    }
+
+    updateDropdownPosition();
+  }, [isOpen, filteredSuggestions, updateDropdownPosition]);
+
+  // Update position on scroll and resize
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handleScrollOrResize = () => {
+      updateDropdownPosition();
+    };
+
+    window.addEventListener('scroll', handleScrollOrResize, true);
+    window.addEventListener('resize', handleScrollOrResize);
+
+    return () => {
+      window.removeEventListener('scroll', handleScrollOrResize, true);
+      window.removeEventListener('resize', handleScrollOrResize);
+    };
+  }, [isOpen, updateDropdownPosition]);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -122,13 +158,17 @@ const PlayerAutocompleteInput: React.FC<PlayerAutocompleteInputProps> = ({
         className="w-full px-2 py-1 text-caption border border-neutral-300 rounded-base focus:outline-none focus:ring-1 focus:ring-primary-500 focus:border-primary-500"
       />
 
-      {/* Suggestions dropdown */}
-      {showDropdown && (
+      {/* Suggestions dropdown - fixed positioning to avoid overflow issues */}
+      {showDropdown && dropdownPosition && (
         <ul
           ref={dropdownRef}
-          className={`absolute z-20 w-full bg-white border-popover max-h-48 overflow-auto ${
-            shouldFlipUpward ? 'bottom-full mb-0.5' : 'top-full mt-0.5'
-          }`}
+          className="fixed z-20 bg-white border-popover max-h-48 overflow-auto"
+          style={{
+            top: shouldFlipUpward ? 'auto' : `${dropdownPosition.top}px`,
+            bottom: shouldFlipUpward ? `${window.innerHeight - dropdownPosition.top}px` : 'auto',
+            left: `${dropdownPosition.left}px`,
+            width: `${dropdownPosition.width}px`,
+          }}
         >
           {filteredSuggestions.map((suggestion, index) => (
             <li
