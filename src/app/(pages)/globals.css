@@ -119,6 +119,14 @@
   @apply border-2 border-neutral-300;
 }
 
+@utility border-card {
+  @apply border border-neutral-200 rounded-lg shadow-sm;
+}
+
+@utility border-popover {
+  @apply border border-neutral-200 rounded-md shadow-lg;
+}
+
 @utility divide-base {
   @apply divide-y divide-neutral-200;
 }
@@ -129,6 +137,22 @@
 
 @utility rounded-card {
   @apply rounded-lg;
+}
+
+@utility table-header-cell {
+  @apply bg-neutral-50 px-2 py-1.5 text-left text-label font-medium border-r border-neutral-200;
+}
+
+@utility table-header-cell-center {
+  @apply bg-neutral-50 px-1.5 py-1.5 text-center text-label font-medium;
+}
+
+@utility bg-highlight {
+  background-color: var(--color-primary-50);
+}
+
+@utility text-highlight {
+  color: var(--color-primary-700);
 }
 
 /* Legacy NDB label */
