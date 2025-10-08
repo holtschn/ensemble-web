@@ -92,12 +92,17 @@ src/next/ndb/
 ├── api/
 │   ├── client.ts        # Client-side API wrapper (GET, POST, PUT)
 │   ├── proxy.ts         # Server-side proxy to external NDB API with Basic Auth
-│   └── actions.ts       # Next.js Server Actions for NDB operations
+│   ├── actions.ts       # Next.js Server Actions for NDB operations
+│   └── userActions.ts   # Server action to fetch enriched users
 ├── components/          # Reusable UI components (Table, Button, TextField, etc.)
-│   └── scores/         # Score-specific components (ScoresTable, ScoreDetailsCard, etc.)
-├── hooks/              # Custom React hooks (useScores, useFileUpDownLoad, etc.)
+│   ├── scores/         # Score-specific components (ScoresTable, ScoreDetailsCard, etc.)
+│   └── setlists/       # Setlist-specific components (SetlistsTable, SetlistEditor, etc.)
+├── hooks/              # Custom React hooks (useScores, useSetlists, useFileUpDownLoad, etc.)
 ├── utils/              # Utility functions
-├── types.ts            # TypeScript type definitions for score data
+│   ├── instrumentationParts.ts  # Parse THTEU format and customParts
+│   ├── partSorting.ts          # Sort parts in brass ensemble order, merge columns
+│   └── playerSuggestions.ts    # Suggest players based on instruments
+├── types.ts            # TypeScript type definitions for score and setlist data
 └── constants.ts        # Configuration constants (genres, difficulties, endpoints)
 ```
 
@@ -128,7 +133,9 @@ src/next/ndb/
 
 ## Environment Variables
 
-Copy `.env.example` to `.env.local` and configure:
+Copy `.env.example` to `.env.local` and configure.
+
+**Note:** `.env.example` has been updated (2025-10-08) to include all required variables with proper organization and comments.
 
 ```bash
 # Storage
@@ -243,6 +250,19 @@ External API communication follows this pattern:
 2. **AddressListBlock** (Medium Priority) - Filtered address lists
 3. **ScoreDetailBlock** (Low Priority) - Individual score display
 
+### Player Allocation Architecture
+- **Terminology:** Use "Stücke" (pieces) not "Noten" (scores/notes) in all German UI text
+- **Part Naming:** THTEU format (Trumpets, Horns, Trombones, Euphoniums, Tubas) as 5-digit string
+- **Part Sources:** Instrumentation field (THTEU) + customParts array for special scores
+- **Column Merging:** Singular + plural-1 columns merged (hrn + hrn1 → hrn1) to save space
+- **Orphaned Parts:** Parts in allocations but not in current score shown with amber styling
+- **Player Names:** First names only in allocations (e.g., "Alice" not "Alice Müller")
+- **Suggestions:** Shown immediately on focus, no filtering by input value
+- **Instrument Mapping:** pos→trb (Posaune/Trombone), perc→pcs (Percussion/Schlagwerk)
+- **Brass Ensemble Order:** trp, flg, hrn, pos, eup, tub, org, perc
+- **Width Constraints:** List pages use middle-column, detail pages with allocations use full width
+- **Mobile Strategy:** Hide Besetzung tab, show allocations only in display mode as vertical cards
+
 ### Other Decisions
 - **Event Wizard:** Low priority, end of roadmap
 - **Search:** Always client-side (instant, no debouncing needed)
@@ -252,7 +272,7 @@ External API communication follows this pattern:
 
 ---
 
-## Current Status (Updated: 2025-10-07)
+## Current Status (Updated: 2025-10-08)
 
 ### ✅ Completed Features
 
@@ -294,25 +314,92 @@ External API communication follows this pattern:
   - Column filters already persist via user preferences
   - Mobile support not required per user decision
 
+**Phase 3: Setlist Management - COMPLETE**
+- ✅ **SETLIST-1:** Data Structures & API Setup
+  - TypeScript interfaces: `Setlist`, `SetlistItem`, `SetlistScoreItem`, `PlayerAllocation`
+  - API routes: `/api/ndb/setlists/*` (list, get, post, put, download)
+  - Client methods in `client.ts` following proxy pattern
+  - `useSetlists` hook for data fetching
+
+- ✅ **SETLIST-2:** Setlist List Page
+  - `SetlistsTable` component with desktop and mobile layouts
+  - Table columns: Display Name, # Stücke, Actions (Download Stimmen/Partituren)
+  - List page at `/intern/ndb/setlists`
+  - "Neue Setlist" button → create page
+  - Empty state when no setlists
+  - Toast notifications on success/error
+
+- ✅ **SETLIST-3:** Setlist Editor - Basic
+  - Detail/edit page at `/intern/ndb/setlists/[id]`
+  - Form: displayName (required), no date field (not in API)
+  - Score search with autocomplete
+  - Add/remove scores with up/down ordering
+  - "Speichern" button saves via PUT, "Abbrechen" discards
+  - Unsaved changes indicator
+  - Data validation: required displayName, minimum 1 score
+  - Ref-based save pattern (like ScoreEditForm)
+  - Tab navigation: "Übersicht" (scores) and "Besetzung" (allocations)
+  - Consistent button layout: back link top left, save button top right
+  - Full width layout for allocation tables
+
+**Phase 4: Player Allocations - COMPLETE**
+- ✅ **ALLOC-1:** Allocation Grid - Core
+  - `PlayerAllocationEditor` component with grid layout
+  - `PlayerAllocationDisplay` component for read-only view
+  - Grid layout: rows = scores, columns = parts (dynamically generated)
+  - Desktop: full grid with horizontal scroll
+  - Compact design with reduced cell sizes (140px score, 90px parts)
+  - Grid headers: part names (sorted by brass ensemble order)
+  - Row headers: score titles with composer
+  - Instrumentation parsing from THTEU format + customParts field
+  - Utility: `instrumentationParts.ts` for parsing score instrumentation
+  - Utility: `partSorting.ts` for brass ensemble ordering (trp, flg, hrn, pos, eup, tub, org, perc)
+
+- ✅ **ALLOC-2:** Dynamic Parts & Tab Navigation
+  - Scan existing allocations for additional parts
+  - Column merging: singular + plural-1 (hrn + hrn1 → hrn1) to save space
+  - Orphaned part detection (allocations for removed parts shown in amber)
+  - Tab navigation: "Übersicht" (scores list) and "Besetzung" (allocation grid)
+  - Both tabs share Setlist state
+  - "Speichern" button on page level (sticky top right)
+  - Tab indicator shows active tab
+  - Conditional width: overview in middle-column, allocations full width
+
+- ✅ **ALLOC-3:** Mobile Allocation Grid
+  - Desktop/Tablet: horizontal scrolling table with ScrollableTable wrapper
+  - Mobile (<768px): vertical stacked cards with 2-column grid for allocations
+  - Orphaned allocations shown separately with amber styling
+  - Besetzung tab hidden on mobile (allocations in display mode only)
+
+- ✅ **ALLOC-5:** Player Input Enhancement
+  - `PlayerAutocompleteInput` component with dropdown suggestions
+  - `playerSuggestions.ts` utility for instrument-based player suggestions
+  - Fetch user names from Payload via `fetchEnrichedUsers()` server action
+  - First names only for player allocations
+  - Suggestions shown immediately on focus (no filtering)
+  - Keyboard navigation (arrows, enter, escape)
+  - User can still type arbitrary string
+
 **Test Infrastructure**
 - ✅ Complete test setup with MSW 2.11.3 for API mocking
 - ✅ React Testing Library 16.3.0 + jest-dom 6.9.1
 - ✅ Jest configured for React components with jsdom
 - ✅ MSW handlers for all NDB API endpoints
 - ✅ Test utilities and helpers (`testUtils.tsx`)
-- ✅ **103 tests written and passing:**
+- ✅ **162 tests written and passing:**
   - 11 tests for filter utilities
   - 28 tests for column configuration
   - 21 tests for instrumentation parsing
+  - 43 tests for player suggestions and part sorting
   - 20 tests for Button component
   - 11 tests for TextFilter component
   - 12 tests for SelectFilter component
   - 12 tests for BooleanFilter component
+  - 4 tests for instrumentation utilities
 
 ### 🚧 In Progress
 
-**Phase 3: Setlist Management**
-- Implementation starting based on fully-implemented backend API
+None currently.
 
 ### 📋 Backend API Status
 
@@ -337,12 +424,18 @@ External API communication follows this pattern:
 - ✅ TABLE-1, TABLE-2, TABLE-3
 - ⏳ TABLE-4 (low priority)
 
-**Setlist Features:** 0/8 tasks
-- Backend API ready, frontend implementation starting
+**Setlist Features:** 3/3 core tasks completed (100%)
+- ✅ SETLIST-1, SETLIST-2, SETLIST-3
+- ⏳ SETLIST-4 (drag & drop - optional), SETLIST-5 (polish - low priority)
+
+**Player Allocations:** 4/6 tasks completed (67%)
+- ✅ ALLOC-1, ALLOC-2, ALLOC-3, ALLOC-5
+- ⏳ ALLOC-4 (print stylesheet - low priority), ALLOC-6 (conflict detection - low priority)
 
 **Test Coverage:** Excellent
-- 7 test suites, 103 tests, all passing
+- 9 test suites, 162 tests, all passing
 - MSW mocking infrastructure ready for integration tests
+- Comprehensive coverage of utilities and components
 
 ---
 
@@ -440,41 +533,39 @@ External API communication follows this pattern:
 
 ### 🎵 Setlist Management - Core
 
-**SETLIST-1: Data Structures & API Setup** (High Priority)
-- Add TypeScript interfaces to `types.ts`: `Setlist`, `SetlistItem`, `PlayerAllocation`
-- Add `DEFAULT_PARTS` constant to `constants.ts`
-- Create API routes: `/api/ndb/setlists/*` (list, get, post, put, delete, download)
-- Update `client.ts` with setlist methods
-- Follow existing proxy pattern in `proxy.ts`
-- **Depends on:** Nothing
-- **Blocks:** SETLIST-2, SETLIST-3
+**SETLIST-1: Data Structures & API Setup** ✅ COMPLETE
+- TypeScript interfaces in `types.ts`: `Setlist`, `SetlistItem`, `SetlistScoreItem`, `PlayerAllocation`
+- API routes: `/api/ndb/setlists/*` (list, get, post, put, download)
+- Client methods in `client.ts` with setlist operations
+- Proxy pattern in `proxy.ts` for external NDB API
+- `useSetlists` hook for data fetching and caching
 
-**SETLIST-2: Setlist List Page** (High Priority)
-- Create `SetlistsTable.tsx` component
-- Table columns: Display Name, Date, # Scores, Actions
-- Create list page at `/intern/ndb/setlists/page.client.tsx`
-- "Neue Setlist" button → create page
-- Actions: View/Edit, Delete (with confirmation), Download ZIP
-- Back link to `/intern`
-- Empty state when no setlists
+**SETLIST-2: Setlist List Page** ✅ COMPLETE
+- `SetlistsTable.tsx` component with desktop and mobile layouts
+- Table columns: Display Name, # Stücke, Actions (Download Stimmen/Partituren)
+- List page at `/intern/ndb/setlists/page.client.tsx`
+- "Neue Setlist" button → create page at `/intern/ndb/setlists/new`
+- Actions: View/Edit, Download Stimmen, Download Partituren
+- Back link to `/intern/ndb`
+- Empty state when no setlists with "Setlist erstellen" action
 - Toast notifications on success/error
-- **Depends on:** SETLIST-1, INFRA-1 (toast), INFRA-2 (confirm), INFRA-4 (empty state)
-- **Blocks:** SETLIST-3
+- No delete action (API does not support DELETE)
 
-**SETLIST-3: Setlist Editor - Basic** (High Priority)
-- Create detail/edit page at `/intern/ndb/setlists/[id]/page.client.tsx`
-- Form: displayName (required), date (optional)
-- Create `SetlistScoreSearch.tsx` (AutocompleteField)
-- Create `SetlistItemList.tsx` (static list, no drag-drop yet)
-- Add/remove scores (remove with confirmation)
+**SETLIST-3: Setlist Editor - Basic** ✅ COMPLETE
+- Detail/edit pages at `/intern/ndb/setlists/[id]` and `/intern/ndb/setlists/new`
+- Form: displayName (required), no date field (not in API)
+- Score search with inline autocomplete in bordered list
+- Static list with up/down ordering (no drag-drop)
+- Add/remove scores (no confirmation needed per UX review)
 - State: React state holds entire Setlist object
-- "Speichern" button saves via PUT, "Abbrechen" discards
+- Ref-based save pattern (like ScoreEditForm)
+- "Speichern" button on page level (top right), "Abbrechen" navigates back
 - Toast on save success/error
-- Unsaved changes indicator (isDirty state)
-- Data validation: required displayName
-- Hover states on interactive elements
-- **Depends on:** SETLIST-2
-- **Blocks:** SETLIST-4, SETLIST-5
+- Unsaved changes indicator ("Ungespeicherte Änderungen")
+- Data validation: required displayName, minimum 1 score
+- Tab navigation: "Übersicht" (scores) and "Besetzung" (allocations)
+- BackToSetlists component for consistent navigation
+- Button layout matches scores pattern (back left, save right)
 
 **SETLIST-4: Drag & Drop Reordering** (High Priority)
 - Install `@dnd-kit/core` and `@dnd-kit/sortable`
@@ -500,32 +591,36 @@ External API communication follows this pattern:
 
 ### 📊 Player Allocations
 
-**ALLOC-1: Allocation Grid - Core** (High Priority)
-- Create `PlayerAllocationGrid.tsx` component
-- Grid layout: rows = scores, columns = parts
-- Start with DEFAULT_PARTS (14 columns)
-- Each cell: TextField input for player name (string)
-- Update allocations in local state (debounced)
-- Desktop: full grid (horizontal scroll if >14 columns)
-- Grid headers: part names, row headers: score titles
-- **Depends on:** SETLIST-3
-- **Blocks:** ALLOC-2, ALLOC-3
+**ALLOC-1: Allocation Grid - Core** ✅ COMPLETE
+- Created `PlayerAllocationEditor.tsx` and `PlayerAllocationDisplay.tsx` components
+- Grid layout: rows = scores, columns = parts (dynamically generated from instrumentation)
+- Parts extracted from THTEU format (instrumentation field) via `instrumentationParts.ts`
+- Supports customParts field for special instrumentation (choirs, flügelhorn)
+- Each cell: PlayerAutocompleteInput with suggestions
+- Update allocations in local state immediately (no debouncing)
+- Desktop: full grid with horizontal scroll via ScrollableTable
+- Grid headers: part names (sorted by brass ensemble order), row headers: score titles + composer
+- Compact design: 140px score column, 90px part columns
+- Part sorting utility (`partSorting.ts`) with brass ensemble order: trp, flg, hrn, pos, eup, tub, org, perc
 
-**ALLOC-2: Dynamic Parts & Tab Navigation** (High Priority)
-- Scan existing allocations for additional parts
-- "Teil hinzufügen" button (prompts for name)
-- "Teil entfernen" button (with confirmation)
-- Tab navigation: Tab 1 "Übersicht" (scores), Tab 2 "Besetzung" (grid)
+**ALLOC-2: Dynamic Parts & Tab Navigation** ✅ COMPLETE
+- Scan existing allocations for additional parts (includes orphaned parts)
+- Column merging: singular + plural-1 (hrn + hrn1 → hrn1) to save horizontal space
+- Mapping logic: if column is "hrn1" but score has "hrn", uses "hrn" for allocation
+- Orphaned part detection: parts in allocations but not in current score (shown with amber styling)
+- Tab navigation: "Übersicht" (scores list) and "Besetzung" (allocation grid)
 - Both tabs share Setlist state
-- "Speichern" button in both tabs (sticky footer)
+- "Speichern" button on page level (top right), not in tabs
 - Tab indicator shows active tab
-- **Depends on:** ALLOC-1
-- **Blocks:** ALLOC-3
+- Conditional width: overview in middle-column (max-w-4xl), allocations full width
+- No add/remove part buttons (parts derived from instrumentation)
 
-**ALLOC-3: Mobile Allocation Grid** (High Priority)
-- Tablet: horizontal scroll with pinned score column
-- Mobile: vertical stacked cards (part inputs per score, collapsible)
-- **Depends on:** ALLOC-1
+**ALLOC-3: Mobile Allocation Grid** ✅ COMPLETE
+- Desktop/Tablet: horizontal scrolling table with sticky score column (z-index 10)
+- Mobile (<768px): vertical stacked cards with 2-column grid for allocations
+- Orphaned allocations shown separately with border and amber styling
+- Besetzung tab hidden on mobile (only shows in display mode)
+- Mobile cards show score number, title, composer, and sorted allocations
 
 **ALLOC-4: Print Stylesheet** (Low Priority)
 - CSS `@media print` styles
@@ -534,12 +629,16 @@ External API communication follows this pattern:
 - Page breaks if needed
 - **Depends on:** ALLOC-2
 
-**ALLOC-5: Player Input Enhancement** (Low Priority)
-- Convert TextField to AutocompleteField
-- Fetch user names from `getAllEnrichedUsers()`
-- Learn from previous allocations
-- User can still type arbitrary string
-- **Depends on:** ALLOC-1
+**ALLOC-5: Player Input Enhancement** ✅ COMPLETE
+- Created `PlayerAutocompleteInput.tsx` component with dropdown suggestions
+- Created `playerSuggestions.ts` utility for instrument-based suggestions
+- Maps part names to user instruments (pos→trb, perc→pcs)
+- Fetch user names from Payload via `fetchEnrichedUsers()` server action
+- First names only for player allocations
+- Suggestions shown immediately on focus (no filtering by input)
+- Keyboard navigation (arrows, enter, escape)
+- User can still type arbitrary string (not limited to suggestions)
+- Suggestions limited to 8 players per part
 
 **ALLOC-6: Conflict Detection** (Low Priority)
 - Detect conflicts (same player, multiple parts, same score)
