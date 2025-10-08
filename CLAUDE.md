@@ -882,6 +882,46 @@ None currently.
 
 ### 🚀 Performance
 
+**PERF-0: Server-Side Caching Foundation** (High Priority - Prerequisite for Phase 5)
+- **Problem:** External NDB API is slow (~85kB scores response), current client-side fetching bypasses Next.js Data Cache
+- **Solution:** Leverage existing cache infrastructure with Server Components
+- **Phase 0.1: Granular Cache Tags** (15 min) ✅ READY TO IMPLEMENT
+  - Update `/api/ndb/[...endpoint]/route.ts` to use endpoint-specific tags
+  - Map endpoints to tags: `scores` → `ndb-scores`, `setlists` → `ndb-setlists`, `samples` → `ndb-samples`
+  - Replace global `revalidateTag('caching-tag')` with specific tags
+  - Benefit: Updating a score doesn't invalidate setlists cache
+- **Phase 0.2: Convert Scores List to Server Component** (1.5 hours)
+  - Convert `/intern/ndb/page.client.tsx` to Server Component
+  - Move `useScores()` call to server-side `fetchAllScores()` action
+  - Extract interactive UI to Client Components:
+    - `ScoresTableToolbar` → `'use client'` (search, filters)
+    - `ScoresTable` → `'use client'` (column filters, click handlers)
+  - Pass scores data as props from Server Component
+  - Expected benefit: 85kB cached indefinitely, instant subsequent loads
+- **Phase 0.3: Convert Score Detail to Server Component** (1.5 hours)
+  - Convert `/intern/ndb/[id]/page.client.tsx` to Server Component
+  - Move data fetching to server-side
+  - Optional optimization: Create `/api/ndb/scores/[id]` endpoint (fetch 1 score instead of all 85kB)
+  - Extract `ScoreEditForm` to `'use client'` component
+  - Keep `ScoreDetailsCard` as Server Component (read-only)
+  - Expected benefit: Instant navigation between scores, SEO-friendly
+- **Phase 0.4: Cache Revalidation** (30 min)
+  - Add `revalidatePath('/intern/ndb')` after score mutations
+  - Consider time-based revalidation: `export const revalidate = 3600` (1 hour)
+  - Test cache invalidation flow
+- **Optional Phase 0.5: Convert Setlist Pages** (2 hours)
+  - Apply same pattern to `/intern/ndb/setlists/page.client.tsx`
+  - Apply to `/intern/ndb/setlists/[id]/page.client.tsx` if beneficial
+  - Lower priority (smaller datasets, less frequent access)
+- **Expected Results:**
+  - First load: 85kB from slow API (unavoidable)
+  - Subsequent loads: **Instant** (served from Next.js Data Cache)
+  - After mutations: Cache invalidated only for affected resources
+  - Across users: Shared cache (all users benefit from warm cache)
+- **Total Effort:** ~3.5 hours for core phases (0.1-0.4)
+- **Depends on:** Nothing (uses existing infrastructure)
+- **Blocks:** Should be done before Phase 5 (Integration) to improve performance baseline
+
 **PERF-1: Code Splitting** (Medium Priority)
 - Dynamic imports: allocation grid, PDF export, @dnd-kit, column modal
 - Install `@next/bundle-analyzer`
@@ -905,15 +945,17 @@ None currently.
 - Fallback to SSR for new scores
 - **Depends on:** Nothing
 
-**PERF-4: API Response Caching** (Requires Discussion/Approval)
-- Install `@tanstack/react-query`
-- Wrap app in `QueryClientProvider`
-- Create hooks: `useScores()`, `useScore(id)`, `useSetlists()`, `useSetlist(id)`, `useUsers()`
-- Configure stale time, cache time
-- Cache invalidation on mutations
-- Optimistic updates
-- **Depends on:** User approval
-- **Note:** TanStack Query approach needs approval before implementation
+**PERF-4: Advanced Client-Side Caching** (OPTIONAL - Low Priority)
+- ~~Install `@tanstack/react-query`~~ **SUPERSEDED by PERF-0**
+- **Status:** OPTIONAL - Only consider if PERF-0 (Server Components) is insufficient
+- **Use cases that might still need this:**
+  - Optimistic updates in forms
+  - Offline support
+  - Real-time collaboration features
+  - Complex client-side state synchronization
+- **Current assessment:** PERF-0 Server Components approach is sufficient for current requirements
+- **Recommendation:** Skip unless specific use case emerges
+- **Depends on:** PERF-0 implemented and evaluated first
 
 ---
 
