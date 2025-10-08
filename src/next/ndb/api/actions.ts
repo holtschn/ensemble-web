@@ -5,7 +5,18 @@
 
 import { ndbApi } from './client';
 import { API_ENDPOINTS, ERROR_MESSAGES } from '@/next/ndb/constants';
-import { ScoreItem, ScoreItemWithUploads, ScoreFileItem, ScoreSampleCollection } from '../types';
+import {
+  ScoreItem,
+  ScoreItemWithUploads,
+  ScoreFileItem,
+  ScoreSampleCollection,
+  SetlistItem,
+  CreateSetlistRequest,
+  CreateSetlistResponse,
+  UpdateSetlistRequest,
+  DownloadSetlistRequest,
+  DownloadSetlistResponse,
+} from '../types';
 
 /**
  * Fetches all scores from the NDB API.
@@ -125,3 +136,41 @@ export const downloadFile = async (fileItem: ScoreFileItem): Promise<Response | 
  */
 export const fetchScoreSamples = async (): Promise<ScoreSampleCollection[]> =>
   await ndbApi.get<ScoreSampleCollection[]>(API_ENDPOINTS.SCORE_SAMPLES);
+
+// ============================================================================
+// Setlist Actions
+// ============================================================================
+
+/**
+ * Fetches all setlists from the NDB API with full details (items and allocations).
+ * @returns A promise that resolves to an array of SetlistItem.
+ */
+export const fetchAllSetlists = async (): Promise<SetlistItem[]> => {
+  return (await ndbApi.get<{ rowData: SetlistItem[] }>(API_ENDPOINTS.SETLISTS)).rowData;
+};
+
+/**
+ * Creates a new setlist in the NDB.
+ * @param setlistData - The data for the new setlist including displayName and items.
+ * @returns A promise that resolves to an object containing the ID of the newly created setlist.
+ */
+export const createSetlist = async (setlistData: CreateSetlistRequest): Promise<CreateSetlistResponse> =>
+  await ndbApi.post<CreateSetlistResponse>(API_ENDPOINTS.SETLIST, setlistData);
+
+/**
+ * Updates an existing setlist in the NDB.
+ * Can update just the name, just the items, or both.
+ * @param setlistData - The updated setlist data including setlistId and optionally displayName and/or items.
+ * @returns A promise that resolves to an object with a success message.
+ */
+export const updateSetlist = async (setlistData: UpdateSetlistRequest): Promise<{ message: string }> =>
+  await ndbApi.put<{ message: string }>(API_ENDPOINTS.SETLIST, setlistData);
+
+/**
+ * Downloads a setlist as a ZIP file containing all score PDFs.
+ * Returns a presigned S3 URL for downloading the ZIP.
+ * @param request - The download request containing setlistId and fileType.
+ * @returns A promise that resolves to an object containing the download URL.
+ */
+export const downloadSetlist = async (request: DownloadSetlistRequest): Promise<DownloadSetlistResponse> =>
+  await ndbApi.post<DownloadSetlistResponse>(API_ENDPOINTS.DOWNLOAD_SETLIST, request);

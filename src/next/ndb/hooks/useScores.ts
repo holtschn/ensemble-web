@@ -3,6 +3,7 @@
  */
 
 import { useState, useEffect, useCallback } from 'react';
+import { toast } from 'sonner';
 import { fetchAllScores } from '@/next/ndb/api/actions';
 import { ScoreItem } from '@/next/ndb/types';
 import { ERROR_MESSAGES } from '@/next/ndb/constants';
@@ -10,30 +11,27 @@ import { ERROR_MESSAGES } from '@/next/ndb/constants';
 interface UseScoresState {
   scores: ScoreItem[];
   isLoading: boolean;
-  error: string | null;
   getScoreById: (id: number) => ScoreItem | null;
 }
 
 /**
  * Custom hook to fetch all scores from the NDB API.
- * Provides loading and error states, and helper functions.
+ * Provides loading state and helper functions.
  *
- * @returns {UseScoresState} An object containing scores, loading state, error state,
- *                           and helper functions like getScoreById and getUniqueAttributeValues.
+ * @returns {UseScoresState} An object containing scores, loading state,
+ *                           and helper functions like getScoreById.
  */
 export const useScores = (): UseScoresState => {
   const [scores, setScores] = useState<ScoreItem[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
 
   const loadScores = useCallback(async () => {
     setIsLoading(true);
-    setError(null);
     try {
       const data = await fetchAllScores();
       setScores(data);
     } catch (e) {
-      setError(ERROR_MESSAGES.LOAD_ERROR);
+      toast.error(ERROR_MESSAGES.LOAD_ERROR);
       setScores([]); // Clear scores on error
     } finally {
       setIsLoading(false);
@@ -61,7 +59,6 @@ export const useScores = (): UseScoresState => {
   return {
     scores,
     isLoading,
-    error,
     getScoreById,
   };
 };

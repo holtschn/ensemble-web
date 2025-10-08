@@ -7,6 +7,7 @@ import { useAuth } from '@/next/auth/context';
 import useRedirectIfLoggedOut from '@/next/auth/loggedInHook';
 import { EnrichedUser } from '@/next/utils/users';
 import Icon from '@/next/ndb/components/Icon';
+import { EmptyState } from '@/next/components/EmptyState';
 
 type PrivatePlayersListPageClientProps = {
   players: EnrichedUser[];
@@ -30,8 +31,16 @@ export const PrivatePlayersListPageClient: React.FC<PrivatePlayersListPageClient
           </Link>
         </div>
         <div className="middle-column">
-          <div className="flex flex-col gap-4">
-            {playersWithInstruments.map((player, index) => {
+          {playersWithInstruments.length === 0 ? (
+            <EmptyState
+              variant="no-data"
+              icon="music"
+              heading="Keine Spieler gefunden"
+              message="Es wurden keine Nutzer mit Instrumenten gefunden."
+            />
+          ) : (
+            <div className="flex flex-col gap-4">
+              {playersWithInstruments.map((player, index) => {
               return (
                 <div
                   key={`user-display-${index}`}
@@ -82,8 +91,9 @@ export const PrivatePlayersListPageClient: React.FC<PrivatePlayersListPageClient
                   </div>
                 </div>
               );
-            })}
-          </div>
+              })}
+            </div>
+          )}
         </div>
       </div>
     )

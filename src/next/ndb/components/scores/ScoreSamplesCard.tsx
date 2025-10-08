@@ -20,8 +20,8 @@ const SampleItem: React.FC<{ sample: ScoreSampleItem; type: 'youtube' | 'spotify
   return (
     <a href={sample.url} target="_blank" rel="noopener noreferrer" className="flex items-center">
       <div className="mr-3 shrink-0">{getIcon(type)}</div>
-      <img src={sample.image} alt={sample.title} className="h-12 w-12 object-cover rounded-md mr-4 shrink-0" />
-      <p className="text-xs">{sample.title}</p>
+      <img src={sample.image} alt={sample.title} className="h-12 w-12 object-cover rounded-base mr-4 shrink-0" />
+      <p className="text-caption">{sample.title}</p>
       <Icon name="external-link" alt="External link" className="h-4 w-4 ml-auto shrink-0" />
     </a>
   );

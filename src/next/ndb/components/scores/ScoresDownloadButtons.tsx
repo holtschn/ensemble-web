@@ -12,7 +12,7 @@ const ScoresDownloadButtons: React.FC<ScoresDownloadButtonsProps> = ({ score }) 
 
   // If no files, show placeholder
   if (!hasParts && !hasFullScore) {
-    return <div className="text-sm text-gray-400">-</div>;
+    return <div className="text-muted">-</div>;
   }
 
   return (

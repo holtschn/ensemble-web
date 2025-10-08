@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { serializeLexical } from './serialize';
+import { serializeLexical } from './Serialize';
 
 const RichText: React.FC<{ content: any }> = ({ content }) => {
   if (!content) {

@@ -1,7 +1,7 @@
 import { getPayload } from 'payload';
 
 import config from '@payload-config';
-import { HeaderComponentClient, HeaderComponentClientProps } from './header.client';
+import { HeaderComponentClient, HeaderComponentClientProps } from './Header.client';
 
 export const HeaderComponent: React.FC = async () => {
   const headerProps = await getHeaderData();

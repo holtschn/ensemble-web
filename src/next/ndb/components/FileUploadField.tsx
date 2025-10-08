@@ -106,12 +106,8 @@ const FileUploadField: React.FC<FileUploadFieldProps> = ({
         {/* Upload/Replace button */}
         <label
           className={`
-            flex items-center px-3 py-1.5 text-sm font-medium rounded-md cursor-pointer transition-colors
-            ${
-              disabled || isUploading
-                ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-            }
+            btn-secondary btn-sm cursor-pointer
+            ${disabled || isUploading ? 'opacity-50 cursor-not-allowed' : ''}
           `}
         >
           <Icon name={isUploading ? 'spinner' : 'upload'} alt="Upload" className="mr-1.5 h-3.5 w-3.5" />
@@ -129,34 +125,19 @@ const FileUploadField: React.FC<FileUploadFieldProps> = ({
         {/* Secondary action button - depends on state */}
         {hasPendingUpload ? (
           // Pending upload: Show "Wiederherstellen"
-          <button
-            type="button"
-            onClick={handleDiscard}
-            disabled={disabled || isUploading}
-            className="flex items-center px-3 py-1.5 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-          >
+          <button type="button" onClick={handleDiscard} disabled={disabled || isUploading} className="btn-secondary btn-sm">
             <Icon name="arrow-left" alt="Restore" className="mr-1.5 h-3.5 w-3.5" />
             Wiederherstellen
           </button>
         ) : isRemoved || (hadOriginalFile && !hasFile) ? (
           // File removed: Show "Wiederherstellen"
-          <button
-            type="button"
-            onClick={handleRestore}
-            disabled={disabled || isUploading}
-            className="flex items-center px-3 py-1.5 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-          >
+          <button type="button" onClick={handleRestore} disabled={disabled || isUploading} className="btn-secondary btn-sm">
             <Icon name="arrow-left" alt="Restore" className="mr-1.5 h-3.5 w-3.5" />
             Wiederherstellen
           </button>
         ) : hasFile ? (
           // Has file: Show "Entfernen"
-          <button
-            type="button"
-            onClick={handleRemove}
-            disabled={disabled || isUploading}
-            className="flex items-center px-3 py-1.5 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-          >
+          <button type="button" onClick={handleRemove} disabled={disabled || isUploading} className="btn-secondary btn-sm">
             <Icon name="cross" alt="Remove" className="mr-1.5 h-3.5 w-3.5" />
             Entfernen
           </button>
@@ -164,19 +145,19 @@ const FileUploadField: React.FC<FileUploadFieldProps> = ({
 
         {/* File status display */}
         {hasPendingUpload ? (
-          <span className="text-sm text-gray-600 flex items-center gap-1">
-            <Icon name="check" alt="Success" className="h-3.5 w-3.5 text-green-600" />
+          <span className="text-muted flex items-center gap-1">
+            <Icon name="check" alt="Success" className="h-3.5 w-3.5 text-success-600" />
             {pendingFileName} <span className="text-amber-600">(nicht gespeichert)</span>
           </span>
         ) : (hadOriginalFile && !hasFile) || isRemoved ? (
-          <span className="text-sm text-amber-600">(Entfernt)</span>
+          <span className="text-muted text-amber-600">(Entfernt)</span>
         ) : hasFile ? (
-          <span className="text-sm text-gray-600">{currentFile?.filename}</span>
+          <span className="text-muted">{currentFile?.filename}</span>
         ) : null}
       </div>
 
       {/* Error message */}
-      {uploadError && <p className="mt-1 text-sm text-red-600">{uploadError}</p>}
+      {uploadError && <p className="input-error-text">{uploadError}</p>}
     </div>
   );
 };

@@ -13,7 +13,10 @@ import ScoresTable from '@/next/ndb/components/scores/ScoresTable';
 import ScoresTableToolbar from '@/next/ndb/components/scores/ScoresTableToolbar';
 import LoadingSpinner from '@/next/ndb/components/LoadingSpinner';
 import Icon from '@/next/ndb/components/Icon';
+import Button from '@/next/ndb/components/Button';
 import { useAuth } from '@/next/auth/context';
+import { EmptyState } from '@/next/components/EmptyState';
+import { NDBPageHeader } from '@/next/ndb/components/NDBPageHeader';
 
 export const ScoresPageClient: React.FC = () => {
   const { status } = useAuth();
@@ -22,6 +25,8 @@ export const ScoresPageClient: React.FC = () => {
   const router = useRouter();
   const { scores, isLoading } = useScores();
   const [filteredScores, setFilteredScores] = useState<ScoreItem[]>([]);
+  const [hasActiveColumnFilters, setHasActiveColumnFilters] = useState(false);
+  const columnFiltersResetRef = React.useRef<(() => void) | null>(null);
 
   // Update filtered scores when main scores data changes
   React.useEffect(() => {
@@ -46,33 +51,69 @@ export const ScoresPageClient: React.FC = () => {
   if (!scores || scores.length < 1) {
     return (
       <div className="middle-column mt-8">
-        <h1>Keine Noten gefunden</h1>
+        <Link href="/intern" className="flex items-center ndb-profex-label mb-4">
+          <Icon name="arrow-left" alt="Back" className="mr-2 h-3 w-3" />
+          <div className="mt-0.5">Zurück zur internen Startseite</div>
+        </Link>
+        <EmptyState
+          variant="no-data"
+          icon="music"
+          heading="Noch keine Noten vorhanden"
+          message="Erstellen Sie Ihren ersten Eintrag in der Notendatenbank."
+          action={{
+            label: 'Eintrag anlegen',
+            onClick: handleCreateClick,
+          }}
+        />
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col mt-8">
-      <div className="middle-column mb-4">
-        <div className="flex items-center justify-between mb-4">
-          <h1>Notendatenbank</h1>
-          <button
-            onClick={handleCreateClick}
-            className="hidden md:flex items-center px-4 py-1.5 mt-8 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors"
-          >
-            <Icon name="plus-circle" alt="Create" className="mr-1.5 h-3.5 w-3.5" />
-            Eintrag anlegen
-          </button>
+    status === 'loggedIn' && (
+      <div className="flex flex-col mt-8">
+        <NDBPageHeader
+          title="Notendatenbank"
+          backLink={{ href: '/intern', label: 'Zurück zur internen Startseite' }}
+          action={
+            <Button onClick={handleCreateClick} variant="default" size="sm">
+              <Icon name="plus-circle" alt="Create" className="mr-1.5 h-3.5 w-3.5" />
+              Eintrag anlegen
+            </Button>
+          }
+        />
+
+        <div className="middle-column">
+          <ScoresTableToolbar
+            scores={scores}
+            onFilteredScoresChange={setFilteredScores}
+            hasActiveColumnFilters={hasActiveColumnFilters}
+            onResetAllFilters={() => {
+              columnFiltersResetRef.current?.();
+            }}
+          />
         </div>
-        <Link href="/intern" className="flex items-center ndb-profex-label">
-          <Icon name="arrow-left" alt="Back" className="mr-2 h-3 w-3" />
-          <div className="mt-0.5">Zurück zur internen Startseite</div>
-        </Link>
+
+        {filteredScores.length === 0 && scores.length > 0 ? (
+          <div className="middle-column">
+            <EmptyState
+              variant="no-results"
+              icon="search"
+              heading="Keine Ergebnisse"
+              message="Keine Noten gefunden, die Ihren Suchkriterien entsprechen. Versuchen Sie, die Filter zurückzusetzen."
+            />
+          </div>
+        ) : (
+          <ScoresTable
+            scores={filteredScores}
+            onScoreClick={handleScoreClick}
+            onColumnFiltersChange={setHasActiveColumnFilters}
+            onResetColumnFilters={(clearFn) => {
+              columnFiltersResetRef.current = clearFn;
+            }}
+          />
+        )}
       </div>
-      <div className="middle-column flex flex-row">
-        <ScoresTableToolbar scores={scores} onFilteredScoresChange={setFilteredScores} />
-      </div>
-      <ScoresTable scores={filteredScores} onScoreClick={handleScoreClick} />
-    </div>
+    )
   );
 };

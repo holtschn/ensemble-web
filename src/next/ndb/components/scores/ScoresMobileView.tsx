@@ -20,14 +20,14 @@ const ScoresMobileCard: React.FC<ScoresMobileCardProps> = ({
     <div className="border-b px-3 py-2 cursor-pointer" onClick={() => onScoreClick?.(score)}>
       <div className="flex justify-between items-center gap-2">
         <div className="flex-1 min-w-0">
-          <div className="font-medium text-base truncate">{score.title}</div>
-          <div className="text-sm text-gray-600 truncate">{score.composer}</div>
+          <div className="font-medium truncate">{score.title}</div>
+          <div className="text-caption truncate">{score.composer}</div>
         </div>
         <div className="flex gap-1 flex-shrink-0">
           {score.parts && onDownloadParts && (
             <Button
               size="sm"
-              variant="outline"
+              variant="default"
               onClick={(e) => {
                 e.stopPropagation();
                 onDownloadParts(score);
@@ -39,7 +39,7 @@ const ScoresMobileCard: React.FC<ScoresMobileCardProps> = ({
           {score.fullScore && onDownloadFullScore && (
             <Button
               size="sm"
-              variant="outline"
+              variant="default"
               onClick={(e) => {
                 e.stopPropagation();
                 onDownloadFullScore(score);

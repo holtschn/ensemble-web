@@ -92,12 +92,17 @@ src/next/ndb/
 ├── api/
 │   ├── client.ts        # Client-side API wrapper (GET, POST, PUT)
 │   ├── proxy.ts         # Server-side proxy to external NDB API with Basic Auth
-│   └── actions.ts       # Next.js Server Actions for NDB operations
+│   ├── actions.ts       # Next.js Server Actions for NDB operations
+│   └── userActions.ts   # Server action to fetch enriched users
 ├── components/          # Reusable UI components (Table, Button, TextField, etc.)
-│   └── scores/         # Score-specific components (ScoresTable, ScoreDetailsCard, etc.)
-├── hooks/              # Custom React hooks (useScores, useFileUpDownLoad, etc.)
+│   ├── scores/         # Score-specific components (ScoresTable, ScoreDetailsCard, etc.)
+│   └── setlists/       # Setlist-specific components (SetlistsTable, SetlistEditor, etc.)
+├── hooks/              # Custom React hooks (useScores, useSetlists, useFileUpDownLoad, etc.)
 ├── utils/              # Utility functions
-├── types.ts            # TypeScript type definitions for score data
+│   ├── instrumentationParts.ts  # Parse THTEU format and customParts
+│   ├── partSorting.ts          # Sort parts in brass ensemble order, merge columns
+│   └── playerSuggestions.ts    # Suggest players based on instruments
+├── types.ts            # TypeScript type definitions for score and setlist data
 └── constants.ts        # Configuration constants (genres, difficulties, endpoints)
 ```
 
@@ -128,7 +133,9 @@ src/next/ndb/
 
 ## Environment Variables
 
-Copy `.env.example` to `.env.local` and configure:
+Copy `.env.example` to `.env.local` and configure.
+
+**Note:** `.env.example` has been updated (2025-10-08) to include all required variables with proper organization and comments.
 
 ```bash
 # Storage
@@ -179,11 +186,17 @@ External API communication follows this pattern:
 4. Response flows back through the chain
 
 ### Testing
-- Jest with ts-jest for TypeScript
+- **Jest 30.2.0** with ts-jest for TypeScript, jsdom environment for React components
+- **MSW 2.11.3** for API mocking at the network level
+- **React Testing Library 16.3.0** for component testing
+- **@testing-library/jest-dom 6.9.1** for DOM matchers
+- Mock data and handlers: `src/next/ndb/__mocks__/`
+- Test utilities: `src/next/ndb/__tests__/testUtils.tsx`
 - Focus on testing `src/next/ndb/**` modules
 - Test files: `*.test.ts` or `*.spec.ts` or in `__tests__/` directories
 - Run NDB-specific tests: `npm run test:ndb`
 - Single test file: `jest path/to/file.test.ts`
+- **Current status:** 7 test suites, 103 tests, all passing
 
 ### Styling
 - TailwindCSS 4.0 for styling
@@ -198,3 +211,919 @@ External API communication follows this pattern:
 - Media files stored in Vercel Blob Storage (configured via `@payloadcms/storage-vercel-blob` plugin)
 - The project uses Next.js 15 App Router (not Pages Router)
 - React Server Components are used where possible; use `'use client'` directive when needed
+
+---
+
+# Development Roadmap & Key Decisions
+
+## User Preferences & Decisions
+
+### Setlist Architecture
+- **Storage:** Setlists reside EXCLUSIVELY in NDB API (not in Payload collections)
+- **Payload Integration:** Setlist component as Payload Block with single parameter: setlistId
+- **Block Modes:** Both view (read-only) and edit (full editor with allocations) in block
+- **Event Linking:** Soft link via setlistId field on Event (no formal relationship)
+
+### User Preferences Storage
+- **Primary Storage:** Payload Preferences API (syncs across devices, persists in database)
+- **Cache Layer:** localStorage for fast reads and fallback
+- **Keys:** `ndb_column_preferences`, `ndb_active_filters`
+- **Flow:** Load from Payload → cache to localStorage → immediate localStorage updates + async Payload saves
+
+### Navigation Architecture
+- **Style:** Sidebar (not dropdown menu)
+- **Scope:** Unified across internal pages AND Payload admin
+- **Structure:**
+  - Übersicht (/intern)
+  - Notendatenbank
+    - Noten (/intern/ndb)
+    - Setlists (/intern/ndb/setlists)
+  - Adressliste (/intern/players)
+  - Verwaltung (admin only)
+    - Events
+    - Seiten
+    - Nutzer
+    - Einstellungen
+
+### Payload Block Priority
+1. **SetlistBlock** (High Priority) - View + edit modes, parameter: setlistId
+2. **AddressListBlock** (Medium Priority) - Filtered address lists
+3. **ScoreDetailBlock** (Low Priority) - Individual score display
+
+### Player Allocation Architecture
+- **Terminology:** Use "Stücke" (pieces) not "Noten" (scores/notes) in all German UI text
+- **Part Naming:** THTEU format (Trumpets, Horns, Trombones, Euphoniums, Tubas) as 5-digit string
+- **Part Sources:** Instrumentation field (THTEU) + customParts array for special scores
+- **Column Merging:** Singular + plural-1 columns merged (hrn + hrn1 → hrn1) to save space
+- **Orphaned Parts:** Parts in allocations but not in current score shown with amber styling
+- **Player Names:** First names only in allocations (e.g., "Alice" not "Alice Müller")
+- **Suggestions:** Shown immediately on focus, no filtering by input value
+- **Instrument Mapping:** pos→trb (Posaune/Trombone), perc→pcs (Percussion/Schlagwerk)
+- **Brass Ensemble Order:** trp, flg, hrn, pos, eup, tub, org, perc
+- **Width Constraints:** List pages use middle-column, detail pages with allocations use full width
+- **Mobile Strategy:** Hide Besetzung tab, show allocations only in display mode as vertical cards
+
+### Other Decisions
+- **Event Wizard:** Low priority, end of roadmap
+- **Search:** Always client-side (instant, no debouncing needed)
+- **Filters:** Already exist ("mit Schlagzeug", "hat Partitur", "zurücksetzen" button)
+- **API Caching:** TanStack Query approach (requires approval before implementation)
+- **Working Model:** Kanban-style (no sprints/releases, work one item at a time)
+
+---
+
+## Current Status (Updated: 2025-10-09)
+
+### ✅ Completed Features
+
+**Recent Improvements (2025-10-09):**
+- ✅ **CSS Consistency & Semantic Utilities**
+  - Created 11 semantic utility classes in `globals.css`:
+    - Typography: `text-label`, `text-body`, `text-muted`, `text-caption`
+    - Borders: `border-base`, `border-card`, `border-popover`
+    - Tables: `table-header-cell`, `table-header-cell-center`
+    - Highlights: `bg-highlight`, `text-highlight`
+  - Migrated 35+ components from verbose inline Tailwind to semantic utilities
+  - Eliminated all hardcoded blue colors, replaced with `primary` color variables
+  - Added VS Code settings to suppress Tailwind CSS 4.0 at-rule warnings
+
+- ✅ **UX Improvements**
+  - Focus management: Auto-focus search input after adding scores in SetlistEditor
+  - Smart dropdown positioning: Autocomplete and filter dropdowns flip upward when near viewport bottom
+  - Fixed positioning for PlayerAutocompleteInput to prevent table scrollbars
+  - Mobile typography: Reduced part labels (trp1, etc.) to 10px in allocation cards
+
+- ✅ **Button Styling & Hierarchy**
+  - Consistent button variants: `highlighted` for primary actions (Save), `default` for secondary (Edit, Download, Create)
+  - All secondary action buttons now have light grey background (`btn-secondary`)
+  - Fixed button hierarchy across scores and setlists pages
+
+- ✅ **Layout Improvements**
+  - Centered tab navigation (Übersicht/Besetzung) in setlist editor
+  - Right-aligned download buttons within middle-column in setlist detail view
+  - Moved "Abbrechen" button to left side in setlist edit mode
+  - Consistent page header layout with NDBPageHeader component
+
+**Phase 1: Infrastructure Foundation - COMPLETE**
+- ✅ **INFRA-1:** Toast Notification System (sonner 2.0.7)
+  - `ToastProvider` component created and integrated
+  - Already in use across NDB pages and hooks
+  - Documentation in `docs/infrastructure-usage.md`
+- ✅ **INFRA-4:** EmptyState component with variants (no-results, no-data, error-state)
+- ✅ **INFRA-5:** User Preferences System with Payload API + localStorage hybrid storage
+  - `useUserPreference` hook created
+  - `preferences.ts` utility functions
+  - Handles logged-out users with localStorage fallback
+
+**Phase 2: Advanced Table Filtering - COMPLETE**
+- ✅ **TABLE-1:** Column Configuration System
+  - `ColumnConfig` interface and types
+  - Payload Preferences storage (`ndb_column_preferences`)
+  - `ColumnSettingsModal` with drag-and-drop reordering
+  - Dynamic column visibility and ordering
+  - Graceful mobile degradation
+
+- ✅ **TABLE-2:** Column-Based Filtering - Core (COMPLETE with all improvements)
+  - Filter icons in all column headers
+  - `FilterPopover` component with auto-positioning (fixed positioning, flips upward when needed)
+  - All filter types implemented:
+    - `TextFilter` for text inputs
+    - `SelectFilter` for dropdowns (genre, difficulty)
+    - `BooleanFilter` for radio buttons (organ, percussion)
+    - `FileFilter` for file presence
+  - Filter persistence via user preferences (`ndb_column_filters`)
+  - Coordinated reset between toolbar and column filters
+  - Blue outline styling for active filters (not green background)
+  - "Spalten konfigurieren" button aligned with table edge
+  - "alle Filter zurücksetzen" button right-aligned in filter row
+  - Table headers remain visible when no results (allows fixing filter typos)
+
+- ✅ **TABLE-3:** Filter Persistence (Mobile UI not needed)
+  - Column filters already persist via user preferences
+  - Mobile support not required per user decision
+
+**Phase 3: Setlist Management - COMPLETE**
+- ✅ **SETLIST-1:** Data Structures & API Setup
+  - TypeScript interfaces: `Setlist`, `SetlistItem`, `SetlistScoreItem`, `PlayerAllocation`
+  - API routes: `/api/ndb/setlists/*` (list, get, post, put, download)
+  - Client methods in `client.ts` following proxy pattern
+  - `useSetlists` hook for data fetching
+
+- ✅ **SETLIST-2:** Setlist List Page
+  - `SetlistsTable` component with desktop and mobile layouts
+  - Table columns: Display Name, # Stücke, Actions (Download Stimmen/Partituren)
+  - List page at `/intern/ndb/setlists`
+  - "Neue Setlist" button → create page
+  - Empty state when no setlists
+  - Toast notifications on success/error
+
+- ✅ **SETLIST-3:** Setlist Editor - Basic
+  - Detail/edit page at `/intern/ndb/setlists/[id]`
+  - Form: displayName (required), no date field (not in API)
+  - Score search with autocomplete
+  - Add/remove scores with up/down ordering
+  - "Speichern" button saves via PUT, "Abbrechen" discards
+  - Unsaved changes indicator
+  - Data validation: required displayName, minimum 1 score
+  - Ref-based save pattern (like ScoreEditForm)
+  - Tab navigation: "Übersicht" (scores) and "Besetzung" (allocations)
+  - Consistent button layout: back link top left, save button top right
+  - Full width layout for allocation tables
+
+**Phase 4: Player Allocations - COMPLETE**
+- ✅ **ALLOC-1:** Allocation Grid - Core
+  - `PlayerAllocationEditor` component with grid layout
+  - `PlayerAllocationDisplay` component for read-only view
+  - Grid layout: rows = scores, columns = parts (dynamically generated)
+  - Desktop: full grid with horizontal scroll
+  - Compact design with reduced cell sizes (140px score, 90px parts)
+  - Grid headers: part names (sorted by brass ensemble order)
+  - Row headers: score titles with composer
+  - Instrumentation parsing from THTEU format + customParts field
+  - Utility: `instrumentationParts.ts` for parsing score instrumentation
+  - Utility: `partSorting.ts` for brass ensemble ordering (trp, flg, hrn, pos, eup, tub, org, perc)
+
+- ✅ **ALLOC-2:** Dynamic Parts & Tab Navigation
+  - Scan existing allocations for additional parts
+  - Column merging: singular + plural-1 (hrn + hrn1 → hrn1) to save space
+  - Orphaned part detection (allocations for removed parts shown in amber)
+  - Tab navigation: "Übersicht" (scores list) and "Besetzung" (allocation grid)
+  - Both tabs share Setlist state
+  - "Speichern" button on page level (sticky top right)
+  - Tab indicator shows active tab
+  - Conditional width: overview in middle-column, allocations full width
+
+- ✅ **ALLOC-3:** Mobile Allocation Grid
+  - Desktop/Tablet: horizontal scrolling table with ScrollableTable wrapper
+  - Mobile (<768px): vertical stacked cards with 2-column grid for allocations
+  - Orphaned allocations shown separately with amber styling
+  - Besetzung tab hidden on mobile (allocations in display mode only)
+
+- ✅ **ALLOC-5:** Player Input Enhancement
+  - `PlayerAutocompleteInput` component with dropdown suggestions
+  - `playerSuggestions.ts` utility for instrument-based player suggestions
+  - Fetch user names from Payload via `fetchEnrichedUsers()` server action
+  - First names only for player allocations
+  - Suggestions shown immediately on focus (no filtering)
+  - Keyboard navigation (arrows, enter, escape)
+  - User can still type arbitrary string
+
+**Test Infrastructure**
+- ✅ Complete test setup with MSW 2.11.3 for API mocking
+- ✅ React Testing Library 16.3.0 + jest-dom 6.9.1
+- ✅ Jest configured for React components with jsdom
+- ✅ MSW handlers for all NDB API endpoints
+- ✅ Test utilities and helpers (`testUtils.tsx`)
+- ✅ **162 tests written and passing:**
+  - 11 tests for filter utilities
+  - 28 tests for column configuration
+  - 21 tests for instrumentation parsing
+  - 43 tests for player suggestions and part sorting
+  - 20 tests for Button component
+  - 11 tests for TextFilter component
+  - 12 tests for SelectFilter component
+  - 12 tests for BooleanFilter component
+  - 4 tests for instrumentation utilities
+
+### 🚧 In Progress
+
+None currently.
+
+### ⚠️ Known Issues
+
+**Database Schema Migration Required:**
+- The `Settings` global config has `theme.fontFamily` and `theme.highlightColor` fields
+- These create database columns `theme_font_family` and `theme_highlight_color`
+- **Build error:** `column "theme_font_family" does not exist`
+- **Solution needed:** Run database migration to add these columns
+- **SQL migration:**
+  ```sql
+  ALTER TABLE rheinblech_dev.settings
+  ADD COLUMN IF NOT EXISTS theme_font_family VARCHAR(255) DEFAULT 'lexend',
+  ADD COLUMN IF NOT EXISTS theme_highlight_color VARCHAR(255) DEFAULT '#10b981';
+  ```
+- **Status:** Migration SQL prepared, needs to be applied to database
+- **Impact:** Build fails when trying to fetch Settings global during static page generation
+
+### 📋 Backend API Status
+
+**NDB API (ensemble-web-ndb) - Setlists COMPLETE**
+- ✅ Single worksheet design with redundant data (setlistId, setlistName, scoreId, orderIndex, allocations)
+- ✅ GET /v1/setlists - List all setlists with full details
+- ✅ POST /v1/setlist - Create new setlist
+- ✅ PUT /v1/setlist - Update setlist (setlistId in body)
+- ✅ POST /v1/download/setlist - Download ZIP with ordered score PDFs
+- ✅ 48 integration tests passing
+- ✅ Retry logic with exponential backoff
+- ✅ Comprehensive validation
+- **Note:** NO DELETE endpoint (not supported by API)
+
+### 📊 Progress Summary
+
+**Infrastructure:** 3/4 completed (75%) - INFRA-2 removed (no delete operations in API)
+- ✅ INFRA-1, INFRA-4, INFRA-5
+- ⏳ INFRA-3 (optional)
+
+**Table Features:** 3/4 completed (75%)
+- ✅ TABLE-1, TABLE-2, TABLE-3
+- ⏳ TABLE-4 (low priority)
+
+**Setlist Features:** 3/3 core tasks completed (100%)
+- ✅ SETLIST-1, SETLIST-2, SETLIST-3
+- ⏳ SETLIST-4 (drag & drop - optional), SETLIST-5 (polish - low priority)
+
+**Player Allocations:** 4/6 tasks completed (67%)
+- ✅ ALLOC-1, ALLOC-2, ALLOC-3, ALLOC-5
+- ⏳ ALLOC-4 (print stylesheet - low priority), ALLOC-6 (conflict detection - low priority)
+
+**Test Coverage:** Excellent
+- 9 test suites, 162 tests, all passing
+- MSW mocking infrastructure ready for integration tests
+- Comprehensive coverage of utilities and components
+
+---
+
+## Complete Development Backlog
+
+### 🎯 Infrastructure Foundation
+
+**INFRA-1: Toast Notification System** ✅ COMPLETE
+- `sonner` library (v2.0.7) installed
+- `ToastProvider` wrapper component created
+- Integrated into app layout
+- Already in use across NDB pages and hooks
+- Documentation in `docs/infrastructure-usage.md`
+
+~~**INFRA-2: Confirmation Dialog Component**~~ REMOVED
+- Delete operations not supported by NDB API
+- No longer needed
+
+**INFRA-3: Error Boundaries** (Low Priority - Optional)
+- Create `ErrorBoundary` component with fallback UI
+- Create `ErrorFallback` component (friendly message + retry button)
+- Wrap key sections: setlist pages, score pages, file uploads
+- Log errors to console (prepare for future logging service)
+- **Depends on:** Nothing
+
+**INFRA-4: Empty States** (Medium Priority)
+- Create `EmptyState` component with icon, heading, message, optional action
+- Create variants: no-results, no-data, error-state
+- Use in: scores list, setlist list, address list
+- **Depends on:** Nothing
+
+**INFRA-5: User Preferences System** (High Priority)
+- Create `src/next/ndb/utils/preferences.ts` utility
+- Functions: `getUserPreference(userId, key)`, `setUserPreference(userId, key, value)`
+- Use Payload Preferences API (`payload-preferences` collection)
+- Implement hybrid approach: Payload (primary) + localStorage (cache)
+- Create React hook: `useUserPreference(key, defaultValue)`
+- Handle logged-out users (localStorage only)
+- **Depends on:** Nothing
+- **Blocks:** TABLE-1, TABLE-3
+
+---
+
+### 🔍 Advanced Table Filtering
+
+**TABLE-1: Column Configuration System** (High Priority)
+- Define `ColumnConfig` interface
+- Storage: Payload Preferences with key `ndb_column_preferences`
+- Create "Spalten" button in toolbar
+- Create `ColumnSettingsModal.tsx` with checkboxes
+- Always visible: title, composer, parts, fullScore
+- Default visible: arranger (xl+), instrumentation (lg+), organ (xl+), percussion (xl+)
+- Optional: genre, publisher, difficulty, comment, moderation, audioMidi, audioMp3
+- "Zurücksetzen" button to restore defaults
+- Update `Table.tsx` to support dynamic columns
+- Gracefully degrade on mobile (hide "Spalten" button)
+- **Depends on:** INFRA-5
+- **Blocks:** TABLE-2, TABLE-3
+
+**TABLE-2: Column-Based Filtering - Core** (High Priority)
+- Add filter icon (funnel) to column headers
+- Create `FilterPopover.tsx` generic component
+- Active filter: filled icon + colored indicator
+- Implement filter types:
+  - `TextFilter.tsx` for: title, composer, arranger, publisher, comment
+  - `SelectFilter.tsx` for: genre, difficulty
+  - `BooleanFilter.tsx` for: organ, percussion
+  - File filter for: parts, fullScore, audioMidi, audioMp3 (has/doesn't have)
+- Apply filters with AND logic
+- Combine with existing toolbar search (OR across title/composer/arranger)
+- Update `ScoresTable.tsx` with filter logic
+- **Depends on:** Nothing (works better after TABLE-1)
+- **Blocks:** TABLE-3
+
+**TABLE-3: Filter Persistence & Mobile** (High Priority)
+- Storage: Payload Preferences with key `ndb_active_filters`
+- Load filters on mount, save changes immediately
+- Persist when navigating to detail page and back
+- "Alle Filter zurücksetzen" clears and updates preferences
+- Mobile: Hide per-column filter icons
+- Mobile: Create `MobileFilterSheet.tsx` (bottom sheet)
+- Mobile: "Erweiterte Filter" button with active filter count badge
+- Create `FilterBadge.tsx` for active indicators
+- **Depends on:** TABLE-2, INFRA-5
+- **Blocks:** Nothing
+
+**TABLE-4: Instrumentation Filter Enhancement** (Low Priority)
+- Add instrumentation filter popover
+- Number inputs for min/max: horns, trumpets, trombones
+- Keep existing quick filter buttons in toolbar
+- Combine with quick filters (AND logic)
+- **Depends on:** TABLE-2
+
+---
+
+### 🎵 Setlist Management - Core
+
+**SETLIST-1: Data Structures & API Setup** ✅ COMPLETE
+- TypeScript interfaces in `types.ts`: `Setlist`, `SetlistItem`, `SetlistScoreItem`, `PlayerAllocation`
+- API routes: `/api/ndb/setlists/*` (list, get, post, put, download)
+- Client methods in `client.ts` with setlist operations
+- Proxy pattern in `proxy.ts` for external NDB API
+- `useSetlists` hook for data fetching and caching
+
+**SETLIST-2: Setlist List Page** ✅ COMPLETE
+- `SetlistsTable.tsx` component with desktop and mobile layouts
+- Table columns: Display Name, # Stücke, Actions (Download Stimmen/Partituren)
+- List page at `/intern/ndb/setlists/page.client.tsx`
+- "Neue Setlist" button → create page at `/intern/ndb/setlists/new`
+- Actions: View/Edit, Download Stimmen, Download Partituren
+- Back link to `/intern/ndb`
+- Empty state when no setlists with "Setlist erstellen" action
+- Toast notifications on success/error
+- No delete action (API does not support DELETE)
+
+**SETLIST-3: Setlist Editor - Basic** ✅ COMPLETE
+- Detail/edit pages at `/intern/ndb/setlists/[id]` and `/intern/ndb/setlists/new`
+- Form: displayName (required), no date field (not in API)
+- Score search with inline autocomplete in bordered list
+- Static list with up/down ordering (no drag-drop)
+- Add/remove scores (no confirmation needed per UX review)
+- State: React state holds entire Setlist object
+- Ref-based save pattern (like ScoreEditForm)
+- "Speichern" button on page level (top right), "Abbrechen" navigates back
+- Toast on save success/error
+- Unsaved changes indicator ("Ungespeicherte Änderungen")
+- Data validation: required displayName, minimum 1 score
+- Tab navigation: "Übersicht" (scores) and "Besetzung" (allocations)
+- BackToSetlists component for consistent navigation
+- Button layout matches scores pattern (back left, save right)
+
+**SETLIST-4: Drag & Drop Reordering** (High Priority)
+- Install `@dnd-kit/core` and `@dnd-kit/sortable`
+- Convert `SetlistItemList` to `DraggableSetlistItemList`
+- Add drag handle icon to each item
+- Visual feedback during drag
+- Update orderIndex in local state on drop
+- No immediate save - waits for "Speichern"
+- Mobile: larger touch targets
+- **Depends on:** SETLIST-3
+- **Blocks:** Nothing
+
+**SETLIST-5: Setlist Visual Polish** (Low Priority)
+- Transition animations for add/remove items
+- Loading skeleton loaders during fetch
+- Progress indicators during save
+- Mobile: card view for setlist list
+- Mobile: full-screen score search overlay
+- Sticky back-to-top button
+- **Depends on:** SETLIST-3, SETLIST-4
+
+---
+
+### 📊 Player Allocations
+
+**ALLOC-1: Allocation Grid - Core** ✅ COMPLETE
+- Created `PlayerAllocationEditor.tsx` and `PlayerAllocationDisplay.tsx` components
+- Grid layout: rows = scores, columns = parts (dynamically generated from instrumentation)
+- Parts extracted from THTEU format (instrumentation field) via `instrumentationParts.ts`
+- Supports customParts field for special instrumentation (choirs, flügelhorn)
+- Each cell: PlayerAutocompleteInput with suggestions
+- Update allocations in local state immediately (no debouncing)
+- Desktop: full grid with horizontal scroll via ScrollableTable
+- Grid headers: part names (sorted by brass ensemble order), row headers: score titles + composer
+- Compact design: 140px score column, 90px part columns
+- Part sorting utility (`partSorting.ts`) with brass ensemble order: trp, flg, hrn, pos, eup, tub, org, perc
+
+**ALLOC-2: Dynamic Parts & Tab Navigation** ✅ COMPLETE
+- Scan existing allocations for additional parts (includes orphaned parts)
+- Column merging: singular + plural-1 (hrn + hrn1 → hrn1) to save horizontal space
+- Mapping logic: if column is "hrn1" but score has "hrn", uses "hrn" for allocation
+- Orphaned part detection: parts in allocations but not in current score (shown with amber styling)
+- Tab navigation: "Übersicht" (scores list) and "Besetzung" (allocation grid)
+- Both tabs share Setlist state
+- "Speichern" button on page level (top right), not in tabs
+- Tab indicator shows active tab
+- Conditional width: overview in middle-column (max-w-4xl), allocations full width
+- No add/remove part buttons (parts derived from instrumentation)
+
+**ALLOC-3: Mobile Allocation Grid** ✅ COMPLETE
+- Desktop/Tablet: horizontal scrolling table with sticky score column (z-index 10)
+- Mobile (<768px): vertical stacked cards with 2-column grid for allocations
+- Orphaned allocations shown separately with border and amber styling
+- Besetzung tab hidden on mobile (only shows in display mode)
+- Mobile cards show score number, title, composer, and sorted allocations
+
+**ALLOC-4: Print Stylesheet** (Low Priority)
+- CSS `@media print` styles
+- Clean table layout, no colors, paper-optimized
+- Print button with printer icon
+- Page breaks if needed
+- **Depends on:** ALLOC-2
+
+**ALLOC-5: Player Input Enhancement** ✅ COMPLETE
+- Created `PlayerAutocompleteInput.tsx` component with dropdown suggestions
+- Created `playerSuggestions.ts` utility for instrument-based suggestions
+- Maps part names to user instruments (pos→trb, perc→pcs)
+- Fetch user names from Payload via `fetchEnrichedUsers()` server action
+- First names only for player allocations
+- Suggestions shown immediately on focus (no filtering by input)
+- Keyboard navigation (arrows, enter, escape)
+- User can still type arbitrary string (not limited to suggestions)
+- Suggestions limited to 8 players per part
+
+**ALLOC-6: Conflict Detection** (Low Priority)
+- Detect conflicts (same player, multiple parts, same score)
+- Visual indicator (warning icon, yellow highlight)
+- Tooltip explaining conflict
+- **Depends on:** ALLOC-1
+
+---
+
+### 🔗 Payload + NDB Integration
+
+**INTEGRATION-1: Inline Edit Buttons** (High Priority)
+- "Event bearbeiten" button on event pages (admin only)
+- "Neues Event" button on internal home
+- Deep links to Payload admin
+- Opens in new tab
+- **Depends on:** Nothing
+
+**INTEGRATION-2: Admin Role Checks** (High Priority)
+- Create `isAdmin()` utility function
+- Consistent role checking across pages
+- Hide admin UI for non-admins
+- **Depends on:** Nothing
+
+**INTEGRATION-3: Unified Sidebar Navigation** (High Priority)
+- Create sidebar component for internal area
+- Same sidebar in Payload admin (extend Payload's sidebar if possible)
+- Sections: Übersicht, Notendatenbank (Noten, Setlists), Adressliste, Verwaltung (admin only)
+- Persistent across navigation
+- **Depends on:** Nothing
+
+**INTEGRATION-4: SetlistBlock for Payload** (High Priority)
+- Custom block in rich text editor
+- Single parameter: setlistId (number)
+- Embedded view mode (read-only display)
+- Embedded edit mode (full editor with allocations)
+- Toggle between view/edit in block settings
+- Used in: Events, Pages
+- **Depends on:** SETLIST-3, ALLOC-1
+- **Blocks:** Nothing
+
+**INTEGRATION-5: Event ↔ Setlist Soft Linking** (Medium Priority)
+- Add setlistId field (number) to Events collection
+- Display linked setlist on event page
+- "Setlist zuordnen" dropdown on event edit
+- No Payload Setlists collection (NDB API only)
+- **Depends on:** SETLIST-1
+
+**INTEGRATION-6: AddressListBlock for Payload** (Medium Priority)
+- Custom block in rich text editor
+- Parameters: title, filterByInstrument, showContactInfo
+- Embeds filtered address list
+- **Depends on:** Nothing
+
+**INTEGRATION-7: ScoreDetailBlock for Payload** (Low Priority)
+- Custom block in rich text editor
+- Parameter: scoreId (number)
+- Embeds score detail card
+- **Depends on:** Nothing
+
+**INTEGRATION-8: Quick Actions from Score Page** (Low Priority)
+- "Zu Setlist hinzufügen" button on score detail
+- Modal with setlist selector
+- Add score to selected setlist
+- **Depends on:** SETLIST-1
+
+**INTEGRATION-9: Event Creation Wizard** (Low Priority)
+- Custom wizard at `/intern/events/new`
+- Multi-step: Basic info → Concert info → Setlist → Summary
+- Creates event + optionally links setlist
+- **END OF ROADMAP PRIORITY**
+- **Depends on:** INTEGRATION-5
+
+---
+
+### 📁 File Management
+
+**FILE-1: Drag & Drop Upload** (Medium Priority)
+- Add drag-drop zones to file upload fields
+- Visual feedback (border highlight)
+- Toast notification on drop
+- Error handling for wrong types
+- Update `FileUploadField.tsx`
+- **Depends on:** INFRA-1 (toast)
+- **Blocks:** FILE-2
+
+**FILE-2: Upload Progress & Preview** (Low Priority)
+- Upload progress bar/percentage
+- PDF thumbnails (first page)
+- Cancel upload button
+- File size validation
+- **Depends on:** FILE-1
+
+**FILE-3: Download Improvements** (Low Priority)
+- Toast notifications on error
+- Loading indicator
+- Error handling
+- **Depends on:** INFRA-1 (toast)
+
+---
+
+### 📋 Address List Enhancements
+
+**ADDR-1: CSV Export** (Medium Priority)
+- Create `exportAddressListToCSV()` utility
+- Columns: Name, Instruments, Email, Phone, Street, Location
+- Download button in toolbar
+- Filename: `adressliste_${date}.csv`
+- Toast on success
+- **Depends on:** INFRA-1 (toast)
+
+**ADDR-2: PDF Export** (Medium Priority)
+- Install `jsPDF` or `pdfmake`
+- Formatted PDF with sections per player
+- Download button next to CSV
+- Filename: `adressliste_${date}.pdf`
+- Toast on success
+- **Depends on:** INFRA-1 (toast)
+
+**ADDR-3: Print Stylesheet** (Low Priority)
+- CSS `@media print` styles
+- Black & white optimized
+- Print button in toolbar
+- **Depends on:** Nothing
+
+**ADDR-4: vCard Export** (Low Priority)
+- Create `.vcf` file (vCard 3.0 format)
+- "vCard herunterladen" button per card OR bulk
+- Include name, phone, email, address, instruments
+- **Depends on:** Nothing
+
+---
+
+### ♿ Accessibility
+
+**A11Y-1: ARIA Labels** (Medium Priority)
+- Add `aria-label` to icon-only buttons
+- Add `aria-describedby` to form fields
+- Add `aria-live="polite"` to toasts
+- Add `aria-expanded` to popovers/modals
+- Add `role="grid"` to allocation grid
+- Test with VoiceOver/NVDA
+- **Depends on:** Nothing
+
+**A11Y-2: Keyboard Shortcuts** (Low Priority)
+- Define shortcuts: `/` (search), `n` (new), `c` (columns), `?` (help)
+- Create `KeyboardShortcuts` component
+- Help modal showing shortcuts
+- Announce to screen readers
+- **Depends on:** Nothing
+
+**A11Y-3: Screen Reader Audit** (Low Priority)
+- Descriptive link text (avoid "click here")
+- Proper heading hierarchy (h1 → h2 → h3)
+- Form labels associated with inputs
+- Table headers with scope
+- Loading states announced: `aria-busy="true"`
+- Test full flows with screen reader
+- **Depends on:** A11Y-1
+
+---
+
+### 🧪 Testing & Logging
+
+**TEST-1: E2E Test Setup** (Medium Priority)
+- Install Playwright
+- Configure for Next.js 15
+- GitHub Actions CI setup
+- Test utilities and helpers
+- **Depends on:** Nothing
+- **Blocks:** TEST-2
+
+**TEST-2: Core E2E Tests** (Medium Priority)
+- Login, search scores, filters, columns
+- Create/edit/delete setlist
+- Add scores, reorder, allocations
+- Download files
+- Export address list
+- Screenshot on failure
+- **Depends on:** TEST-1, features being tested
+
+**TEST-3: Better Error Logging** (Medium Priority)
+- Create `src/next/ndb/utils/logger.ts`
+- Log to console in dev, prepare for Sentry in prod
+- Include context: action, timestamp, stack, user ID
+- Log API errors with URL, method, status
+- Integrate with Error Boundaries
+- **Depends on:** INFRA-3
+
+**TEST-4: API Mocks** (Low Priority)
+- Install MSW (Mock Service Worker)
+- Create mocks for NDB API
+- Use in Storybook and tests
+- **Depends on:** Nothing
+
+---
+
+### 🚀 Performance
+
+**PERF-1: Code Splitting** (Medium Priority)
+- Dynamic imports: allocation grid, PDF export, @dnd-kit, column modal
+- Install `@next/bundle-analyzer`
+- Analyze bundle
+- Lazy load icons
+- Loading fallbacks
+- **Depends on:** Nothing
+
+**PERF-2: Image Optimization** (Low Priority)
+- Use Next.js `<Image>` component
+- Optimize icon SVGs
+- Responsive images with srcset
+- Lazy load below fold
+- **Depends on:** Nothing
+
+**PERF-3: SSG for Score Detail Views** (Medium Priority)
+- Generate static pages for all scores at build
+- Use `generateStaticParams`
+- Set revalidation: `export const revalidate = 3600`
+- On-demand revalidation with `revalidatePath`
+- Fallback to SSR for new scores
+- **Depends on:** Nothing
+
+**PERF-4: API Response Caching** (Requires Discussion/Approval)
+- Install `@tanstack/react-query`
+- Wrap app in `QueryClientProvider`
+- Create hooks: `useScores()`, `useScore(id)`, `useSetlists()`, `useSetlist(id)`, `useUsers()`
+- Configure stale time, cache time
+- Cache invalidation on mutations
+- Optimistic updates
+- **Depends on:** User approval
+- **Note:** TanStack Query approach needs approval before implementation
+
+---
+
+### 🎨 UI Polish
+
+**POLISH-1: Storybook Setup** (Low Priority)
+- Install Storybook for Next.js 15
+- Create stories for reusable components
+- Document props, variants
+- Optional: Chromatic visual regression
+- **Depends on:** Nothing
+
+**POLISH-2: UI Refinements** (Low Priority)
+- Search result count ("23 Noten gefunden")
+- Transition animations (fade, slide)
+- Swipe actions on mobile
+- Bottom navigation on mobile
+- Pull-to-refresh on mobile lists
+- Smooth scroll-to-top button
+- **Depends on:** Nothing
+
+**POLISH-3: Form Validation UI** (Low Priority)
+- Inline validation (on blur)
+- Error messages below fields
+- Visual indicators (red border, icon)
+- Success indicators (green checkmark)
+- Helper text
+- **Depends on:** Nothing
+
+---
+
+### 🔐 Security & Advanced
+
+**SEC-1: Data Validation** (Medium Priority)
+- Required field enforcement
+- Format validation (date, email)
+- Client-side validation before API calls
+- Server-side validation in API routes
+- Toast error messages
+- **Depends on:** INFRA-1 (toast)
+
+**SEC-2: Input Sanitization** (Low Priority)
+- Install DOMPurify
+- Sanitize rich text fields
+- Escape user strings
+- Sanitize file names
+- **Depends on:** Nothing
+
+**SEC-3: Rate Limiting** (Low Priority)
+- Next.js middleware for rate limiting
+- Limit per IP
+- Return 429 when exceeded
+- **Depends on:** Nothing
+
+**SEC-4: Audit Logs** (Low Priority)
+- Send username via `X-User-Name` header
+- Log: create, update, delete actions
+- Include timestamp, user, action, resource
+- **Depends on:** Nothing
+
+**SEC-5: Session Timeout Warnings** (Low Priority)
+- Detect Payload session timeout
+- Modal 5 min before expiry
+- "Verlängern" button to refresh
+- Auto-logout on timeout
+- **Depends on:** Nothing
+
+**ADV-1: Score Preview Modal** (Low Priority)
+- Modal for PDF preview
+- Embed pdf.js or `<iframe>`
+- Full-screen with close button
+- Next/previous buttons
+- Download in modal
+- Keyboard navigation
+- **Depends on:** Nothing
+
+**ADV-2: Setlist Advanced Features** (Low Priority)
+- Duplicate setlist ("Kopieren" button)
+- Setlist templates (no date, reusable)
+- Export setlist as PDF
+- Print optimization with page breaks
+- **Depends on:** ALLOC-2, ALLOC-4
+
+---
+
+## Recommended Implementation Order
+
+### Phase 1: Foundation (Weeks 1-2)
+Start here for maximum impact on future work:
+1. **INFRA-5** (User Preferences) - Required for tables
+2. **INFRA-1** (Toast) - Required for feedback everywhere
+3. **INFRA-2** (Dialogs) - Required for confirmations
+4. **INFRA-3, INFRA-4** (Errors, Empty States)
+
+### Phase 2: Advanced Tables (Weeks 3-4)
+Build on preferences foundation:
+1. **TABLE-1** (Column Configuration)
+2. **TABLE-2** (Column Filters)
+3. **TABLE-3** (Persistence & Mobile)
+
+### Phase 3: Setlist Core (Weeks 5-7)
+Major feature development:
+1. **SETLIST-1** (Data & API)
+2. **SETLIST-2** (List Page)
+3. **SETLIST-3** (Editor)
+4. **SETLIST-4** (Drag & Drop)
+
+### Phase 4: Allocations (Weeks 8-9)
+Complete setlist functionality:
+1. **ALLOC-1** (Grid Core)
+2. **ALLOC-2** (Dynamic Parts & Tabs)
+3. **ALLOC-3** (Mobile)
+
+### Phase 5: Integration (Weeks 10-11)
+Connect Payload and NDB:
+1. **INTEGRATION-1, 2** (Edit Buttons & Roles)
+2. **INTEGRATION-3** (Unified Sidebar)
+3. **INTEGRATION-4** (SetlistBlock)
+4. **INTEGRATION-5** (Event Linking)
+
+### Phase 6: Enhancements (Weeks 12+)
+Polish and improvements:
+- File Management (FILE-1, 2, 3)
+- Address List Exports (ADDR-1, 2)
+- Accessibility (A11Y-1)
+- Testing (TEST-1, 2, 3)
+- Performance (PERF-1, 3)
+- Remaining integrations (INTEGRATION-6, 7, 8)
+
+### Phase 7: Polish & Advanced (Ongoing)
+Low priority items as needed:
+- UI Polish (POLISH-1, 2, 3)
+- Security enhancements (SEC-2, 3, 4, 5)
+- Advanced features (ADV-1, 2)
+- Event wizard (INTEGRATION-9) - **END OF ROADMAP**
+
+---
+
+## Recent Development Activity
+
+**Pull Request #14: CSS Consistency, UX Improvements, and Complete Setlist Features**
+- Branch: `feat/phase-1-infrastructure`
+- Target: `main`
+- Status: Open
+- URL: https://github.com/holtschn/ensemble-web/pull/14
+
+**Recent Commits (2025-10-09):**
+1. `e7d692d` - Reduce part label font size in mobile allocation view
+2. `8408508` - Use fixed positioning for autocomplete dropdown to prevent scrollbars
+3. `938b4d2` - Fix button variants and move Abbrechen to left side
+4. `52c723d` - Make setlist detail buttons consistent with scores detail view
+5. `17ae000` - Fix PlayerAutocompleteInput dropdown positioning
+6. `c6c1d35` - Add focus management to setlist score input
+7. `907bfb4` - Refine setlist UX: button styling, text, and layout improvements
+8. `ef573c0` - Change create buttons from highlighted to secondary variant
+9. `25cd707` - Migrate remaining NDB components to semantic utilities
+10. `d07edf9` - Migrate filter components and modal to semantic utilities
+11. `6abfab5` - Migrate high-priority components to semantic utilities
+12. `16b136e` - Add semantic typography and border utilities to globals.css
+13. `595087b` - Add VS Code settings to suppress Tailwind CSS at-rule warnings
+14. `0c827e6` - Simplify globals.css with typography and border utilities
+
+**Files Modified (Recent Session):**
+- `src/app/(pages)/globals.css` - Added 11 semantic utility classes
+- `src/next/ndb/components/TextField.tsx` - Added ref forwarding
+- `src/next/ndb/components/setlists/SetlistEditor.tsx` - Focus management, layout
+- `src/next/ndb/components/setlists/PlayerAutocompleteInput.tsx` - Fixed positioning
+- `src/next/ndb/components/setlists/PlayerAllocationDisplay.tsx` - Mobile font sizes
+- `src/next/ndb/components/setlists/SetlistDisplay.tsx` - Button alignment
+- `src/app/(pages)/intern/ndb/page.client.tsx` - Button variants
+- `src/app/(pages)/intern/ndb/setlists/page.client.tsx` - Button variants
+- `src/app/(pages)/intern/ndb/setlists/[id]/page.client.tsx` - Button variants, cancel placement
+- `.vscode/settings.json` - CSS lint configuration
+- `.vscode/tailwind.css-data.json` - IntelliSense for Tailwind 4.0
+
+---
+
+## Working Model
+
+**Kanban Style:** No sprints or releases. Work on one item at a time as directed by the project owner.
+
+**Dependencies:** Some items depend on others. Generally best to respect dependencies, but can work out of order if needed.
+
+**Flexibility:** Items can be modified, split, combined, or skipped. This is a living backlog.
+
+---
+
+## Quick Reference: Current State
+
+**Architecture:**
+- Next.js 15 + React 19 + TypeScript
+- PayloadCMS 3 with PostgreSQL
+- External NDB API (Basic Auth via proxy)
+- TailwindCSS 4.0 for styling
+
+**Current Pages:**
+- `/intern` - Internal home with events
+- `/intern/ndb` - Score list (NDB-powered)
+- `/intern/ndb/[id]` - Score detail (NDB-powered)
+- `/intern/ndb/setlists` - Setlist list (NDB-powered) ✅
+- `/intern/ndb/setlists/new` - Create setlist (NDB-powered) ✅
+- `/intern/ndb/setlists/[id]` - Setlist editor with player allocations (NDB-powered) ✅
+- `/intern/players` - Address list (Payload Users)
+- `/intern/events/[slug]` - Event detail (Payload content)
+
+**Planned Pages:**
+- `/intern/events/new` - Event wizard (low priority, end of roadmap)
+
+**Key Patterns:**
+- API proxy: Client → `/api/ndb/*` → External NDB API
+- User preferences: Payload Preferences API + localStorage cache
+- Payload blocks: Custom blocks for embedding NDB components
+- Sidebar navigation: Unified across internal pages and Payload admin

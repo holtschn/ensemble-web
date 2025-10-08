@@ -1,31 +1,355 @@
 @import 'tailwindcss';
 
+/* ========================================================================
+   THEME CONFIGURATION
+   ======================================================================== */
+
 @theme {
+  /* Gradient utilities */
   --background-image-gradient-radial: radial-gradient(var(--tw-gradient-stops));
   --background-image-gradient-conic: conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops));
+
+  /* Primary Color Palette (Dynamic - injected by ThemeProvider) */
+  --color-primary-50: var(--color-primary-50, #f0fdf4);
+  --color-primary-100: var(--color-primary-100, #dcfce7);
+  --color-primary-200: var(--color-primary-200, #bbf7d0);
+  --color-primary-300: var(--color-primary-300, #86efac);
+  --color-primary-400: var(--color-primary-400, #4ade80);
+  --color-primary-500: var(--color-primary-500, #10b981);
+  --color-primary-600: var(--color-primary-600, #059669);
+  --color-primary-700: var(--color-primary-700, #047857);
+  --color-primary-800: var(--color-primary-800, #065f46);
+  --color-primary-900: var(--color-primary-900, #064e3b);
+  --color-primary-950: var(--color-primary-950, #022c22);
+
+  /* Neutral Palette (Static) */
+  --color-neutral-50: #fafafa;
+  --color-neutral-100: #f5f5f5;
+  --color-neutral-200: #e5e5e5;
+  --color-neutral-300: #d4d4d4;
+  --color-neutral-400: #a3a3a3;
+  --color-neutral-500: #737373;
+  --color-neutral-600: #525252;
+  --color-neutral-700: #404040;
+  --color-neutral-800: #262626;
+  --color-neutral-900: #171717;
+  --color-neutral-950: #0a0a0a;
+
+  /* Semantic Colors (Static) */
+  --color-danger-50: #fef2f2;
+  --color-danger-100: #fee2e2;
+  --color-danger-200: #fecaca;
+  --color-danger-500: #ef4444;
+  --color-danger-600: #dc2626;
+  --color-danger-800: #991b1b;
+
+  --color-success-50: #f0fdf4;
+  --color-success-100: #dcfce7;
+  --color-success-500: #22c55e;
+  --color-success-600: #16a34a;
+  --color-success-800: #166534;
+
+  --color-warning-50: #fffbeb;
+  --color-warning-600: #d97706;
 }
 
-/*
-  The default border color has changed to `currentColor` in Tailwind CSS v4,
-  so we've added these compatibility styles to make sure everything still
-  looks the same as it did with Tailwind CSS v3.
+/* ========================================================================
+   BASE LAYER - Typography & Defaults
+   ======================================================================== */
 
-  If we ever want to remove these styles, we need to add an explicit border
-  color utility to any element that depends on these defaults.
-*/
 @layer base {
+  /* Default border color */
   *,
   ::after,
   ::before,
   ::backdrop,
   ::file-selector-button {
-    border-color: var(--color-gray-200, currentColor);
+    border-color: var(--color-neutral-200);
   }
 
-  .ndb-profex-label {
-    @apply text-xs text-gray-500 uppercase tracking-wide;
+  /* Typography Scale */
+  body {
+    @apply text-base text-neutral-900 leading-relaxed;
+    color: rgb(15, 15, 15);
+    background-color: rgb(255, 255, 255);
+  }
+
+  h1 {
+    @apply text-2xl font-bold mt-12 mb-4 text-center text-neutral-900;
+  }
+
+  h2 {
+    @apply text-xl font-bold mt-8 mb-3 text-center text-neutral-900;
+  }
+
+  h3 {
+    @apply text-lg font-semibold mt-6 mb-2 text-neutral-900;
+  }
+
+  h4 {
+    @apply text-base font-semibold mt-4 mb-2 text-neutral-900;
   }
 }
+
+/* ========================================================================
+   UTILITY CLASSES - Typography & Borders
+   ======================================================================== */
+
+@utility text-label {
+  @apply text-xs text-neutral-500 uppercase tracking-wide;
+}
+
+@utility text-body {
+  @apply text-sm text-neutral-700;
+}
+
+@utility text-muted {
+  @apply text-sm text-neutral-500;
+}
+
+@utility text-caption {
+  @apply text-xs text-neutral-600;
+}
+
+@utility border-base {
+  @apply border border-neutral-200;
+}
+
+@utility border-strong {
+  @apply border-2 border-neutral-300;
+}
+
+@utility border-card {
+  @apply border border-neutral-200 rounded-lg shadow-sm;
+}
+
+@utility border-popover {
+  @apply border border-neutral-200 rounded-md shadow-lg;
+}
+
+@utility divide-base {
+  @apply divide-y divide-neutral-200;
+}
+
+@utility rounded-base {
+  @apply rounded-md;
+}
+
+@utility rounded-card {
+  @apply rounded-lg;
+}
+
+@utility table-header-cell {
+  @apply bg-neutral-50 px-2 py-1.5 text-left text-label font-medium border-r border-neutral-200;
+}
+
+@utility table-header-cell-center {
+  @apply bg-neutral-50 px-1.5 py-1.5 text-center text-label font-medium;
+}
+
+@utility bg-highlight {
+  background-color: var(--color-primary-50);
+}
+
+@utility text-highlight {
+  color: var(--color-primary-700);
+}
+
+/* Legacy NDB label */
+@utility ndb-profex-label {
+  @apply text-xs text-neutral-500 uppercase tracking-wide;
+}
+
+/* ========================================================================
+   COMPONENT CLASSES
+   ======================================================================== */
+
+@layer components {
+  /* ----------------------------------------------------------------------
+     BUTTONS
+     ---------------------------------------------------------------------- */
+
+  .btn-primary,
+  .btn-secondary,
+  .btn-ghost,
+  .btn-danger {
+    @apply inline-flex items-center justify-center font-medium rounded-base transition-colors;
+    @apply focus:outline-none focus:ring-2 focus:ring-offset-2;
+    @apply disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .btn-primary {
+    background-color: var(--color-primary-100);
+    color: var(--color-primary-800);
+  }
+  .btn-primary:hover:not(:disabled) {
+    background-color: var(--color-primary-200);
+  }
+  .btn-primary:focus {
+    --tw-ring-color: var(--color-primary-500);
+  }
+
+  .btn-secondary {
+    @apply bg-neutral-100 hover:bg-neutral-200 text-neutral-700;
+    @apply focus:ring-neutral-500;
+  }
+
+  .btn-ghost {
+    @apply bg-transparent hover:bg-neutral-100 text-neutral-700;
+    @apply focus:ring-neutral-500;
+  }
+
+  .btn-danger {
+    @apply bg-danger-100 hover:bg-danger-200 text-danger-800;
+    @apply focus:ring-danger-500;
+  }
+
+  .btn-sm {
+    @apply px-3 py-1.5 text-sm;
+  }
+
+  .btn-md {
+    @apply px-4 py-2 text-sm;
+  }
+
+  .btn-lg {
+    @apply px-6 py-3 text-base;
+  }
+
+  /* ----------------------------------------------------------------------
+     FORM INPUTS
+     ---------------------------------------------------------------------- */
+
+  .input {
+    @apply w-full px-3 py-2 text-body border-base rounded-base shadow-sm;
+    @apply focus:outline-none focus:ring-2 focus:border-transparent;
+    @apply disabled:bg-neutral-50 disabled:text-neutral-500 disabled:cursor-not-allowed;
+  }
+  .input:focus:not(:disabled) {
+    --tw-ring-color: var(--color-primary-500);
+    border-color: var(--color-primary-500);
+  }
+
+  .input-error {
+    @apply border-danger-500;
+  }
+  .input-error:focus {
+    @apply ring-danger-500 border-danger-500;
+  }
+
+  .input-label {
+    @apply block text-sm font-medium text-neutral-700 mb-1;
+  }
+
+  .input-helper {
+    @apply text-muted mt-1;
+  }
+
+  .input-error-text {
+    @apply mt-1 text-sm text-danger-600;
+  }
+
+  /* ----------------------------------------------------------------------
+     TABLES
+     ---------------------------------------------------------------------- */
+
+  .table {
+    @apply w-full divide-base;
+  }
+
+  .table-header {
+    @apply bg-neutral-50;
+  }
+
+  .table-header-cell {
+    @apply px-2 py-1 text-left text-xs text-neutral-400 uppercase tracking-wider;
+  }
+
+  .table-body {
+    @apply bg-white divide-base;
+  }
+
+  .table-row {
+    @apply hover:bg-neutral-50 transition-colors;
+  }
+
+  .table-row-clickable {
+    @apply cursor-pointer;
+  }
+
+  .table-cell {
+    @apply px-2 py-1 text-body;
+  }
+
+  /* ----------------------------------------------------------------------
+     CARDS
+     ---------------------------------------------------------------------- */
+
+  .card {
+    @apply bg-white border-base rounded-card shadow-sm;
+  }
+
+  .card-header {
+    @apply px-6 py-4 border-b border-neutral-200;
+  }
+
+  .card-body {
+    @apply px-6 py-4;
+  }
+
+  .card-footer {
+    @apply px-6 py-4 border-t border-neutral-200 bg-neutral-50;
+  }
+
+  /* ----------------------------------------------------------------------
+     LINKS
+     ---------------------------------------------------------------------- */
+
+  .link {
+    color: var(--color-primary-600);
+    @apply underline hover:no-underline;
+  }
+  .link:hover {
+    color: var(--color-primary-700);
+  }
+
+  .link-muted {
+    @apply text-muted underline hover:text-neutral-700 hover:no-underline;
+  }
+
+  /* ----------------------------------------------------------------------
+     BADGES
+     ---------------------------------------------------------------------- */
+
+  .badge {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+  }
+
+  .badge-primary {
+    background-color: var(--color-primary-100);
+    color: var(--color-primary-800);
+  }
+
+  .badge-neutral {
+    @apply bg-neutral-100 text-neutral-800;
+  }
+
+  .badge-danger {
+    @apply bg-danger-100 text-danger-800;
+  }
+
+  .badge-success {
+    @apply bg-success-100 text-success-800;
+  }
+
+  .badge-warning {
+    @apply bg-warning-50 text-warning-600;
+  }
+}
+
+/* ========================================================================
+   CUSTOM UTILITIES
+   ======================================================================== */
 
 @utility middle-column {
   @apply w-5/6 sm:w-[calc(67%+105px)] md:w-[calc(50%+236px)] max-w-2xl mx-auto;
@@ -52,35 +376,9 @@
   animation-iteration-count: 1;
 }
 
-@layer utilities {
-  :root {
-    --foreground-rgb: 15, 15, 15;
-    --background-rgb: 255, 255, 255;
-  }
-
-  body {
-    color: rgb(var(--foreground-rgb));
-    background-color: rgb(var(--background-rgb));
-  }
-}
-
-@layer utilities {
-  h1 {
-    @apply text-2xl font-bold mt-12 mb-4 text-center;
-  }
-
-  h2 {
-    @apply text-xl font-bold mt-8 mb-3 text-center;
-  }
-
-  h3 {
-    @apply text-lg font-bold mt-6 mb-2 text-center;
-  }
-
-  h4 {
-    @apply text-base font-bold mt-4 mb-2;
-  }
-}
+/* ========================================================================
+   KEYFRAME ANIMATIONS
+   ======================================================================== */
 
 @keyframes appear {
   0% {
