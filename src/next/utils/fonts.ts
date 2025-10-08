@@ -1,8 +1,6 @@
 import { Lexend } from 'next/font/google';
 import { Lekton } from 'next/font/google';
 
-import { Settings } from '@/payload-types';
-
 const lektonFont = Lekton({
   weight: '400',
   subsets: ['latin'],
@@ -15,7 +13,7 @@ const lexendFont = Lexend({
   display: 'auto',
 });
 
-export const getFont = async (fontFamily?: Settings['fontFamily']) => {
+export const getFont = async (fontFamily?: 'lexend' | 'lekton' | null) => {
   if (fontFamily === 'lekton') {
     return lektonFont;
   }
