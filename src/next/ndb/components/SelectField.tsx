@@ -118,17 +118,7 @@ const SelectField: React.FC<SelectFieldProps> = ({
         onClick={handleToggle}
         onKeyDown={handleKeyDown}
         disabled={disabled}
-        className={`
-          w-full max-w-xs px-3 py-2 border rounded-md shadow-sm text-left
-          focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500
-          disabled:bg-gray-50 disabled:text-gray-500 disabled:cursor-not-allowed
-          ${
-            hasError ? 'border-red-500 focus:ring-red-500 focus:border-red-500' : 'border-gray-300'
-          }
-         
-          flex items-center justify-between
-          ${className}
-        `.trim()}
+        className={`input max-w-xs text-left flex items-center justify-between ${hasError ? 'input-error' : ''} ${className}`.trim()}
       >
         <span>{displayValue}</span>
         <Icon
@@ -140,22 +130,17 @@ const SelectField: React.FC<SelectFieldProps> = ({
 
       {/* Options dropdown */}
       {isOpen && (
-        <ul className="absolute z-10 w-full max-w-xs mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto">
+        <ul className="absolute z-10 w-full max-w-xs mt-1 bg-white border border-neutral-300 rounded-md shadow-lg max-h-60 overflow-auto">
           {options.map((option, index) => (
             <li
               key={`${option}-${index}`}
               onClick={() => handleOptionClick(option)}
               onMouseEnter={() => setHighlightedIndex(index)}
               className={`
-                px-3 py-2 cursor-pointer transition-colors
-                ${
-                  index === highlightedIndex
-                    ? 'bg-gray-100'
-                    : 'hover:bg-gray-50'
-                }
+                px-3 py-2 cursor-pointer transition-colors text-neutral-900
+                ${index === highlightedIndex ? 'bg-neutral-100' : 'hover:bg-neutral-50'}
                 ${option === value ? 'font-medium' : ''}
-                text-gray-900
-              `}
+              `.trim()}
             >
               {option || '—'}
             </li>
@@ -163,8 +148,8 @@ const SelectField: React.FC<SelectFieldProps> = ({
         </ul>
       )}
 
-      {hasError && <p className="mt-1 text-sm text-red-600">{error}</p>}
-      {helperText && !hasError && <p className="mt-1 text-sm text-gray-500">{helperText}</p>}
+      {hasError && <p className="input-error-text">{error}</p>}
+      {helperText && !hasError && <p className="input-helper">{helperText}</p>}
     </div>
   );
 };

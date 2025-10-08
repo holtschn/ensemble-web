@@ -38,26 +38,23 @@ const Table = <T,>({
 
   return (
     <div className={`flex justify-center ${className}`}>
-      <table className="max-w-7xl w-full divide-y divide-gray-200">
-        <thead className="bg-gray-50">
+      <table className="table max-w-7xl">
+        <thead className="table-header">
           <tr>
             {columns.map((column, index) => (
               <th
                 key={index}
-                className={`
-                  px-2 py-1 text-left text-xs text-gray-400 uppercase tracking-wider
-                  ${column.className || ''} ${column.headerClassName || ''}
-                `.trim()}
+                className={`table-header-cell ${column.className || ''} ${column.headerClassName || ''}`.trim()}
               >
                 {column.renderHeader ? column.renderHeader() : column.header}
               </th>
             ))}
           </tr>
         </thead>
-        <tbody className="bg-white divide-y divide-gray-200">
+        <tbody className="table-body">
           {data.length === 0 ? (
             <tr>
-              <td colSpan={columns.length} className="text-center p-8 text-gray-500">
+              <td colSpan={columns.length} className="text-center p-8 text-neutral-500">
                 {emptyMessage}
               </td>
             </tr>
@@ -65,10 +62,7 @@ const Table = <T,>({
             data.map((row) => (
               <tr
                 key={keyExtractor(row)}
-                className={`
-                  hover:bg-gray-50 transition-colors
-                  ${onRowClick ? 'cursor-pointer' : ''}
-                `.trim()}
+                className={`table-row ${onRowClick ? 'table-row-clickable' : ''}`.trim()}
                 onClick={() => onRowClick?.(row)}
               >
                 {columns.map((column, colIndex) => {
@@ -76,10 +70,7 @@ const Table = <T,>({
                   return (
                     <td
                       key={colIndex}
-                      className={`
-                        px-2 py-1 text-sm text-gray-900
-                        ${column.className || ''}
-                      `.trim()}
+                      className={`table-cell ${column.className || ''}`.trim()}
                     >
                       {column.render ? column.render(value, row) : value}
                     </td>

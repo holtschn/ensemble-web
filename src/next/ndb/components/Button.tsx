@@ -16,31 +16,24 @@ const Button: React.FC<ButtonProps> = ({
   className = '',
   ...props
 }) => {
-  const baseClasses = 'inline-flex items-center justify-center font-medium rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed';
-
   const variantClasses = {
-    highlighted: 'bg-green-100 hover:bg-green-200 text-green-800 focus:ring-green-500',
-    default: 'bg-gray-100 hover:bg-gray-200 text-gray-700 focus:ring-gray-500',
-    ghost: 'bg-transparent hover:bg-gray-100 text-gray-700 focus:ring-gray-500',
-    danger: 'bg-red-100 hover:bg-red-200 text-red-800 focus:ring-red-500'
+    highlighted: 'btn-primary',
+    default: 'btn-secondary',
+    ghost: 'btn-ghost',
+    danger: 'btn-danger'
   };
 
   const sizeClasses = {
-    sm: 'px-3 py-1.5 text-sm',
-    md: 'px-4 py-2 text-sm',
-    lg: 'px-6 py-3 text-base'
+    sm: 'btn-sm',
+    md: 'btn-md',
+    lg: 'btn-lg'
   };
 
   const isDisabled = disabled || isLoading;
 
   return (
     <button
-      className={`
-        ${baseClasses}
-        ${variantClasses[variant]}
-        ${sizeClasses[size]}
-        ${className}
-      `.trim()}
+      className={`${variantClasses[variant]} ${sizeClasses[size]} ${className}`.trim()}
       disabled={isDisabled}
       {...props}
     >
