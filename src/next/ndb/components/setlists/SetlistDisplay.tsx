@@ -35,11 +35,11 @@ const SetlistDisplay: React.FC<SetlistDisplayProps> = ({ setlist, onEdit }) => {
       {/* Download Actions */}
       <div className="middle-column pb-6">
         <div className="flex gap-3 justify-end">
-          <Button onClick={() => handleDownload('parts')} variant="secondary">
+          <Button onClick={() => handleDownload('parts')} variant="default">
             <Icon name="download" alt="Download" className="h-4 w-4 mr-2" />
             Stimmen herunterladen
           </Button>
-          <Button onClick={() => handleDownload('fullScore')} variant="secondary">
+          <Button onClick={() => handleDownload('fullScore')} variant="default">
             <Icon name="download" alt="Download" className="h-4 w-4 mr-2" />
             Partituren herunterladen
           </Button>

@@ -66,7 +66,7 @@ export const SetlistsPageClient: React.FC = () => {
           title="Setlists"
           backLink={{ href: '/intern/ndb', label: 'Zurück zur Notendatenbank' }}
           action={
-            <Button onClick={handleCreateClick} variant="secondary" size="sm">
+            <Button onClick={handleCreateClick} variant="default" size="sm">
               <Icon name="plus-circle" alt="Create" className="mr-1.5 h-3.5 w-3.5" />
               Setlist erstellen
             </Button>

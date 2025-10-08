@@ -76,7 +76,7 @@ export const ScoresPageClient: React.FC = () => {
           title="Notendatenbank"
           backLink={{ href: '/intern', label: 'Zurück zur internen Startseite' }}
           action={
-            <Button onClick={handleCreateClick} variant="secondary" size="sm">
+            <Button onClick={handleCreateClick} variant="default" size="sm">
               <Icon name="plus-circle" alt="Create" className="mr-1.5 h-3.5 w-3.5" />
               Eintrag anlegen
             </Button>

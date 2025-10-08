@@ -110,28 +110,28 @@ export const EditSetlistPageClient: React.FC = () => {
                 Speichern
               </Button>
             ) : (
-              <Button type="button" onClick={handleEditClick} variant="secondary" size="sm">
+              <Button type="button" onClick={handleEditClick} variant="default" size="sm">
                 Bearbeiten
               </Button>
             )
           }
-          statusMessage={
-            isEditMode ? (
-              <>
-                <button
-                  type="button"
-                  onClick={handleCancel}
-                  disabled={isSaving}
-                  className="flex items-center ndb-profex-label disabled:opacity-50"
-                >
-                  <Icon name="arrow-left" alt="Cancel" className="mr-2 h-3 w-3" />
-                  <div className="mt-0.5">Abbrechen</div>
-                </button>
-                {hasChanges && <span className="text-sm text-amber-600">Ungespeicherte Änderungen</span>}
-              </>
-            ) : undefined
-          }
+          statusMessage={isEditMode && hasChanges ? <span className="text-sm text-amber-600">Ungespeicherte Änderungen</span> : undefined}
         />
+
+        {/* Cancel button for edit mode - left side */}
+        {isEditMode && (
+          <div className="middle-column -mt-4 mb-6">
+            <button
+              type="button"
+              onClick={handleCancel}
+              disabled={isSaving}
+              className="flex items-center ndb-profex-label disabled:opacity-50"
+            >
+              <Icon name="arrow-left" alt="Cancel" className="mr-2 h-3 w-3" />
+              <div className="mt-0.5">Abbrechen</div>
+            </button>
+          </div>
+        )}
 
         {/* Full width for allocations table */}
         <div className="px-4 sm:px-6 lg:px-8">
