@@ -5,13 +5,11 @@
    ======================================================================== */
 
 @theme {
-  /* Gradient utilities (keep existing) */
+  /* Gradient utilities */
   --background-image-gradient-radial: radial-gradient(var(--tw-gradient-stops));
   --background-image-gradient-conic: conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops));
 
   /* Primary Color Palette (Dynamic - injected by ThemeProvider) */
-  /* These are set via inline styles from ThemeProvider based on Payload settings */
-  /* Default to green if not set */
   --color-primary-50: var(--color-primary-50, #f0fdf4);
   --color-primary-100: var(--color-primary-100, #dcfce7);
   --color-primary-200: var(--color-primary-200, #bbf7d0);
@@ -24,7 +22,7 @@
   --color-primary-900: var(--color-primary-900, #064e3b);
   --color-primary-950: var(--color-primary-950, #022c22);
 
-  /* Neutral Palette (Grey - Static) */
+  /* Neutral Palette (Static) */
   --color-neutral-50: #fafafa;
   --color-neutral-100: #f5f5f5;
   --color-neutral-200: #e5e5e5;
@@ -37,42 +35,105 @@
   --color-neutral-900: #171717;
   --color-neutral-950: #0a0a0a;
 
-  /* Semantic Status Colors (Static) */
+  /* Semantic Colors (Static) */
   --color-danger-50: #fef2f2;
   --color-danger-100: #fee2e2;
   --color-danger-200: #fecaca;
-  --color-danger-300: #fca5a5;
-  --color-danger-400: #f87171;
   --color-danger-500: #ef4444;
   --color-danger-600: #dc2626;
-  --color-danger-700: #b91c1c;
   --color-danger-800: #991b1b;
-  --color-danger-900: #7f1d1d;
-  --color-danger-950: #450a0a;
 
   --color-success-50: #f0fdf4;
   --color-success-100: #dcfce7;
-  --color-success-200: #bbf7d0;
-  --color-success-300: #86efac;
-  --color-success-400: #4ade80;
   --color-success-500: #22c55e;
   --color-success-600: #16a34a;
-  --color-success-700: #15803d;
   --color-success-800: #166534;
-  --color-success-900: #14532d;
-  --color-success-950: #052e16;
 
   --color-warning-50: #fffbeb;
-  --color-warning-100: #fef3c7;
-  --color-warning-200: #fde68a;
-  --color-warning-300: #fcd34d;
-  --color-warning-400: #fbbf24;
-  --color-warning-500: #f59e0b;
   --color-warning-600: #d97706;
-  --color-warning-700: #b45309;
-  --color-warning-800: #92400e;
-  --color-warning-900: #78350f;
-  --color-warning-950: #451a03;
+}
+
+/* ========================================================================
+   BASE LAYER - Typography & Defaults
+   ======================================================================== */
+
+@layer base {
+  /* Default border color */
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-neutral-200);
+  }
+
+  /* Typography Scale */
+  body {
+    @apply text-base text-neutral-900 leading-relaxed;
+    color: rgb(15, 15, 15);
+    background-color: rgb(255, 255, 255);
+  }
+
+  h1 {
+    @apply text-2xl font-bold mt-12 mb-4 text-center text-neutral-900;
+  }
+
+  h2 {
+    @apply text-xl font-bold mt-8 mb-3 text-center text-neutral-900;
+  }
+
+  h3 {
+    @apply text-lg font-semibold mt-6 mb-2 text-neutral-900;
+  }
+
+  h4 {
+    @apply text-base font-semibold mt-4 mb-2 text-neutral-900;
+  }
+}
+
+/* ========================================================================
+   UTILITY CLASSES - Typography & Borders
+   ======================================================================== */
+
+@utility text-label {
+  @apply text-xs text-neutral-500 uppercase tracking-wide;
+}
+
+@utility text-body {
+  @apply text-sm text-neutral-700;
+}
+
+@utility text-muted {
+  @apply text-sm text-neutral-500;
+}
+
+@utility text-caption {
+  @apply text-xs text-neutral-600;
+}
+
+@utility border-base {
+  @apply border border-neutral-200;
+}
+
+@utility border-strong {
+  @apply border-2 border-neutral-300;
+}
+
+@utility divide-base {
+  @apply divide-y divide-neutral-200;
+}
+
+@utility rounded-base {
+  @apply rounded-md;
+}
+
+@utility rounded-card {
+  @apply rounded-lg;
+}
+
+/* Legacy NDB label */
+@utility ndb-profex-label {
+  @apply text-xs text-neutral-500 uppercase tracking-wide;
 }
 
 /* ========================================================================
@@ -88,7 +149,7 @@
   .btn-secondary,
   .btn-ghost,
   .btn-danger {
-    @apply inline-flex items-center justify-center font-medium rounded-md transition-colors;
+    @apply inline-flex items-center justify-center font-medium rounded-base transition-colors;
     @apply focus:outline-none focus:ring-2 focus:ring-offset-2;
     @apply disabled:opacity-50 disabled:cursor-not-allowed;
   }
@@ -136,11 +197,9 @@
      ---------------------------------------------------------------------- */
 
   .input {
-    @apply w-full px-3 py-2 border rounded-md shadow-sm;
+    @apply w-full px-3 py-2 text-body border-base rounded-base shadow-sm;
     @apply focus:outline-none focus:ring-2 focus:border-transparent;
     @apply disabled:bg-neutral-50 disabled:text-neutral-500 disabled:cursor-not-allowed;
-    @apply border-neutral-300;
-    border-color: var(--color-neutral-300);
   }
   .input:focus:not(:disabled) {
     --tw-ring-color: var(--color-primary-500);
@@ -159,7 +218,7 @@
   }
 
   .input-helper {
-    @apply mt-1 text-sm text-neutral-500;
+    @apply text-muted mt-1;
   }
 
   .input-error-text {
@@ -171,7 +230,7 @@
      ---------------------------------------------------------------------- */
 
   .table {
-    @apply w-full divide-y divide-neutral-200;
+    @apply w-full divide-base;
   }
 
   .table-header {
@@ -183,7 +242,7 @@
   }
 
   .table-body {
-    @apply bg-white divide-y divide-neutral-200;
+    @apply bg-white divide-base;
   }
 
   .table-row {
@@ -195,7 +254,7 @@
   }
 
   .table-cell {
-    @apply px-2 py-1 text-sm text-neutral-900;
+    @apply px-2 py-1 text-body;
   }
 
   /* ----------------------------------------------------------------------
@@ -203,7 +262,7 @@
      ---------------------------------------------------------------------- */
 
   .card {
-    @apply bg-white border border-neutral-200 rounded-lg shadow-sm;
+    @apply bg-white border-base rounded-card shadow-sm;
   }
 
   .card-header {
@@ -223,11 +282,15 @@
      ---------------------------------------------------------------------- */
 
   .link {
-    text-color: var(--color-primary-600);
-    @apply underline;
+    color: var(--color-primary-600);
+    @apply underline hover:no-underline;
   }
   .link:hover {
     color: var(--color-primary-700);
+  }
+
+  .link-muted {
+    @apply text-muted underline hover:text-neutral-700 hover:no-underline;
   }
 
   /* ----------------------------------------------------------------------
@@ -256,27 +319,7 @@
   }
 
   .badge-warning {
-    @apply bg-warning-100 text-warning-800;
-  }
-}
-
-/* ========================================================================
-   BASE LAYER (Legacy compatibility + existing utilities)
-   ======================================================================== */
-
-@layer base {
-  /* Tailwind v4 compatibility: default border color */
-  *,
-  ::after,
-  ::before,
-  ::backdrop,
-  ::file-selector-button {
-    border-color: var(--color-neutral-200, currentColor);
-  }
-
-  /* Legacy NDB label style */
-  .ndb-profex-label {
-    @apply text-xs text-neutral-500 uppercase tracking-wide;
+    @apply bg-warning-50 text-warning-600;
   }
 }
 
@@ -307,44 +350,6 @@
   animation-timeline: scroll();
   animation-timing-function: linear;
   animation-iteration-count: 1;
-}
-
-/* ========================================================================
-   ROOT UTILITIES
-   ======================================================================== */
-
-@layer utilities {
-  :root {
-    --foreground-rgb: 15, 15, 15;
-    --background-rgb: 255, 255, 255;
-  }
-
-  body {
-    color: rgb(var(--foreground-rgb));
-    background-color: rgb(var(--background-rgb));
-  }
-}
-
-/* ========================================================================
-   TYPOGRAPHY
-   ======================================================================== */
-
-@layer utilities {
-  h1 {
-    @apply text-2xl font-bold mt-12 mb-4 text-center;
-  }
-
-  h2 {
-    @apply text-xl font-bold mt-8 mb-3 text-center;
-  }
-
-  h3 {
-    @apply text-lg font-bold mt-6 mb-2 text-center;
-  }
-
-  h4 {
-    @apply text-base font-bold mt-4 mb-2;
-  }
 }
 
 /* ========================================================================
