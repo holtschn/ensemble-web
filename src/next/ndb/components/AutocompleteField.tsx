@@ -129,7 +129,7 @@ const AutocompleteField: React.FC<AutocompleteFieldProps> = ({
 
       {/* Suggestions dropdown */}
       {showDropdown && (
-        <ul className="absolute z-10 w-full max-w-2xl mt-1 bg-white border border-neutral-300 rounded-md shadow-lg max-h-60 overflow-auto">
+        <ul className="absolute z-10 w-full max-w-2xl mt-1 bg-white border-popover max-h-60 overflow-auto">
           {filteredSuggestions.map((suggestion, index) => (
             <li
               key={`${suggestion}-${index}`}

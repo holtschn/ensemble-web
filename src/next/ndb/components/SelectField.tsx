@@ -130,7 +130,7 @@ const SelectField: React.FC<SelectFieldProps> = ({
 
       {/* Options dropdown */}
       {isOpen && (
-        <ul className="absolute z-10 w-full max-w-xs mt-1 bg-white border border-neutral-300 rounded-md shadow-lg max-h-60 overflow-auto">
+        <ul className="absolute z-10 w-full max-w-xs mt-1 bg-white border-popover max-h-60 overflow-auto">
           {options.map((option, index) => (
             <li
               key={`${option}-${index}`}

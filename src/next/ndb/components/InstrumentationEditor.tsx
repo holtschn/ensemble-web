@@ -94,7 +94,7 @@ const InstrumentationEditor: React.FC<InstrumentationEditorProps> = ({
                 }
               }}
               disabled={disabled}
-              className="w-12 px-2 py-1 text-center border border-neutral-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 disabled:bg-neutral-100 disabled:cursor-not-allowed"
+              className="w-12 px-2 py-1 text-center border border-neutral-300 rounded-base focus:outline-none focus:ring-2 focus:ring-primary-500 disabled:bg-neutral-100 disabled:cursor-not-allowed"
             />
           </div>
         ))}
@@ -111,7 +111,7 @@ const InstrumentationEditor: React.FC<InstrumentationEditorProps> = ({
             className="w-4 h-4 rounded border-neutral-300 focus:ring-2 disabled:cursor-not-allowed"
             style={{ accentColor: 'var(--color-primary-500)' }}
           />
-          <span className="text-sm">mit Schlagzeug</span>
+          <span className="text-body">mit Schlagzeug</span>
         </label>
         <label className="flex items-center gap-2 cursor-pointer">
           <input
@@ -122,7 +122,7 @@ const InstrumentationEditor: React.FC<InstrumentationEditorProps> = ({
             className="w-4 h-4 rounded border-neutral-300 focus:ring-2 disabled:cursor-not-allowed"
             style={{ accentColor: 'var(--color-primary-500)' }}
           />
-          <span className="text-sm">mit Orgel</span>
+          <span className="text-body">mit Orgel</span>
         </label>
       </div>
 

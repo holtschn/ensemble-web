@@ -101,20 +101,20 @@ const PlayerAutocompleteInput: React.FC<PlayerAutocompleteInputProps> = ({
         onKeyDown={handleKeyDown}
         placeholder={placeholder}
         autoComplete="off"
-        className="w-full px-2 py-1 text-xs border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+        className="w-full px-2 py-1 text-caption border border-neutral-300 rounded-base focus:outline-none focus:ring-1 focus:ring-primary-500 focus:border-primary-500"
       />
 
       {/* Suggestions dropdown */}
       {showDropdown && (
-        <ul className="absolute z-20 w-full mt-0.5 bg-white border border-gray-300 rounded-md shadow-lg max-h-48 overflow-auto">
+        <ul className="absolute z-20 w-full mt-0.5 bg-white border-popover max-h-48 overflow-auto">
           {filteredSuggestions.map((suggestion, index) => (
             <li
               key={`${suggestion}-${index}`}
               onClick={() => handleSuggestionClick(suggestion)}
               onMouseEnter={() => setHighlightedIndex(index)}
               className={`
-                px-2 py-1.5 cursor-pointer text-xs
-                ${index === highlightedIndex ? 'bg-blue-50 text-blue-900' : 'hover:bg-gray-50 text-gray-900'}
+                px-2 py-1.5 cursor-pointer text-caption
+                ${index === highlightedIndex ? 'bg-highlight text-highlight' : 'hover:bg-neutral-50 text-neutral-900'}
               `}
             >
               {suggestion}

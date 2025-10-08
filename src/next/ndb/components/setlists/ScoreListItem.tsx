@@ -13,8 +13,8 @@ interface ScoreListItemProps {
  * Shows title on first line, composer • arranger • instrumentation on second line.
  */
 const ScoreListItem: React.FC<ScoreListItemProps> = ({ title, composer, arranger, instrumentation, compact = false }) => {
-  const titleClass = compact ? 'text-sm font-medium' : 'text-base font-medium text-gray-900';
-  const detailsClass = compact ? 'text-xs text-gray-500' : 'text-sm text-gray-600';
+  const titleClass = compact ? 'text-body font-medium' : 'font-medium text-neutral-900';
+  const detailsClass = compact ? 'text-caption' : 'text-body';
 
   return (
     <div>

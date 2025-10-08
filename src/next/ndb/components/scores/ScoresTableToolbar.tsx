@@ -26,7 +26,7 @@ const ScoresFilterButton: React.FC<ScoresFilterButtonProps> = ({ isActive, onCli
   return (
     <Button
       size="sm"
-      className={`text-xs ${isActive ? 'ring-2 ring-primary-600' : ''}`}
+      className={`text-caption ${isActive ? 'ring-2 ring-primary-600' : ''}`}
       variant="default"
       onClick={onClick}
     >
@@ -206,7 +206,7 @@ const ScoresTableToolbar: React.FC<ScoresTableToolbarProps> = ({
 
           {/* Reset Filters Button - Show if toolbar OR column filters are active */}
           {(activeFilters.size > 0 || hasActiveColumnFilters) && (
-            <Button className="text-xs whitespace-nowrap" size="sm" variant="ghost" onClick={resetFilters}>
+            <Button className="text-caption whitespace-nowrap" size="sm" variant="ghost" onClick={resetFilters}>
               <Icon name="cross" alt="Cross Icon" className="mr-1 h-3 w-3" />
               Filter zurücksetzen
             </Button>

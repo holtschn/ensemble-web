@@ -145,14 +145,14 @@ const FileUploadField: React.FC<FileUploadFieldProps> = ({
 
         {/* File status display */}
         {hasPendingUpload ? (
-          <span className="text-sm text-neutral-600 flex items-center gap-1">
+          <span className="text-muted flex items-center gap-1">
             <Icon name="check" alt="Success" className="h-3.5 w-3.5 text-success-600" />
             {pendingFileName} <span className="text-amber-600">(nicht gespeichert)</span>
           </span>
         ) : (hadOriginalFile && !hasFile) || isRemoved ? (
-          <span className="text-sm text-amber-600">(Entfernt)</span>
+          <span className="text-muted text-amber-600">(Entfernt)</span>
         ) : hasFile ? (
-          <span className="text-sm text-neutral-600">{currentFile?.filename}</span>
+          <span className="text-muted">{currentFile?.filename}</span>
         ) : null}
       </div>
 

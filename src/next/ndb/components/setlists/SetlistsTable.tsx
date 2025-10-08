@@ -95,13 +95,13 @@ const SetlistsTable: React.FC<SetlistsTableProps> = ({ setlists, onSetlistClick,
             <div
               key={setlist.id}
               onClick={() => onSetlistClick?.(setlist)}
-              className="bg-white border border-neutral-200 rounded-lg p-4 cursor-pointer hover:bg-neutral-50 transition-colors"
+              className="bg-white border-base rounded-card p-4 cursor-pointer hover:bg-neutral-50 transition-colors"
             >
               <div className="flex justify-between items-start mb-2">
                 <h3 className="font-medium text-neutral-900">{setlist.displayName}</h3>
                 <span className="text-neutral-400 flex-shrink-0 ml-2">→</span>
               </div>
-              <div className="text-sm text-neutral-500 mb-3">{setlist.items.length} Stücke</div>
+              <div className="text-muted mb-3">{setlist.items.length} Stücke</div>
               <div className="flex gap-2">
                 <button onClick={(e) => handleDownload(e, setlist, 'parts')} className="btn-primary btn-sm flex-1">
                   <Icon name="download" alt="Download" className="h-3 w-3 inline mr-1" />
