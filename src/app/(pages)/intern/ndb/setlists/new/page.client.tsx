@@ -1,13 +1,14 @@
 'use client';
 
-import React from 'react';
-import Link from 'next/link';
+import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 import useRedirectIfLoggedOut from '@/next/auth/loggedInHook';
 import { useAuth } from '@/next/auth/context';
 import Icon from '@/next/ndb/components/Icon';
+import Button from '@/next/ndb/components/Button';
 import SetlistEditor from '@/next/ndb/components/setlists/SetlistEditor';
+import BackToSetlists from '@/next/ndb/components/setlists/BackToSetlists';
 
 export const NewSetlistPageClient: React.FC = () => {
   const { status } = useAuth();
@@ -15,7 +16,22 @@ export const NewSetlistPageClient: React.FC = () => {
 
   const router = useRouter();
 
+  const [isSaving, setIsSaving] = useState(false);
+  const [hasChanges, setHasChanges] = useState(false);
+
+  // Store reference to form submit function
+  const formSubmitRef = React.useRef<(() => void) | null>(null);
+
+  const handleSaveClick = () => {
+    // Trigger form submit
+    if (formSubmitRef.current) {
+      setIsSaving(true);
+      formSubmitRef.current();
+    }
+  };
+
   const handleSaveSuccess = (setlistId: number) => {
+    setIsSaving(false);
     // Navigate to the newly created setlist
     router.push(`/intern/ndb/setlists/${setlistId}`);
   };
@@ -25,15 +41,39 @@ export const NewSetlistPageClient: React.FC = () => {
   };
 
   return (
-    <div className="middle-column mt-8">
-      <Link href="/intern/ndb/setlists" className="flex items-center ndb-profex-label mb-4">
-        <Icon name="arrow-left" alt="Back" className="mr-2 h-3 w-3" />
-        <div className="mt-0.5">Zurück zu Setlists</div>
-      </Link>
+    status === 'loggedIn' && (
+      <div className="flex flex-col mt-8">
+        <div className="middle-column mb-8">
+          <h1 className="mb-4">Neue Setlist erstellen</h1>
+          <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+            <BackToSetlists />
+            <div className="ml-auto flex items-center gap-4">
+              {hasChanges && <span className="text-sm text-amber-600">Ungespeicherte Änderungen</span>}
+              <Button
+                type="button"
+                onClick={handleSaveClick}
+                disabled={isSaving || !hasChanges}
+                variant="highlighted"
+                size="sm"
+                isLoading={isSaving}
+              >
+                Setlist erstellen
+              </Button>
+            </div>
+          </div>
+        </div>
 
-      <h1 className="mb-6">Neue Setlist erstellen</h1>
-
-      <SetlistEditor mode="create" onSaveSuccess={handleSaveSuccess} onCancel={handleCancel} />
-    </div>
+        {/* Full width for allocations table */}
+        <div className="px-4 sm:px-6 lg:px-8">
+          <SetlistEditor
+            mode="create"
+            onSaveSuccess={handleSaveSuccess}
+            onHasChanges={setHasChanges}
+            submitRef={formSubmitRef}
+            isSaving={isSaving}
+          />
+        </div>
+      </div>
+    )
   );
 };
