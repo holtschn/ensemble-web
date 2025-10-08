@@ -56,19 +56,19 @@ const SetlistsTable: React.FC<SetlistsTableProps> = ({ setlists, onSetlistClick,
         <div className="flex gap-2 justify-center" onClick={(e) => e.stopPropagation()}>
           <button
             onClick={(e) => handleDownload(e, row, 'parts')}
-            className="btn-primary btn-sm"
-            title="Stimmen herunterladen"
+            className="btn-secondary btn-sm"
+            title="Alle Stimmen herunterladen"
           >
             <Icon name="download" alt="Download Stimmen" className="h-3 w-3 inline mr-1" />
-            Stimmen
+            alle Stimmen
           </button>
           <button
             onClick={(e) => handleDownload(e, row, 'fullScore')}
-            className="btn-primary btn-sm"
-            title="Partituren herunterladen"
+            className="btn-secondary btn-sm"
+            title="Alle Partituren herunterladen"
           >
             <Icon name="download" alt="Download Partitur" className="h-3 w-3 inline mr-1" />
-            Partitur
+            alle Partituren
           </button>
         </div>
       ),
@@ -103,17 +103,17 @@ const SetlistsTable: React.FC<SetlistsTableProps> = ({ setlists, onSetlistClick,
               </div>
               <div className="text-muted mb-3">{setlist.items.length} Stücke</div>
               <div className="flex gap-2">
-                <button onClick={(e) => handleDownload(e, setlist, 'parts')} className="btn-primary btn-sm flex-1">
+                <button onClick={(e) => handleDownload(e, setlist, 'parts')} className="btn-secondary btn-sm flex-1">
                   <Icon name="download" alt="Download" className="h-3 w-3 inline mr-1" />
-                  Stimmen
+                  alle Stimmen
                 </button>
                 <button
                   onClick={(e) => handleDownload(e, setlist, 'fullScore')}
-                  className="btn-primary btn-sm flex-1"
-                  title="Partituren herunterladen"
+                  className="btn-secondary btn-sm flex-1"
+                  title="Alle Partituren herunterladen"
                 >
                   <Icon name="download" alt="Download" className="h-3 w-3 inline mr-1" />
-                  Partitur
+                  alle Partituren
                 </button>
               </div>
             </div>

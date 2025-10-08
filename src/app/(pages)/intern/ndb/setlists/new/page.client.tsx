@@ -54,7 +54,7 @@ export const NewSetlistPageClient: React.FC = () => {
               size="sm"
               isLoading={isSaving}
             >
-              Setlist erstellen
+              Speichern
             </Button>
           }
           statusMessage={hasChanges && <span className="text-sm text-amber-600">Ungespeicherte Änderungen</span>}

@@ -195,39 +195,41 @@ const SetlistEditor: React.FC<SetlistEditorProps> = ({
 
   return (
     <div className="w-full">
-      {/* Tab Navigation */}
-      <div className="border-b border-neutral-200 mb-6">
-        <nav className="-mb-px flex gap-8">
-          <button
-            type="button"
-            onClick={() => setActiveTab('overview')}
-            className={`py-4 px-1 border-b-2 font-medium text-body ${
-              activeTab === 'overview'
-                ? 'border-primary-600 text-primary-700'
-                : 'border-transparent text-muted hover:text-neutral-700 hover:border-neutral-300'
-            }`}
-          >
-            Übersicht
-          </button>
-          {/* Hide Besetzung tab on mobile (< 768px) */}
-          <button
-            type="button"
-            onClick={() => setActiveTab('allocations')}
-            className={`hidden md:block py-4 px-1 border-b-2 font-medium text-body ${
-              activeTab === 'allocations'
-                ? 'border-primary-600 text-primary-700'
-                : 'border-transparent text-muted hover:text-neutral-700 hover:border-neutral-300'
-            }`}
-          >
-            Besetzung
-          </button>
-        </nav>
+      {/* Tab Navigation - Centered in middle column */}
+      <div className="middle-column mb-6">
+        <div className="border-b border-neutral-200">
+          <nav className="-mb-px flex gap-8 justify-center">
+            <button
+              type="button"
+              onClick={() => setActiveTab('overview')}
+              className={`py-4 px-1 border-b-2 font-medium text-body ${
+                activeTab === 'overview'
+                  ? 'border-primary-600 text-primary-700'
+                  : 'border-transparent text-muted hover:text-neutral-700 hover:border-neutral-300'
+              }`}
+            >
+              Übersicht
+            </button>
+            {/* Hide Besetzung tab on mobile (< 768px) */}
+            <button
+              type="button"
+              onClick={() => setActiveTab('allocations')}
+              className={`hidden md:block py-4 px-1 border-b-2 font-medium text-body ${
+                activeTab === 'allocations'
+                  ? 'border-primary-600 text-primary-700'
+                  : 'border-transparent text-muted hover:text-neutral-700 hover:border-neutral-300'
+              }`}
+            >
+              Besetzung
+            </button>
+          </nav>
+        </div>
       </div>
 
       {/* Tab Content */}
       <div className="mb-6">
         {activeTab === 'overview' && (
-          <div className="max-w-4xl mx-auto">
+          <div className="middle-column">
             {/* Display Name Field */}
             <div className="mb-6">
               <label htmlFor="displayName" className="input-label mb-2">
@@ -246,9 +248,7 @@ const SetlistEditor: React.FC<SetlistEditorProps> = ({
             {/* Items List */}
             <div className="mb-6">
               <div className="flex justify-between items-center mb-2">
-                <label className="input-label">
-                  Stücke in der Setlist ({items.length})
-                </label>
+                <label className="input-label">Stücke in der Setlist ({items.length})</label>
               </div>
 
               <div className="border-base rounded-card">
@@ -260,7 +260,7 @@ const SetlistEditor: React.FC<SetlistEditorProps> = ({
                       return (
                         <div key={`${item.score}-${index}`} className="p-3 flex items-start gap-3 hover:bg-neutral-50">
                           {/* Order number */}
-                          <div className="text-body font-medium text-muted w-8 pt-1">{index + 1}.</div>
+                          <div className="text-muted w-8 pt-1">{index + 1}.</div>
 
                           {/* Score details */}
                           <div className="flex-1">
