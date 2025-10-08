@@ -214,7 +214,7 @@ const PlayerAllocationDisplay: React.FC<PlayerAllocationDisplayProps> = ({ items
                         const allocation = validAllocations.find((a) => a.part === part);
                         return (
                           <div key={part} className="flex">
-                            <span className="font-medium text-body w-12">{part}:</span>
+                            <span className="font-medium text-[10px] text-neutral-500 w-12">{part}:</span>
                             <span className="truncate">{allocation?.player}</span>
                           </div>
                         );
@@ -231,7 +231,7 @@ const PlayerAllocationDisplay: React.FC<PlayerAllocationDisplayProps> = ({ items
                           const allocation = orphanedAllocations.find((a) => a.part === part);
                           return (
                             <div key={part} className="flex">
-                              <span className="font-medium text-amber-700 w-12">{part}:</span>
+                              <span className="font-medium text-[10px] text-amber-700 w-12">{part}:</span>
                               <span className="text-amber-600 truncate">{allocation?.player}</span>
                             </div>
                           );
