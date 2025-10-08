@@ -50,7 +50,7 @@ const SetlistsTable: React.FC<SetlistsTableProps> = ({ setlists, onSetlistClick,
     },
     {
       key: 'id',
-      header: 'Aktionen',
+      header: 'Download',
       className: 'text-center',
       render: (_, row) => (
         <div className="flex gap-2 justify-center" onClick={(e) => e.stopPropagation()}>
