@@ -138,7 +138,7 @@ const ScoreDetailsPage: React.FC<ScoreDetailsPageProps> = ({ scoreId }) => {
             <ErrorBoundary
               fallback={
                 <ErrorFallback
-                  title="Fehler beim Laden der Note"
+                  title="Fehler beim Laden der Noten"
                   message="Die Notendetails konnten nicht geladen werden."
                 />
               }

@@ -55,8 +55,7 @@ const SetlistEditor: React.FC<SetlistEditorProps> = ({
     const query = searchQuery.toLowerCase();
     return scores
       .filter((score) => {
-        const matchesSearch =
-          score.title.toLowerCase().includes(query) || score.composer.toLowerCase().includes(query);
+        const matchesSearch = score.title.toLowerCase().includes(query) || score.composer.toLowerCase().includes(query);
         const notInSetlist = !items.some((item) => item.score === score.id);
         return matchesSearch && notInSetlist;
       })
@@ -67,7 +66,7 @@ const SetlistEditor: React.FC<SetlistEditorProps> = ({
     (score: ScoreItem) => {
       // Check if score already in setlist
       if (items.some((item) => item.score === score.id)) {
-        toast.error('Diese Note ist bereits in der Setlist');
+        toast.error('Dieses Stück ist bereits in der Setlist');
         return;
       }
 
@@ -247,7 +246,9 @@ const SetlistEditor: React.FC<SetlistEditorProps> = ({
             {/* Items List */}
             <div className="mb-6">
               <div className="flex justify-between items-center mb-2">
-                <label className="block text-sm font-medium text-gray-700">Stücke in der Setlist ({items.length})</label>
+                <label className="block text-sm font-medium text-gray-700">
+                  Stücke in der Setlist ({items.length})
+                </label>
               </div>
 
               <div className="border border-gray-200 rounded-lg">

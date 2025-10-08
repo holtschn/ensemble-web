@@ -174,11 +174,7 @@ const PlayerAllocationEditor: React.FC<PlayerAllocationEditorProps> = ({ items, 
   }
 
   if (isLoadingUsers) {
-    return (
-      <div className="border border-gray-200 rounded-lg p-8 text-center text-gray-500">
-        Lade Musiker...
-      </div>
-    );
+    return <div className="border border-gray-200 rounded-lg p-8 text-center text-gray-500">Lade Musiker...</div>;
   }
 
   return (
@@ -188,7 +184,7 @@ const PlayerAllocationEditor: React.FC<PlayerAllocationEditorProps> = ({ items, 
           <thead>
             <tr className="bg-gray-50 border-b border-gray-200">
               <th className="sticky left-0 z-10 bg-gray-50 px-2 py-1.5 text-left text-xs font-medium text-gray-700 uppercase tracking-wider border-r border-gray-200 min-w-[140px]">
-                Note
+                Stücke
               </th>
               {allParts.map((part) => (
                 <th

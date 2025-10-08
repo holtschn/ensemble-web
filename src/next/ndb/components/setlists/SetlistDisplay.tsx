@@ -32,20 +32,8 @@ const SetlistDisplay: React.FC<SetlistDisplayProps> = ({ setlist, onEdit }) => {
 
   return (
     <div className="w-full">
-      {/* Header with Edit Button */}
-      <div className="flex justify-between items-center mb-6">
-        <div>
-          <h2 className="text-2xl font-bold text-gray-900">{setlist.displayName}</h2>
-          <p className="text-sm text-gray-500 mt-1">{setlist.items.length} Stücke</p>
-        </div>
-        <Button onClick={onEdit} variant="default">
-          <Icon name="edit" alt="Edit" className="h-4 w-4 mr-2" />
-          Bearbeiten
-        </Button>
-      </div>
-
       {/* Download Actions */}
-      <div className="flex gap-3 mb-6 pb-6 border-b border-gray-200">
+      <div className="flex gap-3 pb-6">
         <Button onClick={() => handleDownload('parts')} variant="highlighted">
           <Icon name="download" alt="Download" className="h-4 w-4 mr-2" />
           Stimmen herunterladen
@@ -58,7 +46,6 @@ const SetlistDisplay: React.FC<SetlistDisplayProps> = ({ setlist, onEdit }) => {
 
       {/* Allocations Table */}
       <div>
-        <h3 className="text-lg font-medium text-gray-900 mb-3">Besetzung</h3>
         <PlayerAllocationDisplay items={setlist.items} />
       </div>
     </div>

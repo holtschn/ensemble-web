@@ -79,20 +79,17 @@ const SetlistsTable: React.FC<SetlistsTableProps> = ({ setlists, onSetlistClick,
     <div className={className}>
       {/* Desktop view */}
       <div className="hidden md:block">
-        <ScrollableTable>
-          <Table
-            className="mx-4"
-            data={setlists}
-            columns={columns}
-            keyExtractor={(setlist) => setlist.id.toString()}
-            emptyMessage="Keine Setlists gefunden"
-            onRowClick={onSetlistClick}
-          />
-        </ScrollableTable>
+        <Table
+          data={setlists}
+          columns={columns}
+          keyExtractor={(setlist) => setlist.id.toString()}
+          emptyMessage="Keine Setlists gefunden"
+          onRowClick={onSetlistClick}
+        />
       </div>
 
       {/* Mobile view */}
-      <div className="md:hidden middle-column">
+      <div className="md:hidden">
         <div className="space-y-3">
           {setlists.map((setlist) => (
             <div

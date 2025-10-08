@@ -5,10 +5,9 @@ import { useRouter } from 'next/navigation';
 
 import useRedirectIfLoggedOut from '@/next/auth/loggedInHook';
 import { useAuth } from '@/next/auth/context';
-import Icon from '@/next/ndb/components/Icon';
 import Button from '@/next/ndb/components/Button';
 import SetlistEditor from '@/next/ndb/components/setlists/SetlistEditor';
-import BackToSetlists from '@/next/ndb/components/setlists/BackToSetlists';
+import { NDBPageHeader } from '@/next/ndb/components/NDBPageHeader';
 
 export const NewSetlistPageClient: React.FC = () => {
   const { status } = useAuth();
@@ -43,25 +42,23 @@ export const NewSetlistPageClient: React.FC = () => {
   return (
     status === 'loggedIn' && (
       <div className="flex flex-col mt-8">
-        <div className="middle-column mb-8">
-          <h1 className="mb-4">Neue Setlist erstellen</h1>
-          <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-            <BackToSetlists />
-            <div className="ml-auto flex items-center gap-4">
-              {hasChanges && <span className="text-sm text-amber-600">Ungespeicherte Änderungen</span>}
-              <Button
-                type="button"
-                onClick={handleSaveClick}
-                disabled={isSaving || !hasChanges}
-                variant="highlighted"
-                size="sm"
-                isLoading={isSaving}
-              >
-                Setlist erstellen
-              </Button>
-            </div>
-          </div>
-        </div>
+        <NDBPageHeader
+          title="Neue Setlist erstellen"
+          backLink={{ href: '/intern/ndb/setlists', label: 'Zurück zu Setlists' }}
+          action={
+            <Button
+              type="button"
+              onClick={handleSaveClick}
+              disabled={isSaving || !hasChanges}
+              variant="highlighted"
+              size="sm"
+              isLoading={isSaving}
+            >
+              Setlist erstellen
+            </Button>
+          }
+          statusMessage={hasChanges && <span className="text-sm text-amber-600">Ungespeicherte Änderungen</span>}
+        />
 
         {/* Full width for allocations table */}
         <div className="px-4 sm:px-6 lg:px-8">

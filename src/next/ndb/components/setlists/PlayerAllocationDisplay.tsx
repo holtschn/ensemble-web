@@ -78,7 +78,6 @@ const PlayerAllocationDisplay: React.FC<PlayerAllocationDisplayProps> = ({ items
         return singularPart;
       }
     }
-
     return null;
   }, []);
 
@@ -130,7 +129,7 @@ const PlayerAllocationDisplay: React.FC<PlayerAllocationDisplayProps> = ({ items
               <thead>
                 <tr className="bg-gray-50 border-b border-gray-200">
                   <th className="sticky left-0 z-10 bg-gray-50 px-2 py-1.5 text-left text-xs font-medium text-gray-700 uppercase tracking-wider border-r border-gray-200 min-w-[140px]">
-                    Note
+                    Stück
                   </th>
                   {allParts.map((part) => (
                     <th
@@ -170,7 +169,11 @@ const PlayerAllocationDisplay: React.FC<PlayerAllocationDisplayProps> = ({ items
                           <td
                             key={column}
                             className={`px-1.5 py-1.5 text-xs text-center ${
-                              isOrphaned ? 'bg-amber-50 text-amber-700' : isValidPart ? 'text-gray-900' : 'text-gray-300'
+                              isOrphaned
+                                ? 'bg-amber-50 text-amber-700'
+                                : isValidPart
+                                  ? 'text-gray-900'
+                                  : 'text-gray-300'
                             }`}
                             title={isOrphaned ? 'Veraltete Stimme (nicht mehr im Stück vorhanden)' : ''}
                           >

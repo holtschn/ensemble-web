@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { useRouter, useParams } from 'next/navigation';
+import Link from 'next/link';
 
 import useRedirectIfLoggedOut from '@/next/auth/loggedInHook';
 import { useAuth } from '@/next/auth/context';
@@ -10,9 +11,9 @@ import Icon from '@/next/ndb/components/Icon';
 import Button from '@/next/ndb/components/Button';
 import SetlistDisplay from '@/next/ndb/components/setlists/SetlistDisplay';
 import SetlistEditor from '@/next/ndb/components/setlists/SetlistEditor';
-import BackToSetlists from '@/next/ndb/components/setlists/BackToSetlists';
 import LoadingSpinner from '@/next/ndb/components/LoadingSpinner';
 import { EmptyState } from '@/next/components/EmptyState';
+import { NDBPageHeader } from '@/next/ndb/components/NDBPageHeader';
 
 export const EditSetlistPageClient: React.FC = () => {
   const { status } = useAuth();
@@ -65,7 +66,10 @@ export const EditSetlistPageClient: React.FC = () => {
   if (!setlist) {
     return (
       <div className="middle-column mt-8">
-        <BackToSetlists />
+        <Link href="/intern/ndb/setlists" className="flex items-center ndb-profex-label mb-4">
+          <Icon name="arrow-left" alt="Back" className="mr-2 h-3 w-3" />
+          <div className="mt-0.5">Zurück zu Setlists</div>
+        </Link>
         <EmptyState
           variant="error"
           icon="alert-circle"
@@ -83,43 +87,51 @@ export const EditSetlistPageClient: React.FC = () => {
   return (
     status === 'loggedIn' && (
       <div className="flex flex-col mt-8">
-        <div className="middle-column mb-8">
-          <h1 className="mb-4">{isEditMode ? `${setlist.displayName} bearbeiten` : setlist.displayName}</h1>
-          <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-            {isEditMode ? (
-              <button
+        <NDBPageHeader
+          title={isEditMode ? `${setlist.displayName} bearbeiten` : setlist.displayName}
+          backLink={
+            isEditMode
+              ? undefined
+              : {
+                  href: '/intern/ndb/setlists',
+                  label: 'Zurück zu Setlists',
+                }
+          }
+          action={
+            isEditMode ? (
+              <Button
                 type="button"
-                onClick={handleCancel}
-                disabled={isSaving}
-                className="flex items-center ndb-profex-label disabled:opacity-50"
+                onClick={handleSaveClick}
+                disabled={isSaving || !hasChanges}
+                variant="highlighted"
+                size="sm"
+                isLoading={isSaving}
               >
-                <Icon name="arrow-left" alt="Cancel" className="mr-2 h-3 w-3" />
-                <div className="mt-0.5">Abbrechen</div>
-              </button>
+                Speichern
+              </Button>
             ) : (
-              <BackToSetlists />
-            )}
-            <div className="ml-auto flex items-center gap-4">
-              {isEditMode && hasChanges && <span className="text-sm text-amber-600">Ungespeicherte Änderungen</span>}
-              {isEditMode ? (
-                <Button
+              <Button type="button" onClick={handleEditClick} variant="highlighted" size="sm">
+                Bearbeiten
+              </Button>
+            )
+          }
+          statusMessage={
+            isEditMode ? (
+              <>
+                <button
                   type="button"
-                  onClick={handleSaveClick}
-                  disabled={isSaving || !hasChanges}
-                  variant="highlighted"
-                  size="sm"
-                  isLoading={isSaving}
+                  onClick={handleCancel}
+                  disabled={isSaving}
+                  className="flex items-center ndb-profex-label disabled:opacity-50"
                 >
-                  Speichern
-                </Button>
-              ) : (
-                <Button type="button" onClick={handleEditClick} variant="highlighted" size="sm">
-                  Bearbeiten
-                </Button>
-              )}
-            </div>
-          </div>
-        </div>
+                  <Icon name="arrow-left" alt="Cancel" className="mr-2 h-3 w-3" />
+                  <div className="mt-0.5">Abbrechen</div>
+                </button>
+                {hasChanges && <span className="text-sm text-amber-600">Ungespeicherte Änderungen</span>}
+              </>
+            ) : undefined
+          }
+        />
 
         {/* Full width for allocations table */}
         <div className="px-4 sm:px-6 lg:px-8">
