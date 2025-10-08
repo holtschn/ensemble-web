@@ -16,7 +16,7 @@ export const FileFilter: React.FC<FileFilterProps> = ({ value, onChange }) => {
           className="w-4 h-4 border-neutral-300 focus:ring-2"
           style={{ accentColor: 'var(--color-primary-500)' }}
         />
-        <span className="text-sm text-neutral-700">Vorhanden</span>
+        <span className="text-body">Vorhanden</span>
       </label>
       <label className="flex items-center space-x-2 cursor-pointer">
         <input
@@ -26,7 +26,7 @@ export const FileFilter: React.FC<FileFilterProps> = ({ value, onChange }) => {
           className="w-4 h-4 border-neutral-300 focus:ring-2"
           style={{ accentColor: 'var(--color-primary-500)' }}
         />
-        <span className="text-sm text-neutral-700">Nicht vorhanden</span>
+        <span className="text-body">Nicht vorhanden</span>
       </label>
     </div>
   );

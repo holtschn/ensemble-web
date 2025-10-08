@@ -18,7 +18,7 @@ export const SelectFilter: React.FC<SelectFilterProps> = ({ value, onChange, opt
       <select
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="input px-2 py-1.5 text-sm"
+        className="input px-2 py-1.5"
         autoFocus
       >
         <option value="">{placeholder}</option>

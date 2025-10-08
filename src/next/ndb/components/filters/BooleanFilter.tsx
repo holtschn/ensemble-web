@@ -23,7 +23,7 @@ export const BooleanFilter: React.FC<BooleanFilterProps> = ({
           className="w-4 h-4 border-neutral-300 focus:ring-2"
           style={{ accentColor: 'var(--color-primary-500)' }}
         />
-        <span className="text-sm text-neutral-700">{trueLabel}</span>
+        <span className="text-body">{trueLabel}</span>
       </label>
       <label className="flex items-center space-x-2 cursor-pointer">
         <input
@@ -33,7 +33,7 @@ export const BooleanFilter: React.FC<BooleanFilterProps> = ({
           className="w-4 h-4 border-neutral-300 focus:ring-2"
           style={{ accentColor: 'var(--color-primary-500)' }}
         />
-        <span className="text-sm text-neutral-700">{falseLabel}</span>
+        <span className="text-body">{falseLabel}</span>
       </label>
     </div>
   );

@@ -84,14 +84,14 @@ export const ColumnSettingsModal: React.FC<ColumnSettingsModalProps> = ({
     <dialog
       ref={dialogRef}
       onClick={handleBackdropClick}
-      className="rounded-lg shadow-xl p-0 backdrop:bg-black/30 max-w-md w-full m-auto"
+      className="rounded-card shadow-xl p-0 backdrop:bg-black/30 max-w-md w-full m-auto"
       onClose={handleCancel}
       aria-labelledby="column-settings-title"
     >
-      <div className="bg-white rounded-lg">
+      <div className="bg-white rounded-card">
         {/* Header */}
         <div className="flex items-center justify-between px-3 py-2 border-b border-neutral-200">
-          <h2 id="column-settings-title" className="text-base font-semibold text-neutral-900">
+          <h2 id="column-settings-title" className="font-semibold text-neutral-900">
             Spalten anzeigen
           </h2>
           <button
@@ -149,9 +149,9 @@ export const ColumnSettingsModal: React.FC<ColumnSettingsModalProps> = ({
                     className="w-3.5 h-3.5 border-neutral-300 rounded focus:ring-2 disabled:opacity-50 disabled:cursor-not-allowed"
                     style={{ accentColor: 'var(--color-primary-500)' }}
                   />
-                  <span className="text-sm text-neutral-700">
+                  <span className="text-body">
                     {column.label}
-                    {column.alwaysVisible && <span className="ml-1.5 text-xs text-neutral-400">(immer sichtbar)</span>}
+                    {column.alwaysVisible && <span className="ml-1.5 text-caption text-neutral-400">(immer sichtbar)</span>}
                   </span>
                 </label>
               </div>

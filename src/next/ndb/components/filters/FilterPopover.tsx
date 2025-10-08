@@ -113,7 +113,7 @@ export const FilterPopover: React.FC<FilterPopoverProps> = ({ isActive, onClear,
       {isOpen && position && (
         <div
           ref={popoverRef}
-          className="fixed bg-white border border-neutral-200 rounded-md shadow-lg z-50 min-w-[200px] max-h-[400px] overflow-y-auto"
+          className="fixed bg-white border-popover z-50 min-w-[200px] max-h-[400px] overflow-y-auto"
           style={{
             top: `${position.top}px`,
             left: `${position.left}px`,
@@ -128,7 +128,7 @@ export const FilterPopover: React.FC<FilterPopoverProps> = ({ isActive, onClear,
                 variant="ghost"
                 size="sm"
                 onClick={handleClear}
-                className="w-full text-xs"
+                className="w-full text-caption"
               >
                 Filter zurücksetzen
               </Button>

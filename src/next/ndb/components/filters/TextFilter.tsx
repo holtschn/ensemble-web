@@ -14,7 +14,7 @@ export const TextFilter: React.FC<TextFilterProps> = ({ value, onChange, placeho
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        className="input px-2 py-1.5 text-sm"
+        className="input px-2 py-1.5"
         autoFocus
       />
     </div>
