@@ -37,6 +37,9 @@ export const API_ENDPOINTS = {
   UPLOAD: 'upload',
   SCORE_SAMPLES: 'scoreinfo/samples',
   PLAYERS: 'players',
+  SETLISTS: 'setlists',
+  SETLIST: 'setlist',
+  DOWNLOAD_SETLIST: 'download/setlist',
 } as const;
 
 // UI Constants
@@ -58,6 +61,9 @@ export const SUCCESS_MESSAGES = {
   SCORE_CREATED: 'Noten erfolgreich erstellt',
   SCORE_UPDATED: 'Noten erfolgreich aktualisiert',
   FILE_UPLOADED: 'Datei erfolgreich hochgeladen',
+  SETLIST_CREATED: 'Setlist erfolgreich erstellt',
+  SETLIST_UPDATED: 'Setlist erfolgreich aktualisiert',
+  SETLIST_DOWNLOADED: 'Setlist wird heruntergeladen...',
 } as const;
 
 // Field Names (German labels)

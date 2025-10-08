@@ -11,20 +11,44 @@ export const Settings: GlobalConfig = {
   },
   fields: [
     {
-      name: 'fontFamily',
-      label: 'Basisschriftart',
-      defaultValue: 'lexend',
-      options: [
+      name: 'theme',
+      label: 'Design',
+      type: 'group',
+      fields: [
         {
-          label: 'Lexend',
-          value: 'lexend',
+          name: 'fontFamily',
+          label: 'Schriftart',
+          defaultValue: 'lexend',
+          options: [
+            {
+              label: 'Lexend',
+              value: 'lexend',
+            },
+            {
+              label: 'Lekton',
+              value: 'lekton',
+            },
+          ],
+          type: 'select',
         },
         {
-          label: 'Lekton',
-          value: 'lekton',
+          name: 'highlightColor',
+          label: 'Akzentfarbe (Hex)',
+          type: 'text',
+          defaultValue: '#10b981',
+          admin: {
+            description: 'Hauptfarbe für Buttons, Links und Hervorhebungen (z.B. #10b981 für Grün)',
+            placeholder: '#10b981',
+          },
+          validate: (val: any) => {
+            if (!val || typeof val !== 'string') return true; // Optional field
+            if (!/^#[0-9A-F]{6}$/i.test(val)) {
+              return 'Bitte gültigen Hex-Farbcode eingeben (z.B. #10b981)';
+            }
+            return true;
+          },
         },
       ],
-      type: 'select',
     },
     {
       name: 'homepageHero',

@@ -507,7 +507,13 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
  */
 export interface Settings {
   id: number;
-  fontFamily?: ('lexend' | 'lekton') | null;
+  theme?: {
+    fontFamily?: ('lexend' | 'lekton') | null;
+    /**
+     * Hauptfarbe für Buttons, Links und Hervorhebungen (z.B. #10b981 für Grün)
+     */
+    highlightColor?: string | null;
+  };
   homepageHero?: (number | null) | Media;
   homepageLogo?: (number | null) | Media;
   numberEventsHome?: number | null;
@@ -559,7 +565,12 @@ export interface Footer {
  * via the `definition` "settings_select".
  */
 export interface SettingsSelect<T extends boolean = true> {
-  fontFamily?: T;
+  theme?:
+    | T
+    | {
+        fontFamily?: T;
+        highlightColor?: T;
+      };
   homepageHero?: T;
   homepageLogo?: T;
   numberEventsHome?: T;

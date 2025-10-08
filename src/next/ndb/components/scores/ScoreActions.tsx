@@ -1,5 +1,6 @@
 import React from 'react';
 import Icon from '@/next/ndb/components/Icon';
+import Button from '@/next/ndb/components/Button';
 
 interface ScoreActionsProps {
   isEditMode: boolean;
@@ -13,28 +14,31 @@ const ScoreActions: React.FC<ScoreActionsProps> = ({ isEditMode, isSaving, hasCh
   if (isEditMode) {
     return (
       <div className="flex gap-2 max-w-sm">
-        <button
+        <Button
           type="button"
           onClick={onSaveClick}
           disabled={isSaving || !hasChanges}
-          className="flex items-center px-4 py-1.5 text-sm font-medium text-white bg-gray-800 rounded-md hover:bg-gray-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+          variant="highlighted"
+          size="sm"
+          isLoading={isSaving}
         >
           <Icon name="check" alt="Save" className="mr-1.5 h-3.5 w-3.5" />
-          {isSaving ? 'Speichern...' : 'Speichern'}
-        </button>
+          Speichern
+        </Button>
       </div>
     );
   }
 
   return (
-    <button
+    <Button
       type="button"
       onClick={onEditClick}
-      className="flex items-center px-4 py-1.5 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors max-w-xs"
+      variant="default"
+      size="sm"
     >
       <Icon name="edit" alt="Edit" className="mr-1.5 h-3.5 w-3.5" />
       Bearbeiten
-    </button>
+    </Button>
   );
 };
 

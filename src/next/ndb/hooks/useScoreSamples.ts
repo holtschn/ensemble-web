@@ -3,6 +3,7 @@
  */
 
 import { useState, useEffect, useCallback } from 'react';
+import { toast } from 'sonner';
 import { fetchScoreSamples as apiFetchScoreSamples } from '@/next/ndb/api/actions';
 import { ScoreSampleCollection } from '@/next/ndb/types';
 import { ERROR_MESSAGES } from '@/next/ndb/constants';
@@ -10,30 +11,27 @@ import { ERROR_MESSAGES } from '@/next/ndb/constants';
 interface UseScoreSamplesState {
   allSamples: ScoreSampleCollection[];
   isLoading: boolean;
-  error: string | null;
   getSamplesByScoreId: (scoreId: number) => ScoreSampleCollection | null;
 }
 
 /**
  * Custom hook to fetch all score sample collections from the NDB API.
- * Provides loading and error states, and a helper function to get samples for a specific score.
+ * Provides loading state and a helper function to get samples for a specific score.
  *
- * @returns {UseScoreSamplesState} An object containing all samples, loading state, error state,
+ * @returns {UseScoreSamplesState} An object containing all samples, loading state,
  *                           and a helper function getSamplesByScoreId.
  */
 export const useScoreSamples = (): UseScoreSamplesState => {
   const [allSamples, setAllSamples] = useState<ScoreSampleCollection[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
 
   const loadSamples = useCallback(async () => {
     setIsLoading(true);
-    setError(null);
     try {
       const data = await apiFetchScoreSamples();
       setAllSamples(data);
     } catch (e) {
-      setError(ERROR_MESSAGES.LOAD_ERROR);
+      toast.error(ERROR_MESSAGES.LOAD_ERROR);
       setAllSamples([]); // Clear samples on error
     } finally {
       setIsLoading(false);
@@ -61,7 +59,6 @@ export const useScoreSamples = (): UseScoreSamplesState => {
   return {
     allSamples,
     isLoading,
-    error,
     getSamplesByScoreId,
   };
 };

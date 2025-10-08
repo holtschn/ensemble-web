@@ -252,7 +252,11 @@ const handleLinkNode = (node: SerializedLinkNode, index: number, serializedChild
 const handleTableNode = (node: SerializedTableNode, index: number, serializedChildren: JSX.Element | null) => {
   return (
     <table key={index}>
-      <colgroup>{node.colWidths?.map((colWidth, index) => <col key={index} width={colWidth} />)}</colgroup>
+      <colgroup>
+        {node.colWidths?.map((colWidth, index) => (
+          <col key={index} width={colWidth} />
+        ))}
+      </colgroup>
       <tbody>{serializedChildren}</tbody>
     </table>
   );

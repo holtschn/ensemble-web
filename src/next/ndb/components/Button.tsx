@@ -2,46 +2,38 @@ import React from 'react';
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode;
-  variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger';
+  variant?: 'highlighted' | 'default' | 'ghost' | 'danger';
   size?: 'sm' | 'md' | 'lg';
   isLoading?: boolean;
 }
 
 const Button: React.FC<ButtonProps> = ({
   children,
-  variant = 'primary',
+  variant = 'default',
   size = 'md',
   isLoading = false,
   disabled,
   className = '',
   ...props
 }) => {
-  const baseClasses = 'inline-flex items-center justify-center font-medium rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed';
-
   const variantClasses = {
-    primary: 'bg-blue-600 hover:bg-blue-700 text-white focus:ring-blue-500',
-    secondary: 'bg-gray-600 hover:bg-gray-700 text-white focus:ring-gray-500',
-    outline: 'border border-gray-300 bg-white hover:bg-gray-50 text-gray-700 focus:ring-blue-500',
-    ghost: 'bg-transparent hover:bg-gray-100 text-gray-700 focus:ring-gray-500',
-    danger: 'bg-red-600 hover:bg-red-700 text-white focus:ring-red-500'
+    highlighted: 'btn-primary',
+    default: 'btn-secondary',
+    ghost: 'btn-ghost',
+    danger: 'btn-danger'
   };
 
   const sizeClasses = {
-    sm: 'px-3 py-1.5 text-sm',
-    md: 'px-4 py-2 text-sm',
-    lg: 'px-6 py-3 text-base'
+    sm: 'btn-sm',
+    md: 'btn-md',
+    lg: 'btn-lg'
   };
 
   const isDisabled = disabled || isLoading;
 
   return (
     <button
-      className={`
-        ${baseClasses}
-        ${variantClasses[variant]}
-        ${sizeClasses[size]}
-        ${className}
-      `.trim()}
+      className={`${variantClasses[variant]} ${sizeClasses[size]} ${className}`.trim()}
       disabled={isDisabled}
       {...props}
     >

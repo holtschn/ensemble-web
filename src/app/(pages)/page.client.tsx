@@ -2,7 +2,7 @@ import React from 'react';
 import Image from 'next/image';
 
 import { PublicEvent } from '@/next/utils/events';
-import { EventPublicDisplay } from '@/next/components/event';
+import { EventPublicDisplay } from '@/next/sections/Event';
 
 import { Media } from '@/payload-types';
 

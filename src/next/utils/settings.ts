@@ -10,12 +10,23 @@ export async function getSettings(): Promise<Settings> {
 
   try {
     const data = await payload.findGlobal({ slug: 'settings' });
-    return data;
+    // Ensure theme defaults
+    return {
+      ...data,
+      theme: {
+        fontFamily: data.theme?.fontFamily || 'lexend',
+        highlightColor: data.theme?.highlightColor || '#10b981',
+      },
+    };
   } catch (error) {
     console.log('could not get global settings data', error);
   }
   return {
     id: -1,
     numberEventsHome: 2,
+    theme: {
+      fontFamily: 'lexend',
+      highlightColor: '#10b981',
+    },
   };
 }

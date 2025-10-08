@@ -3,13 +3,13 @@
  */
 
 import { useState, useCallback } from 'react';
+import { toast } from 'sonner';
 import { uploadFile as apiUploadFile, downloadFile as apiDownloadFile } from '@/next/ndb/api/actions';
 import { ScoreFileItem } from '@/next/ndb/types';
-import { ERROR_MESSAGES } from '@/next/ndb/constants';
+import { ERROR_MESSAGES, SUCCESS_MESSAGES } from '@/next/ndb/constants';
 
 interface UseFileUpDownLoadState {
   isLoading: boolean;
-  error: string | null;
   uploadFile: (file: File) => Promise<string | null>; // Returns S3 fileKey on success
   downloadFile: (fileItem: ScoreFileItem) => Promise<void>;
 }
@@ -17,11 +17,10 @@ interface UseFileUpDownLoadState {
 /**
  * Custom hook to manage file uploads to S3 and file downloads.
  *
- * @returns {UseFileUpDownLoadState} An object containing upload/download functions, loading state, and error state.
+ * @returns {UseFileUpDownLoadState} An object containing upload/download functions and loading state.
  */
 export const useFileUpDownLoad = (): UseFileUpDownLoadState => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
 
   /**
    * Handles file upload using the `uploadFile` function from the API.
@@ -31,17 +30,14 @@ export const useFileUpDownLoad = (): UseFileUpDownLoadState => {
    */
   const uploadFile = useCallback(async (file: File): Promise<string | null> => {
     setIsLoading(true);
-    setError(null);
     try {
       const { fileKey } = await apiUploadFile(file);
+      toast.success(SUCCESS_MESSAGES.FILE_UPLOADED);
       setIsLoading(false);
       return fileKey;
     } catch (e) {
-      if (e instanceof Error) {
-        setError(e.message);
-      } else {
-        setError(ERROR_MESSAGES.UPLOAD_ERROR);
-      }
+      const errorMessage = e instanceof Error ? e.message : ERROR_MESSAGES.UPLOAD_ERROR;
+      toast.error(errorMessage);
       setIsLoading(false);
       return null;
     }
@@ -55,7 +51,6 @@ export const useFileUpDownLoad = (): UseFileUpDownLoadState => {
    */
   const downloadFile = useCallback(async (fileItem: ScoreFileItem): Promise<void> => {
     setIsLoading(true);
-    setError(null);
     try {
       const response = await apiDownloadFile(fileItem);
 
@@ -69,24 +64,21 @@ export const useFileUpDownLoad = (): UseFileUpDownLoadState => {
         link.click();
         document.body.removeChild(link);
         window.URL.revokeObjectURL(url);
+        toast.success('Datei erfolgreich heruntergeladen');
       } else {
         throw new Error(ERROR_MESSAGES.DOWNLOAD_ERROR);
       }
 
       setIsLoading(false);
     } catch (e) {
-      if (e instanceof Error) {
-        setError(e.message);
-      } else {
-        setError(ERROR_MESSAGES.DOWNLOAD_ERROR);
-      }
+      const errorMessage = e instanceof Error ? e.message : ERROR_MESSAGES.DOWNLOAD_ERROR;
+      toast.error(errorMessage);
       setIsLoading(false);
     }
   }, []);
 
   return {
     isLoading,
-    error,
     uploadFile,
     downloadFile,
   };

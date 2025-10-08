@@ -3,22 +3,22 @@
  * This file is executed before each test suite runs
  */
 
+// Import React Testing Library matchers
+require('@testing-library/jest-dom');
+
 // Mock environment variables for testing
 process.env.NDB_API_URL = 'https://test-api.example.com/v1/';
 process.env.NDB_USERNAME = 'test-user';
 process.env.NDB_PASSWORD = 'test-password';
 
-// Mock fetch globally
-global.fetch = jest.fn();
+// Note: MSW handlers are set up in individual test files where needed
+// This allows for more granular control over API mocking per test suite
 
 // Mock console methods to reduce noise in tests
 const originalConsoleError = console.error;
 const originalConsoleWarn = console.warn;
 
 beforeEach(() => {
-  // Reset fetch mock before each test
-  global.fetch.mockReset();
-
   // Mock console.error and console.warn to avoid noise in test output
   console.error = jest.fn();
   console.warn = jest.fn();

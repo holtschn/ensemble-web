@@ -13,6 +13,7 @@ interface FilterState {
   withPercussion: boolean | null;
   hasFullScore: boolean | null;
   quintetsOnly: boolean;
+  tentetPlus: boolean;
 }
 
 type ScoresFilterButtonProps = {
@@ -23,7 +24,12 @@ type ScoresFilterButtonProps = {
 
 const ScoresFilterButton: React.FC<ScoresFilterButtonProps> = ({ isActive, onClick, children }) => {
   return (
-    <Button size="sm" className="text-xs" variant={isActive ? 'primary' : 'outline'} onClick={onClick}>
+    <Button
+      size="sm"
+      className={`text-caption ${isActive ? 'ring-2 ring-primary-600' : ''}`}
+      variant="default"
+      onClick={onClick}
+    >
       {isActive ? (
         <Icon name="filter-active" alt="Filter Active Icon" className="mr-2 h-3 w-3" />
       ) : (
@@ -37,16 +43,25 @@ const ScoresFilterButton: React.FC<ScoresFilterButtonProps> = ({ isActive, onCli
 interface ScoresTableToolbarProps {
   scores: ScoreItem[];
   onFilteredScoresChange: (filteredScores: ScoreItem[]) => void;
+  hasActiveColumnFilters?: boolean;
+  onResetAllFilters?: () => void;
   className?: string;
 }
 
-const ScoresTableToolbar: React.FC<ScoresTableToolbarProps> = ({ scores, onFilteredScoresChange, className = '' }) => {
+const ScoresTableToolbar: React.FC<ScoresTableToolbarProps> = ({
+  scores,
+  onFilteredScoresChange,
+  hasActiveColumnFilters = false,
+  onResetAllFilters,
+  className = '',
+}) => {
   const [filters, setFilters] = useState<FilterState>({
     search: '',
     minHorns: null,
     withPercussion: null,
     hasFullScore: null,
     quintetsOnly: false,
+    tentetPlus: false,
   });
 
   const [activeFilters, setActiveFilters] = useState<Set<string>>(new Set());
@@ -89,6 +104,11 @@ const ScoresTableToolbar: React.FC<ScoresTableToolbarProps> = ({ scores, onFilte
       filtered = filtered.filter((score) => toInstrumentation(score.instrumentation).numTotal() === 5);
     }
 
+    // Tentet+ filter (10 or more players)
+    if (newFilters.tentetPlus) {
+      filtered = filtered.filter((score) => toInstrumentation(score.instrumentation).numTotal() >= 10);
+    }
+
     onFilteredScoresChange(filtered);
   };
 
@@ -101,7 +121,8 @@ const ScoresTableToolbar: React.FC<ScoresTableToolbarProps> = ({ scores, onFilte
       newActiveFilters.delete(filterKey);
       newFilters = {
         ...filters,
-        [filterKey]: filterKey === 'search' ? '' : filterKey === 'quintetsOnly' ? false : null,
+        [filterKey]:
+          filterKey === 'search' ? '' : filterKey === 'quintetsOnly' || filterKey === 'tentetPlus' ? false : null,
       };
     } else {
       // Add filter
@@ -130,15 +151,18 @@ const ScoresTableToolbar: React.FC<ScoresTableToolbarProps> = ({ scores, onFilte
       withPercussion: null,
       hasFullScore: null,
       quintetsOnly: false,
+      tentetPlus: false,
     };
     setFilters(resetFilters);
     setActiveFilters(new Set());
     applyFilters(resetFilters);
+    // Also reset column filters
+    onResetAllFilters?.();
   };
 
   return (
-    <div className={`w-full bg-white border-b border-gray-200 py-4 ${className}`}>
-      <div className="flex flex-col gap-0">
+    <div className={`w-full bg-white border-b border-neutral-200 py-4 ${className}`}>
+      <div className="flex flex-col gap-2">
         {/* Row 1: Search Input */}
         <div className="w-full">
           <TextField
@@ -149,33 +173,42 @@ const ScoresTableToolbar: React.FC<ScoresTableToolbarProps> = ({ scores, onFilte
         </div>
 
         {/* Row 2: Filter Buttons */}
-        <div className="flex flex-row flex-wrap items-center justify-start gap-2">
-          <ScoresFilterButton isActive={activeFilters.has('minHorns')} onClick={() => toggleFilter('minHorns', 2)}>
-            mind. 2 Hörner
-          </ScoresFilterButton>
-          <ScoresFilterButton
-            isActive={activeFilters.has('withPercussion')}
-            onClick={() => toggleFilter('withPercussion', true)}
-          >
-            mit Schlagzeug
-          </ScoresFilterButton>
-          <ScoresFilterButton
-            isActive={activeFilters.has('hasFullScore')}
-            onClick={() => toggleFilter('hasFullScore', true)}
-          >
-            hat Partitur
-          </ScoresFilterButton>
-          <ScoresFilterButton
-            isActive={activeFilters.has('quintetsOnly')}
-            onClick={() => toggleFilter('quintetsOnly', true)}
-          >
-            Quintett
-          </ScoresFilterButton>
+        <div className="flex flex-row flex-wrap items-center justify-between gap-2">
+          <div className="flex flex-row flex-wrap items-center gap-2">
+            <ScoresFilterButton isActive={activeFilters.has('minHorns')} onClick={() => toggleFilter('minHorns', 2)}>
+              mind. 2 Hörner
+            </ScoresFilterButton>
+            {/* <ScoresFilterButton
+              isActive={activeFilters.has('withPercussion')}
+              onClick={() => toggleFilter('withPercussion', true)}
+            >
+              mit Schlagzeug
+            </ScoresFilterButton> */}
+            <ScoresFilterButton
+              isActive={activeFilters.has('hasFullScore')}
+              onClick={() => toggleFilter('hasFullScore', true)}
+            >
+              hat Partitur
+            </ScoresFilterButton>
+            <ScoresFilterButton
+              isActive={activeFilters.has('quintetsOnly')}
+              onClick={() => toggleFilter('quintetsOnly', true)}
+            >
+              Quintett
+            </ScoresFilterButton>
+            <ScoresFilterButton
+              isActive={activeFilters.has('tentetPlus')}
+              onClick={() => toggleFilter('tentetPlus', true)}
+            >
+              Tentett+
+            </ScoresFilterButton>
+          </div>
 
-          {/* Reset Filters Button */}
-          {activeFilters.size > 0 && (
-            <Button className="text-xs" size="sm" variant="ghost" onClick={resetFilters}>
-              <Icon name="/cross" alt="Cross Icon" className="mr-1 h-3 w-3" /> zurücksetzen
+          {/* Reset Filters Button - Show if toolbar OR column filters are active */}
+          {(activeFilters.size > 0 || hasActiveColumnFilters) && (
+            <Button className="text-caption whitespace-nowrap" size="sm" variant="ghost" onClick={resetFilters}>
+              <Icon name="cross" alt="Cross Icon" className="mr-1 h-3 w-3" />
+              Filter zurücksetzen
             </Button>
           )}
         </div>

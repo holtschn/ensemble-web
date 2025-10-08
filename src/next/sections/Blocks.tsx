@@ -2,11 +2,11 @@ import React from 'react';
 
 import { Page } from '@/payload-types';
 
-import { ParagraphTextBlock } from './paragraphText';
-import { HeadingTextBlock } from './headingText';
-import { ImageTextBlock } from './imageText';
-import { PlayerProfileBlock } from './playerProfile';
-import { PlayersListBlock } from './playersList';
+import { ParagraphTextBlock } from './ParagraphText';
+import { HeadingTextBlock } from './HeadingText';
+import { ImageTextBlock } from './ImageText';
+import { PlayerProfileBlock } from './PlayerProfile';
+import { PlayersListBlock } from './PlayersList';
 
 const blockComponents = {
   paragraphText: ParagraphTextBlock,

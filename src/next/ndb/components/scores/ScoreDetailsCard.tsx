@@ -80,7 +80,7 @@ const ScoreDetailsCard: React.FC<{ score: ScoreItem }> = ({ score }) => {
   const instrumentation = toInstrumentation(score.instrumentation);
   return (
     <div>
-      <dl className="grid grid-cols-1 md:grid-cols-[80px_1fr] gap-x-4 gap-y-0">
+      <dl className="grid grid-cols-1 md:grid-cols-[120px_1fr] gap-x-4 gap-y-0">
         <DetailItem label="Titel">{score.title}</DetailItem>
         <DetailItem label="Komponist">{score.composer}</DetailItem>
         <DetailItem label="Arrangeur">{score.arranger}</DetailItem>
