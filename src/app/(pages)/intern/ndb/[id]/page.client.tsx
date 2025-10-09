@@ -40,6 +40,7 @@ const ScoreDetailsPage: React.FC<ScoreDetailsPageProps> = ({ scoreId }) => {
 
   // Store reference to form submit function
   const formSubmitRef = React.useRef<(() => void) | null>(null);
+  const isSavingRef = React.useRef(false); // Synchronous lock to prevent double submissions
 
   const handleEditClick = () => {
     setIsEditMode(true);
@@ -52,14 +53,21 @@ const ScoreDetailsPage: React.FC<ScoreDetailsPageProps> = ({ scoreId }) => {
   };
 
   const handleSaveClick = () => {
-    // Trigger form submit
-    if (formSubmitRef.current) {
+    // Check synchronous lock to prevent double submissions
+    if (formSubmitRef.current && !isSavingRef.current) {
       formSubmitRef.current();
     }
   };
 
   const handleSave = async (scoreData: ScoreItemWithUploads) => {
+    // Check synchronous lock to prevent double submissions
+    if (isSavingRef.current) {
+      return;
+    }
+
+    isSavingRef.current = true;
     setIsSaving(true);
+
     try {
       await updateScore(scoreData);
       toast.success(SUCCESS_MESSAGES.SCORE_UPDATED);
@@ -71,6 +79,7 @@ const ScoreDetailsPage: React.FC<ScoreDetailsPageProps> = ({ scoreId }) => {
       console.error('Failed to save score:', error);
       toast.error(ERROR_MESSAGES.SAVE_ERROR);
     } finally {
+      isSavingRef.current = false;
       setIsSaving(false);
     }
   };
