@@ -2,7 +2,7 @@
   "name": "ensemble-web",
   "version": "0.0.0",
   "description": "Website for a Brass Ensemble with React, Next.js and Payload)",
-  "license": "MIT",
+  "license": "GPL-3.0",
   "type": "module",
   "scripts": {
     "build": "next build",

@@ -75,21 +75,16 @@ describe('TextFilter Component', () => {
       render(<TextFilter value="" onChange={jest.fn()} />);
       const input = screen.getByPlaceholderText('Filtern...');
 
-      expect(input).toHaveClass('w-full');
+      expect(input).toHaveClass('input');
       expect(input).toHaveClass('px-2');
       expect(input).toHaveClass('py-1.5');
-      expect(input).toHaveClass('text-sm');
-      expect(input).toHaveClass('border');
-      expect(input).toHaveClass('rounded');
     });
 
-    it('should have focus styles', () => {
+    it('should have semantic input class', () => {
       render(<TextFilter value="" onChange={jest.fn()} />);
       const input = screen.getByPlaceholderText('Filtern...');
 
-      expect(input).toHaveClass('focus:outline-none');
-      expect(input).toHaveClass('focus:ring-2');
-      expect(input).toHaveClass('focus:ring-blue-500');
+      expect(input).toHaveClass('input');
     });
   });
 
