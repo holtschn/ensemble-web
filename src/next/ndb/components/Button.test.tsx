@@ -18,50 +18,48 @@ describe('Button Component', () => {
       render(<Button>Button</Button>);
       const button = screen.getByRole('button');
 
-      expect(button).toHaveClass('bg-gray-100');
-      expect(button).toHaveClass('px-4');
-      expect(button).toHaveClass('py-2');
+      expect(button).toHaveClass('btn-secondary');
+      expect(button).toHaveClass('btn-md');
     });
 
     it('should apply highlighted variant styles', () => {
       render(<Button variant="highlighted">Button</Button>);
       const button = screen.getByRole('button');
 
-      expect(button).toHaveClass('bg-green-100');
-      expect(button).toHaveClass('text-green-800');
+      expect(button).toHaveClass('btn-primary');
+      expect(button).toHaveClass('btn-md');
     });
 
     it('should apply ghost variant styles', () => {
       render(<Button variant="ghost">Button</Button>);
       const button = screen.getByRole('button');
 
-      expect(button).toHaveClass('bg-transparent');
+      expect(button).toHaveClass('btn-ghost');
+      expect(button).toHaveClass('btn-md');
     });
 
     it('should apply danger variant styles', () => {
       render(<Button variant="danger">Button</Button>);
       const button = screen.getByRole('button');
 
-      expect(button).toHaveClass('bg-red-100');
-      expect(button).toHaveClass('text-red-800');
+      expect(button).toHaveClass('btn-danger');
+      expect(button).toHaveClass('btn-md');
     });
 
     it('should apply small size styles', () => {
       render(<Button size="sm">Button</Button>);
       const button = screen.getByRole('button');
 
-      expect(button).toHaveClass('px-3');
-      expect(button).toHaveClass('py-1.5');
-      expect(button).toHaveClass('text-sm');
+      expect(button).toHaveClass('btn-sm');
+      expect(button).toHaveClass('btn-secondary');
     });
 
     it('should apply large size styles', () => {
       render(<Button size="lg">Button</Button>);
       const button = screen.getByRole('button');
 
-      expect(button).toHaveClass('px-6');
-      expect(button).toHaveClass('py-3');
-      expect(button).toHaveClass('text-base');
+      expect(button).toHaveClass('btn-lg');
+      expect(button).toHaveClass('btn-secondary');
     });
 
     it('should apply custom className', () => {
@@ -69,7 +67,8 @@ describe('Button Component', () => {
       const button = screen.getByRole('button');
 
       expect(button).toHaveClass('custom-class');
-      expect(button).toHaveClass('bg-gray-100'); // Should still have default classes
+      expect(button).toHaveClass('btn-secondary'); // Should still have default classes
+      expect(button).toHaveClass('btn-md');
     });
   });
 
@@ -103,14 +102,11 @@ describe('Button Component', () => {
       expect(screen.getByRole('button')).toBeDisabled();
     });
 
-    it('should have disabled:opacity-50 class when disabled', () => {
+    it('should still have semantic classes when disabled', () => {
       render(<Button disabled>Button</Button>);
-      expect(screen.getByRole('button')).toHaveClass('disabled:opacity-50');
-    });
-
-    it('should have disabled:cursor-not-allowed class when disabled', () => {
-      render(<Button disabled>Button</Button>);
-      expect(screen.getByRole('button')).toHaveClass('disabled:cursor-not-allowed');
+      const button = screen.getByRole('button');
+      expect(button).toHaveClass('btn-secondary');
+      expect(button).toHaveClass('btn-md');
     });
   });
 
@@ -158,14 +154,11 @@ describe('Button Component', () => {
       expect(screen.getByRole('button')).toBeInTheDocument();
     });
 
-    it('should have focus:outline-none class', () => {
+    it('should have semantic button classes for styling', () => {
       render(<Button>Button</Button>);
-      expect(screen.getByRole('button')).toHaveClass('focus:outline-none');
-    });
-
-    it('should have focus:ring-2 class for focus indicator', () => {
-      render(<Button>Button</Button>);
-      expect(screen.getByRole('button')).toHaveClass('focus:ring-2');
+      const button = screen.getByRole('button');
+      expect(button).toHaveClass('btn-secondary');
+      expect(button).toHaveClass('btn-md');
     });
   });
 });
