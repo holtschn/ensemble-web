@@ -2,7 +2,38 @@ import { revalidateTag } from 'next/cache';
 import { NextRequest, NextResponse } from 'next/server';
 import { apiClient } from '@/next/ndb/api/proxy';
 
-const globalTag = 'caching-tag';
+/**
+ * Maps endpoint paths to cache tags for granular cache invalidation.
+ * This allows us to invalidate only the affected resources when data changes.
+ *
+ * @param endpointPath - The endpoint path (e.g., 'scores', 'setlists', 'score', etc.)
+ * @returns Array of cache tags for this endpoint
+ */
+function getTagsForEndpoint(endpointPath: string): string[] {
+  const firstSegment = endpointPath.split('/')[0];
+
+  switch (firstSegment) {
+    case 'scores':
+      return ['ndb-scores'];
+    case 'score':
+      return ['ndb-scores']; // Single score operations affect scores cache
+    case 'setlists':
+      return ['ndb-setlists'];
+    case 'setlist':
+      return ['ndb-setlists']; // Single setlist operations affect setlists cache
+    case 'scoreinfo':
+      return ['ndb-samples']; // scoreinfo/samples endpoint
+    case 'upload':
+      return ['ndb-scores']; // File uploads typically relate to scores
+    case 'download':
+      // Downloads are never cached and never invalidate anything
+      return [];
+    default:
+      // Default: invalidate all caches to be safe
+      console.warn(`[NDB API] Unknown endpoint "${firstSegment}" - invalidating all caches`);
+      return ['ndb-scores', 'ndb-setlists', 'ndb-samples'];
+  }
+}
 
 /**
  * Generic handler for all NDB API requests.
@@ -18,14 +49,17 @@ async function handler(request: NextRequest, context: { params: Promise<{ endpoi
   // e.g., /api/intern/ndb/api/scores/1 -> ['scores', '1'] -> 'scores/1'
   const { endpoint } = await context.params;
   const endpointPath = endpoint.join('/');
+  const tags = getTagsForEndpoint(endpointPath);
 
   try {
     switch (request.method) {
       case 'GET':
+        // Downloads should never be cached
+        const isDownload = endpointPath.startsWith('download/');
         const getResponse = await apiClient(endpointPath, {
           method: 'GET',
-          cache: 'force-cache',
-          next: { tags: [globalTag] },
+          cache: isDownload ? 'no-store' : 'force-cache',
+          next: isDownload ? undefined : { tags },
         });
         return NextResponse.json(getResponse);
 
@@ -35,7 +69,8 @@ async function handler(request: NextRequest, context: { params: Promise<{ endpoi
           method: 'POST',
           body: JSON.stringify(postBody),
         });
-        revalidateTag(globalTag);
+        // Invalidate affected caches
+        tags.forEach((tag) => revalidateTag(tag));
         return NextResponse.json(postResponse);
 
       case 'PUT':
@@ -44,7 +79,8 @@ async function handler(request: NextRequest, context: { params: Promise<{ endpoi
           method: 'PUT',
           body: JSON.stringify(putBody),
         });
-        revalidateTag(globalTag);
+        // Invalidate affected caches
+        tags.forEach((tag) => revalidateTag(tag));
         return NextResponse.json(putResponse);
 
       default:
