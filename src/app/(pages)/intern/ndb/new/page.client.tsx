@@ -38,6 +38,7 @@ const ScoreCreatePage: React.FC = () => {
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const formSubmitRef = useRef<(() => void) | null>(null);
+  const isSavingRef = useRef(false); // Synchronous lock to prevent double submissions
 
   const handleSkipUpload = () => {
     setPageState('form');
@@ -109,13 +110,21 @@ const ScoreCreatePage: React.FC = () => {
   };
 
   const handleSaveClick = () => {
-    if (formSubmitRef.current) {
+    // Check synchronous lock to prevent double submissions
+    if (formSubmitRef.current && !isSavingRef.current) {
       formSubmitRef.current();
     }
   };
 
   const handleSave = async (scoreData: ScoreItemWithUploads) => {
+    // Check synchronous lock to prevent double submissions
+    if (isSavingRef.current) {
+      return;
+    }
+
+    isSavingRef.current = true;
     setIsSaving(true);
+
     try {
       // Include the uploaded PDF's S3 key if available
       const dataWithFile: ScoreItemWithUploads = {
@@ -127,13 +136,12 @@ const ScoreCreatePage: React.FC = () => {
       toast.success(SUCCESS_MESSAGES.SCORE_CREATED);
       setHasChanges(false);
       // Redirect to the newly created score's detail page
-      setTimeout(() => {
-        router.push(`/intern/ndb/${result.id}`);
-      }, 1000);
+      router.push(`/intern/ndb/${result.id}`);
     } catch (error) {
       console.error('Failed to create score:', error);
       toast.error(ERROR_MESSAGES.SAVE_ERROR);
     } finally {
+      isSavingRef.current = false;
       setIsSaving(false);
     }
   };
