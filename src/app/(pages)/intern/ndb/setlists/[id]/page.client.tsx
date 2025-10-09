@@ -31,25 +31,30 @@ export const EditSetlistPageClient: React.FC = () => {
   const [hasChanges, setHasChanges] = useState(false);
 
   // Store reference to form submit function
-  const formSubmitRef = React.useRef<(() => void) | null>(null);
+  const formSubmitRef = React.useRef<(() => Promise<void>) | null>(null);
 
   const handleEditClick = () => {
     setIsEditMode(true);
     setHasChanges(false);
   };
 
-  const handleSaveClick = () => {
+  const handleSaveClick = async () => {
     // Trigger form submit
-    if (formSubmitRef.current) {
+    if (formSubmitRef.current && !isSaving) {
       setIsSaving(true);
-      formSubmitRef.current();
+      try {
+        await formSubmitRef.current();
+      } catch (error) {
+        // Error already handled in SetlistEditor
+        setIsSaving(false);
+      }
     }
   };
 
   const handleSaveSuccess = () => {
-    setIsSaving(false);
     // Refetch setlists to get updated data, then exit edit mode
     refetch();
+    setIsSaving(false);
     setIsEditMode(false);
     setHasChanges(false);
   };
@@ -115,7 +120,11 @@ export const EditSetlistPageClient: React.FC = () => {
               </Button>
             )
           }
-          statusMessage={isEditMode && hasChanges ? <span className="text-sm text-amber-600">Ungespeicherte Änderungen</span> : undefined}
+          statusMessage={
+            isEditMode && hasChanges ? (
+              <span className="text-sm text-amber-600">Ungespeicherte Änderungen</span>
+            ) : undefined
+          }
         />
 
         {/* Cancel button for edit mode - left side */}

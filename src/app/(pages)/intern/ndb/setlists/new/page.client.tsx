@@ -19,13 +19,18 @@ export const NewSetlistPageClient: React.FC = () => {
   const [hasChanges, setHasChanges] = useState(false);
 
   // Store reference to form submit function
-  const formSubmitRef = React.useRef<(() => void) | null>(null);
+  const formSubmitRef = React.useRef<(() => Promise<void>) | null>(null);
 
-  const handleSaveClick = () => {
+  const handleSaveClick = async () => {
     // Trigger form submit
-    if (formSubmitRef.current) {
+    if (formSubmitRef.current && !isSaving) {
       setIsSaving(true);
-      formSubmitRef.current();
+      try {
+        await formSubmitRef.current();
+      } catch (error) {
+        // Error already handled in SetlistEditor
+        setIsSaving(false);
+      }
     }
   };
 
