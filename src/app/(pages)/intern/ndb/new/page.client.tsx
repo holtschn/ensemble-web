@@ -37,7 +37,7 @@ const ScoreCreatePage: React.FC = () => {
   const [uploadedFileKey, setUploadedFileKey] = useState<string | null>(null);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const formSubmitRef = useRef<(() => void) | null>(null);
+  const formSubmitRef = useRef<(() => Promise<void>) | null>(null);
   const isSavingRef = useRef(false); // Synchronous lock to prevent double submissions
 
   const handleSkipUpload = () => {

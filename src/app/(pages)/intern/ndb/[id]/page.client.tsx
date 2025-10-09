@@ -39,7 +39,7 @@ const ScoreDetailsPage: React.FC<ScoreDetailsPageProps> = ({ scoreId }) => {
   const [hasChanges, setHasChanges] = useState(false);
 
   // Store reference to form submit function
-  const formSubmitRef = React.useRef<(() => void) | null>(null);
+  const formSubmitRef = React.useRef<(() => Promise<void>) | null>(null);
   const isSavingRef = React.useRef(false); // Synchronous lock to prevent double submissions
 
   const handleEditClick = () => {
