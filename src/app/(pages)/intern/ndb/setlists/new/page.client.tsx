@@ -20,22 +20,26 @@ export const NewSetlistPageClient: React.FC = () => {
 
   // Store reference to form submit function
   const formSubmitRef = React.useRef<(() => Promise<void>) | null>(null);
+  const isSavingRef = React.useRef(false); // Synchronous lock to prevent double submissions
 
   const handleSaveClick = async () => {
-    // Trigger form submit
-    if (formSubmitRef.current && !isSaving) {
+    // Check synchronous lock to prevent double submissions
+    if (formSubmitRef.current && !isSavingRef.current) {
+      isSavingRef.current = true;
       setIsSaving(true);
       try {
         await formSubmitRef.current();
       } catch (error) {
-        // Error already handled in SetlistEditor
+        // Error already handled in SetlistEditor (toast shown)
+        console.error('Save error:', error);
+      } finally {
+        isSavingRef.current = false;
         setIsSaving(false);
       }
     }
   };
 
   const handleSaveSuccess = (setlistId: number) => {
-    setIsSaving(false);
     // Navigate to the newly created setlist
     router.push(`/intern/ndb/setlists/${setlistId}`);
   };
