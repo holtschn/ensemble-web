@@ -14,7 +14,7 @@ interface SetlistEditorProps {
   initialData?: SetlistItem;
   onSaveSuccess: (setlistId: number) => void;
   onHasChanges?: (hasChanges: boolean) => void;
-  submitRef?: React.MutableRefObject<(() => void) | null>;
+  submitRef?: React.MutableRefObject<(() => Promise<void>) | null>;
   isSaving: boolean;
 }
 
@@ -142,15 +142,15 @@ const SetlistEditor: React.FC<SetlistEditorProps> = ({
   );
 
   const handleSave = useCallback(async () => {
-    // Validation
+    // Validation - throw errors so parent can catch and reset state
     if (!displayName.trim()) {
       toast.error('Bitte geben Sie einen Namen für die Setlist ein');
-      return;
+      throw new Error('Validation failed: displayName is required');
     }
 
     if (items.length === 0) {
       toast.error('Bitte fügen Sie mindestens ein Stück hinzu');
-      return;
+      throw new Error('Validation failed: at least one item is required');
     }
 
     try {
@@ -173,6 +173,7 @@ const SetlistEditor: React.FC<SetlistEditorProps> = ({
     } catch (error) {
       toast.error(ERROR_MESSAGES.SAVE_ERROR);
       console.error('Save error:', error);
+      throw error; // Re-throw to propagate to parent
     }
   }, [displayName, items, mode, setlistId, onSaveSuccess]);
 
