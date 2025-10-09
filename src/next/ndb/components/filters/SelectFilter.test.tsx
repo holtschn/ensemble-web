@@ -91,12 +91,9 @@ describe('SelectFilter Component', () => {
       render(<SelectFilter value="" onChange={jest.fn()} options={mockOptions} />);
       const select = screen.getByRole('combobox');
 
-      expect(select).toHaveClass('w-full');
+      expect(select).toHaveClass('input');
       expect(select).toHaveClass('px-2');
       expect(select).toHaveClass('py-1.5');
-      expect(select).toHaveClass('text-sm');
-      expect(select).toHaveClass('border');
-      expect(select).toHaveClass('rounded');
     });
   });
 

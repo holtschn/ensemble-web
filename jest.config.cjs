@@ -42,7 +42,7 @@ module.exports = {
   collectCoverageFrom: ['src/next/ndb/**/*.{ts,tsx}', '!src/**/*.d.ts', '!src/**/*.config.ts', '!src/**/index.ts'],
 
   coverageDirectory: 'coverage',
-  coverageReporters: ['text', 'lcov', 'html'],
+  coverageReporters: ['text', 'lcov', 'html', 'json-summary'],
 
   // Ignore patterns
   testPathIgnorePatterns: ['<rootDir>/.next/', '<rootDir>/node_modules/', '<rootDir>/build/', '<rootDir>/dist/'],
