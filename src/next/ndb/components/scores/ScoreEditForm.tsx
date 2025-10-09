@@ -15,7 +15,7 @@ interface ScoreEditFormProps {
   onSave: (scoreData: ScoreItemWithUploads) => Promise<void>;
   isSaving: boolean;
   onHasChanges: (hasChanges: boolean) => void;
-  submitRef: React.RefObject<(() => void) | null>;
+  submitRef: React.RefObject<(() => Promise<void>) | null>;
 }
 
 const DetailRow: React.FC<{ label: string; children: React.ReactNode; fullWidth?: boolean }> = ({
