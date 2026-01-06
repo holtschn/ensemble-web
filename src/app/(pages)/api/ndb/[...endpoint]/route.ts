@@ -70,7 +70,7 @@ async function handler(request: NextRequest, context: { params: Promise<{ endpoi
           body: JSON.stringify(postBody),
         });
         // Invalidate affected caches
-        tags.forEach((tag) => revalidateTag(tag));
+        tags.forEach((tag) => revalidateTag(tag, 'max'));
         return NextResponse.json(postResponse);
 
       case 'PUT':
@@ -80,7 +80,7 @@ async function handler(request: NextRequest, context: { params: Promise<{ endpoi
           body: JSON.stringify(putBody),
         });
         // Invalidate affected caches
-        tags.forEach((tag) => revalidateTag(tag));
+        tags.forEach((tag) => revalidateTag(tag, 'max'));
         return NextResponse.json(putResponse);
 
       default:
