@@ -47,6 +47,7 @@ export default buildConfig({
         Icon: './payload/components/icon',
       },
       beforeNavLinks: ['./payload/components/adminLinks'],
+      beforeLogin: ['./payload/components/loginMessage'],
     },
   },
   globals: [Settings, Header, Footer],
