@@ -1,7 +1,13 @@
-const LoginMessage: React.FC = () => (
-  <div style={{ marginBottom: '20px', textAlign: 'center' }}>
-    <p>Please use your personal {process.env.ENSEMBLE_NAME}-Mailaddress.</p>
-  </div>
-);
+import React from 'react';
+
+const LoginMessage: React.FC = () => {
+  const ensembleName = process.env.ENSEMBLE_NAME || 'ensemble';
+
+  return (
+    <div className="mb-5 text-center">
+      <p>Please use your personal {ensembleName}-Mailaddress.</p>
+    </div>
+  );
+};
 
 export default LoginMessage;
